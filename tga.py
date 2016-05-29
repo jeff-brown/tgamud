@@ -20,10 +20,28 @@ from threading import Thread
 
 DEBUG = True
 
-def do_stuff(q):
-  while True:
-    print q.get(),
-    q.task_done()
+def console(q, lock):
+    while 1:
+        input()   # Afther pressing Enter you'll be in "input mode"
+        with lock:
+            cmd = input('> ')
+
+        q.put(cmd)
+        if cmd == 'quit':
+            break
+
+def action_foo(lock):
+    with lock:
+        print('--> action foo')
+    # other actions
+
+def action_bar(lock):
+    with lock:
+        print('--> action bar')
+
+def invalid_input(lock):
+    with lock:
+        print('--> Unknown command')
 
 if __name__ == '__main__':
     '''
@@ -31,15 +49,16 @@ if __name__ == '__main__':
         print "usage %s" % (argv[0])
     '''
  
-    q = Queue(maxsize=0)
-    num_threads = 10
-     
-    for i in range(num_threads):
-      worker = Thread(target=do_stuff, args=(q,))
-      worker.setDaemon(DEBUG)
-      worker.start()
-     
-    for x in range(100):
-      q.put(x)
-     
-    q.join()
+    cmd_actions = {'foo': action_foo, 'bar': action_bar}
+    cmd_queue = queue.Queue()
+    stdout_lock = threading.Lock()
+
+    dj = threading.Thread(target=console, args=(cmd_queue, stdout_lock))
+    dj.start()
+
+    while 1:
+        cmd = cmd_queue.get()
+        if cmd == 'quit':
+            break
+        action = cmd_actions.get(cmd, invalid_input)
+        action(stdout_lock)
