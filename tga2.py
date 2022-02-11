@@ -32,8 +32,8 @@ LOGFILE_FORMAT = logging.Formatter(
 )
 
 LOGFILE_HANDLER = SysLogHandler(
-    address="/dev/log",
-    facility=SysLogHandler.LOG_LOCAL4
+    address='/var/run/syslog',
+    facility='local1'
 )
 LOGFILE_HANDLER.setFormatter(LOGFILE_FORMAT)
 
@@ -46,17 +46,16 @@ else:
     LOGGER.setLevel(logging.INFO)
 
 
-def run_server():
+def run_server(cmd_q):
     """
-    collect user input from terminal and push it to a queue
+    dirty little tcp server
 
     args:
-        cmd_q (queue): the queue
+        None
 
     returns:
         None
     """
-    host = "127.0.0.1"
     port = 23456
     backlog = 1
 
@@ -72,29 +71,34 @@ def run_server():
 
     # bind the socket to the port
     server_address = (ip_address, port)
-    LOGGER.info('starting up on %s port %s', ip_address, port)
+    # LOGGER.warning('starting up on %s port %s', ip_address, port)
+    print("starting up on {}:{}".format(ip_address,port))
     while True:
         try:
             sock.bind(server_address)
             break
-        except Exception as ex:
+        except socket.error as ex:
             LOGGER.error('Caught exception ex: %s', ex)
         time.sleep(1)
 
     # listen for incoming connections (server mode) with one connection
     sock.listen(backlog)
-
+    print("wait for a connection")
+    connection, _ = sock.accept()
     while True:
-        # wait for a connection
-        connection, _ = sock.accept()
-
-        try:
-            # receive the data in one big chunk and process it
-            data = connection.recv(8192)
-            connection.sendall(data)
-        finally:
-            # Clean up the connection
-            connection.close()
+        print("wait for data")
+        data = connection.recv(8192)
+        print("data is {}".format(data))
+        cmd_q.put(data)
+        while not cmd_q.empty():
+            print("q loop")
+            try:
+                item = cmd_q.get(block=False)
+                print(item)
+            except queue.Empty as error:
+                LOGGER.error("empty queue: %s", error)
+            else:
+                connection.sendall(item)
 
 
 def console(cmd_q):
@@ -108,7 +112,7 @@ def console(cmd_q):
         None
     """
     while True:
-        cmd_q.put(input('> '))
+        run_server(cmd_q)
 
 
 def business(cmd_q):
@@ -123,14 +127,12 @@ def business(cmd_q):
     """
     while True:
         cmd_q.put("Business, man!")
+        print("business is happening")
         time.sleep(15)
 
 
 if __name__ == '__main__':
     cmd_queue = queue.Queue()
 
-    threading.Thread(target=console, args=(cmd_queue,)).start()
+    threading.Thread(target=run_server, args=(cmd_queue,)).start()
     threading.Thread(target=business, args=(cmd_queue,)).start()
-
-    while True:
-        print(cmd_queue.get())
