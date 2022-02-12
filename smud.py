@@ -185,7 +185,7 @@ class Game():
         self._mud.send_message(uid, who)
         self._mud.send_message(uid, "You can go {}.".format(", ".join(exits)))
 
-    def _write_help(self, uid):
+    def _process_help_command(self, uid):
         """
         write out the room and any players or items in it
         """
@@ -196,6 +196,8 @@ class Game():
             uid, "  look           - Examines the surroundings")
         self._mud.send_message(
             uid, "  go <exit>      - Moves through the exit specified.")
+        self._mud.send_message(
+            uid, "  quit           - Quits the game.")
 
     def _process_new_player(self, uid, command):
         """
@@ -230,7 +232,7 @@ class Game():
                 self._mud.send_message(pid, "{} says: {}".format(
                     self._players[uid]["name"], params))
 
-    def _process_exit_command(self, uid):
+    def _process_quit_command(self, uid):
         """
         exit on your own terms
         """
@@ -359,7 +361,7 @@ class Game():
             elif command == "help":
 
                 # send the player back the list of possible commands
-                self._write_help(uid)
+                self._process_help_command(uid)
 
             # 'say' command
             elif command == "say":
@@ -380,10 +382,10 @@ class Game():
                 self._process_go_command(uid, params)
 
             # 'exit' command
-            elif command == "exit":
+            elif command == "quit":
 
                 # go to another rooms
-                self._process_exit_command(uid)
+                self._process_quit_command(uid)
 
             # some other, unrecognised command
             else:
