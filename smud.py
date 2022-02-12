@@ -146,7 +146,7 @@ class Game():
         y_coord = self._players[uid]["grid"][1]
 
         room = self._grid[x_coord][y_coord]
-        print("{} coords: ({}, {})".format(self._players[uid]["name"], x_coord, y_coord))
+
         if self._grid[x_coord - 1][y_coord] > 0:
             exits.append("north")
         if self._grid[x_coord + 1][y_coord] > 0:
@@ -305,9 +305,9 @@ class Game():
         # go through any newly connected players
         for pid in self._mud.get_new_players():
 
-            # add the new player to the dictionary, noting that they've not been
+            # add the new player to the dictionary, noting that they've not
             # named yet.
-            # The dictionary key is the player's id number. We set their room to
+            # The dictionary key is the player's id number. We set their room
             # None initially until they have entered a name
             # Try adding more player stats - level, gold, inventory, etc
             self._players[pid] = {
@@ -324,7 +324,7 @@ class Game():
         """
         for uid in self._mud.get_disconnected_players():
 
-            # if for any reason the player isn't in the player map, skip them and
+            # if for any reason the player isn't in the player map, skip them
             # move on to the next one
             if uid not in self._players:
                 continue
@@ -346,12 +346,12 @@ class Game():
         """
         for uid, command, params in self._mud.get_commands():
 
-            # if for any reason the player isn't in the player map, skip them and
+            # if for any reason the player isn't in the player map, skip them
             # move on to the next one
             if uid not in self._players:
                 continue
 
-            # if the player hasn't given their name yet, use this first command as
+            # if the player hasn't given their name yet, use this first command
             # their name and move them to the starting room.
             if self._players[uid]["name"] is None:
 
