@@ -480,7 +480,8 @@ class Game():
         try to kill some stuff why not
         """
         for mid, monster in self._monsters.items():
-            if params in monster["name"]:
+            if params in monster["name"] and monster["room"] \
+                    == self._players[uid]["room"]:
                 if time.time() - self._players[uid]["fatigue"] > 15:
                     self._mud.send_message(
                         uid, "You attack {}.".format(monster["name"]))
