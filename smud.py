@@ -353,10 +353,14 @@ class Game():
                 monster_line = "There is a {} here.".format(monsters_here[0])
 
         self._mud.send_message(uid, self._rooms[room]["short"])
+
+        # this logic is tortured.  fix it later
         if monsters_here:
             self._mud.send_message(uid, monster_line)
-        if players_here and monsters_here or not players_here \
+        if players_here and monsters_here or players_here \
                 and not monsters_here:
+            self._mud.send_message(uid, who)
+        elif not players_here and not monsters_here:
             self._mud.send_message(uid, who)
         self._mud.send_message(uid, "You can go {}.".format(", ".join(exits)))
 
@@ -381,6 +385,14 @@ class Game():
         self._players[uid]["name"] = command
         self._players[uid]["room"] = [4, 2]
         self._players[uid]["fatigue"] = time.time()
+        self._players[uid]["hit_points"] = 13
+        self._players[uid]["armor_class"] = 18
+        self._players[uid]["strength"] = 17
+        self._players[uid]["dexterity"] = 10
+        self._players[uid]["constitution"] = 16
+        self._players[uid]["intelligence"] = 8
+        self._players[uid]["wisdon"] = 13
+        self._players[uid]["charisms"] = 12
         print(self._players)
 
         # go through all the players in the game
@@ -498,6 +510,42 @@ class Game():
                 self._mud.send_message(
                     uid, "Sorry, you don't see '{}' nearby.".format(params))
 
+    def _spawn_monsters(self):
+        """
+        check lairs and spawn monsters if they are empty
+        """
+        if not self._monsters:
+            self._monsters[0] = random.choice(self._mm)
+            self._monsters[0]["room"] = [4, 3]
+            self._monsters[0]["fatigue"] = time.time()
+            self._monsters[0]["hit_points"] = 13
+            self._monsters[0]["armor_class"] = 18
+            self._monsters[0]["strength"] = 17
+            self._monsters[0]["dexterity"] = 10
+            self._monsters[0]["constitution"] = 16
+            self._monsters[0]["intelligence"] = 8
+            self._monsters[0]["wisdon"] = 13
+            self._monsters[0]["charisms"] = 12
+            print("spawned {}".format(self._monsters[0]["name"]))
+
+    def _monsters_move(self):
+        """
+        if monsters aren't tethered to a lair, move them around
+        """
+
+    def _monsters_attack(self, mid):
+        """
+        monsters always attack if they are able.  beware.
+        """
+        for pid, player in self._players.items():
+            if player["room"] == self._monsters[mid]["room"]:
+                if time.time() - self._monsters[mid]["fatigue"] > 15:
+                    self._mud.send_message(
+                        pid, (
+                            "The {} attacked you with their shortsword for 4 "
+                            "damage!".format(self._monsters[mid]["name"])))
+                    self._monsters[mid]["fatigue"] = time.time()
+
     def check_for_new_players(self):
         """
         check to see if any new connections arrived since last update
@@ -603,13 +651,16 @@ class Game():
         """
         spawn monsters and move them around
         """
-
         # spawn rnd monster in arena if empty
-        if not self._monsters:
-            self._monsters[0] = random.choice(self._mm)
-            self._monsters[0]["room"] = [4, 3]
-            self._monsters[0]["fatigue"] = time.time()
-            print("spawned {}".format(self._monsters[0]["name"]))
+        self._spawn_monsters()
+
+        for mid, _ in self._monsters.items():
+
+            # monsters attack first and ask questions later
+            self._monsters_attack(mid)
+
+            # monsters wander if no one is around and run if they are injured
+            self._monsters_move()
 
 
 def main():
