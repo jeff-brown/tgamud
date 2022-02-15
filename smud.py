@@ -71,6 +71,34 @@ class Game():
             [0,  0,  0,  0,  0]
         ]
 
+        self._dice = {
+            "d4": random.randint(1, 4),
+            "d6": random.randint(1, 6),
+            "d8": random.randint(1, 8),
+            "d10": random.randint(1, 10),
+            "d12": random.randint(1, 12),
+            "d20": random.randint(1, 20)
+        }
+
+        self._modifiers = {
+            (0, 1): -5,
+            (2, 3): -4,
+            (4, 5): -3,
+            (6, 7): -2,
+            (8, 9): -1,
+            (10, 11): 0,
+            (12, 13): 1,
+            (14, 15): 2,
+            (16, 17): 3,
+            (18, 19): 4,
+            (20, 21): 5,
+            (22, 23): 6,
+            (24, 25): 7,
+            (26, 27): 8,
+            (28, 29): 9,
+            (30, 31): 10
+        }
+
         self._rooms = [
             {  # 0
                 "short": "You can't be here.",
@@ -281,6 +309,22 @@ class Game():
             }
         ]
 
+        self._weapons = [
+            {
+                "type": "club",
+                "damage": (1, 4),
+                "value": 10
+            }
+        ]
+
+        self._armors = [
+            {
+                "type": "padded",
+                "ac": 11,
+                "value": 500
+            }
+        ]
+
         self._mud = mud
 
         self._players = {}
@@ -290,6 +334,78 @@ class Game():
         self._commands = [
             "look", "north", "south", "east", "west", "help", "say"
         ]
+
+    @staticmethod
+    def _d4():
+        """
+        roll a d4
+        """
+        return random.randint(1, 4)
+
+    @staticmethod
+    def _d6():
+        """
+        roll a d6
+        """
+        return random.randint(1, 6)
+
+    @staticmethod
+    def _d8():
+        """
+        roll a d8
+        """
+        return random.randint(1, 8)
+
+    @staticmethod
+    def _d10():
+        """
+        roll a d10
+        """
+        return random.randint(1, 10)
+
+    @staticmethod
+    def _d12():
+        """
+        roll a d12
+        """
+        return random.randint(1, 12)
+
+    @staticmethod
+    def _d20():
+        """
+        roll a d20
+        """
+        return random.randint(1, 20)
+
+    @staticmethod
+    def _d100():
+        """
+        roll a d100
+        """
+        return random.randint(1, 100)
+
+    def _get_modifier(self, value):
+        """get modifier"""
+        for scores, modifer in self._modifiers.items():
+            if value in scores:
+                return modifer
+        return value
+
+    def _roll_dice(self, dice):
+        """ roll the dice"""
+        if dice[1] == 4:
+            return self._d4() * dice[0]
+        return 0
+
+    def _max_hp(self, uid):
+        """determind max hp"""
+        return self._players[uid]["hit_dice"][1] + \
+            self._get_modifier(self._players[uid]["constitution"])
+
+    def _armor_class(self, uid):
+        """determine ac"""
+        return self._players[uid]["equipped"]["armor"]["ac"] + \
+            self._get_modifier(self._players[uid]["dexterity"])
 
     def _movement(self, uid):
         """
@@ -385,14 +501,22 @@ class Game():
         self._players[uid]["name"] = command
         self._players[uid]["room"] = [4, 2]
         self._players[uid]["fatigue"] = time.time()
-        self._players[uid]["hit_points"] = 13
-        self._players[uid]["armor_class"] = 18
+        self._players[uid]["hit_dice"] = (1, 10)
+        self._players[uid]["level"] = 1
         self._players[uid]["strength"] = 17
         self._players[uid]["dexterity"] = 10
         self._players[uid]["constitution"] = 16
         self._players[uid]["intelligence"] = 8
         self._players[uid]["wisdon"] = 13
-        self._players[uid]["charisms"] = 12
+        self._players[uid]["charisma"] = 12
+        self._players[uid]["max_hp"] = self._max_hp(uid)
+        self._players[uid]["current_hp"] = self._max_hp(uid)
+        self._players[uid]["equipped"] = {
+            "weapon": self._weapons[0],
+            "armor": self._armors[0]
+        }
+        self._players[uid]["armor_class"] = self._armor_class(uid)
+        self._players[uid]["gold"] = 2 * self._d4() * 1000
         print(self._players)
 
         # go through all the players in the game
@@ -491,14 +615,32 @@ class Game():
         """
         try to kill some stuff why not
         """
+        player = self._players[uid]
+
         for mid, monster in self._monsters.items():
             if params in monster["name"] and monster["room"] \
                     == self._players[uid]["room"]:
-                if time.time() - self._players[uid]["fatigue"] > 15:
-                    self._mud.send_message(
-                        uid, "You attack {}.".format(monster["name"]))
-                    del self._monsters[mid]
-                    self._players[uid]["fatigue"] = time.time()
+                if time.time() - self._players[uid]["fatigue"] > 1:
+                    attack = (
+                        self._d20() + self._get_modifier(player["strength"]))
+                    print(attack)
+                    print(monster["armor_class"])
+                    if attack > monster["armor_class"]:
+                        dice = self._roll_dice(player["equipped"]["weapon"]["damage"])
+                        damage = dice + self._get_modifier(player["strength"])
+                        self._mud.send_message(
+                            uid,
+                            "Your attack hits {} for {} damage.".format(
+                                monster["name"], damage))
+                        del self._monsters[mid]
+                        self._players[uid]["fatigue"] = time.time()
+                    else:
+                        self._mud.send_message(
+                            uid, (
+                                "Your poorly executed attacked misses "
+                                "the {}.".format(monster["name"])
+                            )
+                        )
                 else:
                     self._mud.send_message(
                         uid, (
@@ -519,7 +661,7 @@ class Game():
             self._monsters[0]["room"] = [4, 3]
             self._monsters[0]["fatigue"] = time.time()
             self._monsters[0]["hit_points"] = 13
-            self._monsters[0]["armor_class"] = 18
+            self._monsters[0]["armor_class"] = 11
             self._monsters[0]["strength"] = 17
             self._monsters[0]["dexterity"] = 10
             self._monsters[0]["constitution"] = 16
@@ -618,7 +760,7 @@ class Game():
                 self._process_say_command(uid, params)
 
             # 'look' command
-            elif command == "look":
+            elif command in ["look", "l", ""]:
 
                 # look around to see who and what is around
                 self._process_look_command(uid)
