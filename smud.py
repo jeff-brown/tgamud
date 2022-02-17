@@ -553,13 +553,16 @@ class Game():
             self._players[uid]["name"]))
         self._mud.get_disconnect(uid)
 
-    def _process_go_command(self, uid, params):
+    def _process_go_command(self, uid, command, params):
         """
         move around
         """
 
         # get the exit and store it
-        door = params.lower()
+        if command == "go":
+            door = params.lower()
+        else:
+            door = command.lower()
 
         # get current room and list of exits
         _, exits = self._movement(uid)
@@ -626,7 +629,11 @@ class Game():
                     print(attack)
                     print(monster["armor_class"])
                     if attack > monster["armor_class"]:
-                        dice = self._roll_dice(player["equipped"]["weapon"]["damage"])
+                        dice = (
+                            self._roll_dice(
+                                player["equipped"]["weapon"]["damage"]
+                            )
+                        )
                         damage = dice + self._get_modifier(player["strength"])
                         self._mud.send_message(
                             uid,
@@ -766,10 +773,11 @@ class Game():
                 self._process_look_command(uid)
 
             # 'go' command
-            elif command == "go":
+            elif command in ["go", "east", "west", "north", "south", "e",
+                             "w", "s", "n"]:
 
                 # go to another rooms
-                self._process_go_command(uid, params)
+                self._process_go_command(uid, command, params)
 
             # "attack" command
             elif command in ["attack", "a"]:
