@@ -99,6 +99,11 @@ class Game():
             (30, 31): 10
         }
 
+        self._cr = (10, 25, 50, 100, 200, 450, 700, 1100, 1800, 2300, 2900, 3900, 5000,
+                    5900, 7200, 8400, 10000, 11500, 13500, 18000, 20000, 22000,
+                    25000, 33000, 41000, 50000, 62000, 75000, 90000, 105000,
+                    120000, 135000, 155000)
+
         self._rooms = [
             {  # 0
                 "short": "You can't be here.",
@@ -114,7 +119,16 @@ class Game():
             },
             {  # 3
                 "short": "You're in the north plaza.",
-                "long": "You're in the arena. It sucks."
+                "long": ("You are standing at the north end of a large open "
+                         "plaza surrounded by shade trees as well as assorted "
+                         "flowering shrubs and hedges whose scent wafts "
+                         "through the warm, dry air. To the west stands an "
+                         "ornate temple adorned with ornate stone and brass "
+                         "architecture. A quaint little shop lies to the "
+                         "northwest, and a dimly lit, smokey little tavern to "
+                         "the northeast. To the east lay the huge wrought "
+                         "iron gates of the arena. To north is the town guild "
+                         "hall. The other half of the plaza lies to the south.")
             },
             {  # 4
                 "short": "You're in the south plaza.",
@@ -157,170 +171,168 @@ class Game():
         self._mm = [
             {  # 0
                 "name": "cave bear",
-                "long": "The cave bear has dark brown fur and stands well over \
-                         seven feet tall at the shoulder. Its teeth and claws \
-                         gleam like daggers as it sizes you up.",
+                "long": (
+                    "The cave bear has dark brown fur and stands well over "
+                    "seven feet tall at the shoulder. Its teeth and claws "
+                    "gleam like daggers as it sizes you up."
+                ),
                 "room": [4, 3]
             },
             {  # 1
                 "name": "huge rat",
-                "long": "The huge rat resembles rats you've seen before, \
-                         except that it is about two feet tall at the \
-                         shoulder, and seems much more aggressive.",
+                "long": ("The huge rat resembles rats you've seen before, "
+                         "except that it is about two feet tall at the "
+                         "shoulder, and seems much more aggressive."),
                 "room": [1, 1]
             },
             {  # 2
                 "name": "imp",
-                "long": "The imp is a tiny humanoid with pointed ears and \
-                         bright red skin. It stands just over two feet in \
-                         height and is armed with a dagger.",
+                "long": ("The imp is a tiny humanoid with pointed ears and "
+                         "bright red skin. It stands just over two feet in "
+                         "height and is armed with a dagger."),
                 "room": [1, 1]
             },
             {
                 "name": "female kobold",
-                "long": "The kobold is a small humanoid with doglike facial \
-                         features and is covered with coarse body hair. She \
-                         stands just over three feet in height, is wearing a \
-                         filthy tunic, and is armed with {small one-handed}.",
+                "long": ("The kobold is a small humanoid with doglike facial "
+                         "features and is covered with coarse body hair. She "
+                         "stands just over three feet in height, is wearing a "
+                         "filthy tunic, and is armed with {small one-handed}."),
                 "room": [1, 1]
             },
             {
                 "name": "kobold",
-                "long": "The kobold is a small humanoid with doglike facial \
-                         features and is covered with coarse body hair. He \
-                         stands just under four feet in height, is wearing a \
-                         filthy tunic, and is armed with {small one-handed}.",
+                "long": ("The kobold is a small humanoid with doglike facial "
+                         "features and is covered with coarse body hair. He "
+                         "stands just under four feet in height, is wearing a "
+                         "filthy tunic, and is armed with {small one-handed}."),
                 "room": [1, 1]
             },
             {
                 "name": "female orc",
-                "long": "The orc is a smallish humanoid with piglike facial \
-                         features and is covered sparsely by coarse body hair. \
-                         She stands just over four feet in height, is wearing \
-                         a leather tunic, and is armed with club.",
+                "long": ("The orc is a smallish humanoid with piglike facial "
+                         "features and is covered sparsely by coarse body hair. "
+                         "She stands just over four feet in height, is wearing "
+                         "a leather tunic, and is armed with club."),
                 "room": [1, 1]
             },
             {
                 "name": "orc",
-                "long": "The orc is a smallish humanoid with piglike facial \
-                         features and is covered sparsely by coarse body hair. \
-                         He stands just under five feet in height, is wearing \
-                         a leather cuirass, and is armed with club.",
+                "long": ("The orc is a smallish humanoid with piglike facial "
+                         "features and is covered sparsely by coarse body hair. "
+                         "He stands just under five feet in height, is wearing "
+                         "a leather cuirass, and is armed with club."),
                 "room": [1, 1]
             },
             {
                 "name": "skeleton warrior",
-                "long": "The skeleton warrior is wearing tattered armor and \
-                         mouldering bits of old clothing, and is armed with \
-                         {large two-handed} {1}.",
+                "long": ("The skeleton warrior is wearing tattered armor and "
+                         "mouldering bits of old clothing, and is armed with "
+                         "{large two-handed} {1}."),
                 "room": [1, 1]
             },
             {
                 "name": "giant bat",
-                "long": "The giant bat has a wingspan of over twelve feet and \
-                         has wicked looking claws and teeth.",
+                "long": ("The giant bat has a wingspan of over twelve feet and "
+                         "has wicked looking claws and teeth."),
                 "room": [1, 1]
             },
             {
                 "name": "lizard woman",
-                "long": "The lizard woman is a five foot tall bipedal \
-                         humanoid who's features resemble those of a large \
-                         lizard. She has greyish scaley skin, and sharp claws \
-                         and teeth. The lizard woman is armed with scimitar.",
+                "long": ("The lizard woman is a five foot tall bipedal "
+                         "humanoid who's features resemble those of a large "
+                         "lizard. She has greyish scaley skin, and sharp claws "
+                         "and teeth. The lizard woman is armed with scimitar."),
                 "room": [1, 1]
             },
             {
                 "name": "lizard man",
-                "long": "The lizard man is a six foot tall bipedal humanoid \
-                         who's features resemble those of a large lizard. He \
-                         has greenish scaley skin, and sharp claws and teeth. \
-                         The lizard man is armed with scimitar.",
+                "long": ("The lizard man is a six foot tall bipedal humanoid "
+                         "who's features resemble those of a large lizard. He "
+                         "has greenish scaley skin, and sharp claws and teeth. "
+                         "The lizard man is armed with scimitar."),
                 "room": [1, 1]
             },
             {
                 "name": "female hobgoblin",
-                "long": "The hobgoblin is a squat apelike humanoid with dark \
-                         skin and pointed ears. She stands just under five \
-                         feet tall, is wearing a leather cuirass, and is armed \
-                         with small one-handed.",
+                "long": ("The hobgoblin is a squat apelike humanoid with dark "
+                         "skin and pointed ears. She stands just under five "
+                         "feet tall, is wearing a leather cuirass, and is armed "
+                         "with small one-handed."),
                 "room": [1, 1]
             },
             {
                 "name": "hobgoblin",
-                "long": "The hobgoblin is a squat apelike humanoid with dark \
-                         skin and pointed ears. He stands just over five feet \
-                         tall, is wearing a leather cuirass, and is armed \
-                         with {small one-handed} {1}.",
+                "long": ("The hobgoblin is a squat apelike humanoid with dark "
+                         "skin and pointed ears. He stands just over five feet "
+                         "tall, is wearing a leather cuirass, and is armed "
+                         "with {small one-handed} {1}."),
                 "room": [1, 1]
             },
             {
                 "name": "cave bear",
-                "long": "The cave bear has dark brown fur and stands well \
-                         over seven feet tall at the shoulder. Its teeth and \
-                         claws gleam like daggers as it sizes you up.",
+                "long": ("The cave bear has dark brown fur and stands well "
+                         "over seven feet tall at the shoulder. Its teeth and "
+                         "claws gleam like daggers as it sizes you up."),
                 "room": [1, 1]
             },
             {
                 "name": "female cyclops",
-                "long": "The cyclops resembles a very large woman with only \
-                         one eye in the center of her forehead. She stands \
-                         over eleven feet tall, and is armed with a spiked \
-                         club.",
+                "long": ("The cyclops resembles a very large woman with only "
+                         "one eye in the center of her forehead. She stands "
+                         "over eleven feet tall, and is armed with a spiked "
+                         "club."),
                 "room": [1, 1]
             },
             {
                 "name": "cyclops",
-                "long": "The cyclops resembles a very large man with only one \
-                         eye in the center of his forehead. He stands over \
-                         twelve feet tall, and is armed with a spiked club.",
+                "long": ("The cyclops resembles a very large man with only one "
+                         "eye in the center of his forehead. He stands over "
+                         "twelve feet tall, and is armed with a spiked club."),
                 "room": [1, 1]
             },
             {
                 "name": "female minotaur",
-                "long": "The minotaur has the upper torso of a muscular woman,\
-                         and the head, legs, and hooves of a bull. She is \
-                         wearing ringmail armor, and is armed with large \
-                         one-handed.",
+                "long": ("The minotaur has the upper torso of a muscular woman, "
+                         "and the head, legs, and hooves of a bull. She is "
+                         "wearing ringmail armor, and is armed with large "
+                         "one-handed."),
                 "room": [1, 1]
             },
             {
                 "name": "minotaur",
-                "long": "The minotaur has the upper torso of a muscular man, \
-                         and the head, legs, and hooves of a bull. He is \
-                         wearing ringmail armor, and is armed with large \
-                         one-handed.",
+                "long": ("The minotaur has the upper torso of a muscular man, "
+                         "and the head, legs, and hooves of a bull. He is "
+                         "wearing ringmail armor, and is armed with large "
+                         "one-handed."),
                 "room": [1, 1]
             },
             {
                 "name": "ogress",
-                "long": "The ogress resembles an enormous and very ugly woman. \
-                         She stands over seven feet tall and is very muscular. \
-                         Her clothing is filthy and poorly made. She is armed \
-                         with {large two-handed} {1}.",
+                "long": ("The ogress resembles an enormous and very ugly woman. "
+                         "She stands over seven feet tall and is very muscular. "
+                         "Her clothing is filthy and poorly made. She is armed "
+                         "with {large two-handed} {1}."),
                 "room": [1, 1]
             },
             {
                 "name": "ogre",
-                "long": "The ogre resembles an enormous and very ugly man. \
-                         He stands over eight feet tall and is very muscular. \
-                         His clothing is filthy and poorly made. He is armed \
-                         with {0} {1}.",
+                "long": ("The ogre resembles an enormous and very ugly man. "
+                         "He stands over eight feet tall and is very muscular. "
+                         "His clothing is filthy and poorly made. He is armed "
+                         "with {0} {1}."),
                 "room": [1, 1]
             },
             {
                 "name": "mork",
-                "long": "The mork resembles a monkey crossed with and orc. \
-                         He stands over eight feet tall and is very muscular. \
-                         His clothing is filthy and poorly made. He is armed \
-                         with {0} {1}.",
+                "long": ("The mork resembles a monkey crossed with and orc. "
+                         "He stands over eight feet tall and is very muscular."),
                 "room": [1, 1]
             },
             {
                 "name": "dray",
-                "long": "The dray is a bat crossed with a dragon. It bits you \
-                         with its huge dragon-like fangs. \
-                         His clothing is filthy and poorly made. He is armed \
-                         with {0} {1}.",
+                "long": ("The dray is a bat crossed with a dragon. It bites you "
+                         "with its huge dragon-like fangs."),
                 "room": [1, 1]
             }
         ]
@@ -347,9 +359,7 @@ class Game():
 
         self._monsters = {}
 
-        self._commands = [
-            "look", "north", "south", "east", "west", "help", "say"
-        ]
+        self._exits = ["north", "south", "east", "west"]
 
     @staticmethod
     def _d4():
@@ -474,9 +484,44 @@ class Game():
     def _process_look_at_command(self, uid, params):
         """look at stuff"""
 
+        current_room, valid_exits = self._movement(uid)
+
+        # look at _rooms
+        if params == "room":
+            self._mud.send_message(uid, self._rooms[current_room]["long"])
+            return True
+
+        # look outside the room
+        if params in self._exits:
+            if params in valid_exits:
+                x_coord = self._players[uid]["room"][0]
+                y_coord = self._players[uid]["room"][1]
+                if params == "east":
+                    next_room = self._grid[x_coord][y_coord + 1]
+                elif params == "west":
+                    next_room = self._grid[x_coord][y_coord - 1]
+                elif params == "north":
+                    next_room = self._grid[x_coord - 1][y_coord]
+                elif params == "south":
+                    next_room = self._grid[x_coord + 1][y_coord]
+                self._mud.send_message(uid, self._rooms[next_room]["long"])
+            else:
+                self._mud.send_message(
+                    uid, "You can see anything to the {}.".format(params))
+            return True
+
         # look at monsters
-        if params in [y["name"] for x, y in self._monsters.items()]:
-            print([x["long"] for x in self._mm if x["name"] == params])
+        monsters_here = []
+        for _, monster in self._monsters.items():
+            if monster["room"] == self._players[uid]["room"]:
+                monsters_here.append(monster["name"])
+            if params in monsters_here:
+                desc = [x["long"] for x in self._mm if x["name"] == params]
+                self._mud.send_message(uid, desc[0])
+            else:
+                self._mud.send_message(
+                    uid, "You don't see {} nearby.".format(params))
+            return True
 
     def _process_look_command(self, uid):
         """
@@ -557,6 +602,8 @@ class Game():
         self._players[uid]["charisma"] = 12
         self._players[uid]["max_hp"] = self._max_hp(uid)
         self._players[uid]["current_hp"] = self._max_hp(uid)
+        self._players[uid]["xp"] = 0
+        self._players[uid]["level"] = 1
         self._players[uid]["equipped"] = {
             "weapon": self._weapons[0],
             "armor": self._armors[0]
@@ -598,6 +645,13 @@ class Game():
         self._mud.send_message(uid, "Goodbye, {}.".format(
             self._players[uid]["name"]))
         self._mud.get_disconnect(uid)
+
+    def _process_experience_command(self, uid):
+        """
+        output current level and experience
+        """
+        self._mud.send_message(uid, "You have {} experience.".format(
+            self._players[uid]["xp"]))
 
     def _process_go_command(self, uid, command, params):
         """
@@ -672,8 +726,9 @@ class Game():
                 if time.time() - self._players[uid]["fatigue"] > 1:
                     attack = (
                         self._d20() + self._get_modifier(player["strength"]))
-                    print(attack)
-                    print(monster["armor_class"])
+                    print(monster["max_hp"])
+                    print(monster["current_hp"])
+                    xp_incr = int(self._cr[monster["cr"]] / monster["max_hp"])
                     if attack > monster["armor_class"]:
                         dice = (
                             self._roll_dice(
@@ -685,7 +740,17 @@ class Game():
                             uid,
                             "Your attack hits {} for {} damage.".format(
                                 monster["name"], damage))
-                        del self._monsters[mid]
+                        monster["current_hp"] -= damage
+                        self._players[uid]["xp"] += xp_incr * damage
+                        if monster["current_hp"] < 1:
+                            del self._monsters[mid]
+                            self._mud.send_message(
+                                uid,
+                                (
+                                    "The {} falls to the ground "
+                                    "lifeless!".format(monster["name"])
+                                )
+                            )
                         self._players[uid]["fatigue"] = time.time()
                     else:
                         self._mud.send_message(
@@ -712,8 +777,9 @@ class Game():
         if not self._monsters:
             self._monsters[0] = random.choice(self._mm)
             self._monsters[0]["room"] = [4, 3]
+            self._monsters[0]["hit_dice"] = (1, 10)
             self._monsters[0]["fatigue"] = time.time()
-            self._monsters[0]["hit_points"] = 13
+            self._monsters[0]["max_hp"] = 13
             self._monsters[0]["armor_class"] = 11
             self._monsters[0]["strength"] = 17
             self._monsters[0]["dexterity"] = 10
@@ -721,6 +787,9 @@ class Game():
             self._monsters[0]["intelligence"] = 8
             self._monsters[0]["wisdon"] = 13
             self._monsters[0]["charisms"] = 12
+            self._monsters[0]["cr"] = 1
+            self._monsters[0]["max_hp"] = self._monster_max_hp(0)
+            self._monsters[0]["current_hp"] = self._monster_max_hp(0)
             self._monsters[0]["equipped"] = {
                 "weapon": self._weapons[0],
                 "armor": self._armors[0]
@@ -852,9 +921,10 @@ class Game():
             elif command in ["look", "l", ""]:
 
                 # look around to see who and what is around
-                if not params:
+                if params == "":
                     self._process_look_command(uid)
-                self._process_look_at_command(uid, params)
+                else:
+                    self._process_look_at_command(uid, params)
 
             # 'go' command
             elif command in ["go", "east", "west", "north", "south"]:
@@ -867,6 +937,11 @@ class Game():
 
                 # let's gooooo
                 self._process_attack_command(uid, params)
+
+            elif command in ["experience", "xp"]:
+
+                # let's gooooo
+                self._process_experience_command(uid)
 
             # 'exit' command
             elif command == "quit":
