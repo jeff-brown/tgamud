@@ -306,6 +306,22 @@ class Game():
                          His clothing is filthy and poorly made. He is armed \
                          with {0} {1}.",
                 "room": [1, 1]
+            },
+            {
+                "name": "mork",
+                "long": "The mork resembles a monkey crossed with and orc. \
+                         He stands over eight feet tall and is very muscular. \
+                         His clothing is filthy and poorly made. He is armed \
+                         with {0} {1}.",
+                "room": [1, 1]
+            },
+            {
+                "name": "dray",
+                "long": "The dray is a bat crossed with a dragon. It bits you \
+                         with its huge dragon-like fangs. \
+                         His clothing is filthy and poorly made. He is armed \
+                         with {0} {1}.",
+                "room": [1, 1]
             }
         ]
 
@@ -393,19 +409,42 @@ class Game():
 
     def _roll_dice(self, dice):
         """ roll the dice"""
+        score = 0
         if dice[1] == 4:
-            return self._d4() * dice[0]
-        return 0
+            score = self._d4() * dice[0]
+        elif dice[1] == 6:
+            score = self._d6() * dice[0]
+        elif dice[1] == 8:
+            score = self._d8() * dice[0]
+        elif dice[1] == 10:
+            score = self._d10() * dice[0]
+        elif dice[1] == 12:
+            score = self._d12() * dice[0]
+        elif dice[1] == 20:
+            score = self._d20() * dice[0]
+        elif dice[1] == 100:
+            score = self._d100() * dice[0]
+        return score
 
     def _max_hp(self, uid):
         """determind max hp"""
         return self._players[uid]["hit_dice"][1] + \
             self._get_modifier(self._players[uid]["constitution"])
 
+    def _monster_max_hp(self, uid):
+        """determind max hp"""
+        return self._monsters[uid]["hit_dice"][1] + \
+            self._get_modifier(self._monsters[uid]["constitution"])
+
     def _armor_class(self, uid):
         """determine ac"""
         return self._players[uid]["equipped"]["armor"]["ac"] + \
             self._get_modifier(self._players[uid]["dexterity"])
+
+    def _monster_armor_class(self, uid):
+        """determine ac"""
+        return self._monsters[uid]["equipped"]["armor"]["ac"] + \
+            self._get_modifier(self._monsters[uid]["dexterity"])
 
     def _movement(self, uid):
         """
@@ -431,6 +470,13 @@ class Game():
             exits.append("east")
 
         return room, exits
+
+    def _process_look_at_command(self, uid, params):
+        """look at stuff"""
+
+        # look at monsters
+        if params in [y["name"] for x, y in self._monsters.items()]:
+            print([x["long"] for x in self._mm if x["name"] == params])
 
     def _process_look_command(self, uid):
         """
@@ -675,6 +721,11 @@ class Game():
             self._monsters[0]["intelligence"] = 8
             self._monsters[0]["wisdon"] = 13
             self._monsters[0]["charisms"] = 12
+            self._monsters[0]["equipped"] = {
+                "weapon": self._weapons[0],
+                "armor": self._armors[0]
+            }
+            self._monsters[0]["armor_class"] = self._monster_armor_class(0)
             print("spawned {}".format(self._monsters[0]["name"]))
 
     def _monsters_move(self):
@@ -686,14 +737,45 @@ class Game():
         """
         monsters always attack if they are able.  beware.
         """
+        monster = self._monsters[mid]
         for pid, player in self._players.items():
-            if player["room"] == self._monsters[mid]["room"]:
-                if time.time() - self._monsters[mid]["fatigue"] > 15:
-                    self._mud.send_message(
-                        pid, (
-                            "The {} attacked you with their shortsword for 4 "
-                            "damage!".format(self._monsters[mid]["name"])))
-                    self._monsters[mid]["fatigue"] = time.time()
+            if player["room"] == monster["room"]:
+                if time.time() - monster["fatigue"] > 6:
+
+                    attack = (
+                        self._d20()
+                        + self._get_modifier(monster["strength"])
+                    )
+                    print("attack: {}".format(attack))
+                    print("player ac: {}".format(player["armor_class"]))
+                    if attack > player["armor_class"]:
+                        dice = (
+                            self._roll_dice(
+                                monster["equipped"]["weapon"]["damage"]
+                            )
+                        )
+                        damage = (
+                            dice
+                            + self._get_modifier(monster["strength"])
+                        )
+                        self._mud.send_message(
+                            pid, (
+                                "The {} attacked you with their {} for {} "
+                                "damage!".format(
+                                    monster["name"],
+                                    monster["equipped"]["weapon"]["type"],
+                                    damage))
+                                )
+                        # del self._monsters[mid]
+                        self._monsters[mid]["fatigue"] = time.time()
+                    else:
+                        self._mud.send_message(
+                            pid, (
+                                "The {}'s poorly executed attacked misses "
+                                "you.".format(monster["name"])
+                            )
+                        )
+                        self._monsters[mid]["fatigue"] = time.time()
 
     def check_for_new_players(self):
         """
@@ -770,11 +852,12 @@ class Game():
             elif command in ["look", "l", ""]:
 
                 # look around to see who and what is around
-                self._process_look_command(uid)
+                if not params:
+                    self._process_look_command(uid)
+                self._process_look_at_command(uid, params)
 
             # 'go' command
-            elif command in ["go", "east", "west", "north", "south", "e",
-                             "w", "s", "n"]:
+            elif command in ["go", "east", "west", "north", "south"]:
 
                 # go to another rooms
                 self._process_go_command(uid, command, params)
