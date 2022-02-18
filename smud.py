@@ -28,6 +28,27 @@ Game Loop:
 5. check for new commands (mud.get_commands())
 6. if not new player then do commands
 
+Stuff to do:
+    * player stats per class
+    * implement magic system
+    * implement items
+    * implement stores
+    * monster stat blocks per monster type / CR
+    * monsters drop items / gold
+    * more levels
+    * implement lairs and wandering monsters
+    * fill in details for current rooms
+    * monsters can equip stuff (pick stuff up too?)
+    * implement other conditions (hungry, thirsty, poisoned, etc)
+    * implement environment hazards: doors, traps, etc
+    * fix pronoun and plural agreement (grammar, basically)
+    * add ColOrS!1!!
+    * implement character save and restore
+    * darkness / light
+    * day / night cycle? short / long rest?
+    * quests?!
+    * runes
+
 author: Mark Frimston - mfrimston@gmail.com
 """
 
@@ -362,6 +383,9 @@ class Game():
         self._exits = ["north", "south", "east", "west"]
 
         self._tick = 6  # 6 seconds
+
+        # counter for assigning each client a new id
+        self._nextid = 0
 
     @staticmethod
     def _d4():
@@ -712,6 +736,16 @@ class Game():
         self._mud.send_message(uid, "You have {} experience.".format(
             self._players[uid]["xp"]))
 
+    def _process_ring_gong(self, uid):
+        """
+        output current level and experience
+        """
+        # check fatigue
+        if len(self._monsters) < 9:
+            self._spawn_monsters()
+        else:
+            print("rooms full")
+
     def _check_status(self, uid):
         """
         output current level and experience
@@ -913,43 +947,43 @@ class Game():
         """
         check lairs and spawn monsters if they are empty
         """
-        if not self._monsters:
-            self._monsters[0] = random.choice(self._mm)
-            self._monsters[0]["room"] = [4, 3]
-            self._monsters[0]["hit_dice"] = (1, 10)
-            self._monsters[0]["fatigue"] = time.time()
-            self._monsters[0]["max_hp"] = 13
-            self._monsters[0]["armor_class"] = 11
-            self._monsters[0]["strength"] = 17
-            self._monsters[0]["dexterity"] = 10
-            self._monsters[0]["constitution"] = 16
-            self._monsters[0]["intelligence"] = 8
-            self._monsters[0]["wisdon"] = 13
-            self._monsters[0]["charisms"] = 12
-            self._monsters[0]["max_hp"] = self._monster_max_hp(0)
-            self._monsters[0]["current_hp"] = self._monster_max_hp(0)
-            self._monsters[0]["regen_hp"] = time.time()
-            self._monsters[0]["equipped"] = {
-                "weapon": self._weapons[0],
-                "armor": self._armors[0]
-            }
-            self._monsters[0]["armor_class"] = self._monster_armor_class(0)
-            print(
-                "spawned {} with cr {} that has {} xp.".format(
-                    self._monsters[0]["name"],
-                    self._monsters[0]["cr"],
-                    self._cr[self._monsters[0]["cr"]]
-                )
+        self._monsters[self._nextid] = random.choice(self._mm)
+        self._monsters[self._nextid]["room"] = [4, 3]
+        self._monsters[self._nextid]["hit_dice"] = (1, 10)
+        self._monsters[self._nextid]["fatigue"] = time.time()
+        self._monsters[self._nextid]["max_hp"] = 13
+        self._monsters[self._nextid]["armor_class"] = 11
+        self._monsters[self._nextid]["strength"] = 17
+        self._monsters[self._nextid]["dexterity"] = 10
+        self._monsters[self._nextid]["constitution"] = 16
+        self._monsters[self._nextid]["intelligence"] = 8
+        self._monsters[self._nextid]["wisdon"] = 13
+        self._monsters[self._nextid]["charisms"] = 12
+        self._monsters[self._nextid]["max_hp"] = self._monster_max_hp(0)
+        self._monsters[self._nextid]["current_hp"] = self._monster_max_hp(0)
+        self._monsters[self._nextid]["regen_hp"] = time.time()
+        self._monsters[self._nextid]["equipped"] = {
+            "weapon": self._weapons[0],
+            "armor": self._armors[0]
+        }
+        self._monsters[self._nextid]["armor_class"] = self._monster_armor_class(0)
+        print(
+            "spawned {} with cr {} that has {} xp.".format(
+                self._monsters[self._nextid]["name"],
+                self._monsters[self._nextid]["cr"],
+                self._cr[self._monsters[self._nextid]["cr"]]
             )
+        )
 
-            for pid, player in self._players.items():
-                if self._monsters[0]["room"] == player["room"]:
-                    self._mud.send_message(
-                        pid, (
-                            "A {} just appeared in a blinding flash of "
-                            "light.".format(self._monsters[0]["name"])
-                        )
+        for pid, player in self._players.items():
+            if self._monsters[self._nextid]["room"] == player["room"]:
+                self._mud.send_message(
+                    pid, (
+                        "A {} just appeared in a blinding flash of "
+                        "light.".format(self._monsters[self._nextid]["name"])
                     )
+                )
+        self._nextid += 1
 
     def _monsters_move(self):
         """
@@ -1118,6 +1152,11 @@ class Game():
                 # let's gooooo
                 self._process_health_command(uid)
 
+            elif command in ["ring", "r"] and params in ["gong", "g"]:
+
+                # let's gooooo
+                self._process_ring_gong(uid)
+
             # 'exit' command
             elif command == "quit":
 
@@ -1135,7 +1174,7 @@ class Game():
         spawn monsters and move them around
         """
         # spawn rnd monster in arena if empty
-        self._spawn_monsters()
+        # self._spawn_monsters()
 
         for mid, _ in self._monsters.items():
 
