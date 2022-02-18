@@ -176,21 +176,21 @@ class Game():
                     "seven feet tall at the shoulder. Its teeth and claws "
                     "gleam like daggers as it sizes you up."
                 ),
-                "room": [4, 3]
+                "cr": 1
             },
             {  # 1
                 "name": "huge rat",
                 "long": ("The huge rat resembles rats you've seen before, "
                          "except that it is about two feet tall at the "
                          "shoulder, and seems much more aggressive."),
-                "room": [1, 1]
+                "cr": 0
             },
             {  # 2
                 "name": "imp",
                 "long": ("The imp is a tiny humanoid with pointed ears and "
                          "bright red skin. It stands just over two feet in "
                          "height and is armed with a dagger."),
-                "room": [1, 1]
+                "cr": 0
             },
             {
                 "name": "female kobold",
@@ -198,7 +198,7 @@ class Game():
                          "features and is covered with coarse body hair. She "
                          "stands just over three feet in height, is wearing a "
                          "filthy tunic, and is armed with {small one-handed}."),
-                "room": [1, 1]
+                "cr": 1
             },
             {
                 "name": "kobold",
@@ -206,7 +206,7 @@ class Game():
                          "features and is covered with coarse body hair. He "
                          "stands just under four feet in height, is wearing a "
                          "filthy tunic, and is armed with {small one-handed}."),
-                "room": [1, 1]
+                "cr": 0
             },
             {
                 "name": "female orc",
@@ -214,7 +214,7 @@ class Game():
                          "features and is covered sparsely by coarse body hair. "
                          "She stands just over four feet in height, is wearing "
                          "a leather tunic, and is armed with club."),
-                "room": [1, 1]
+                "cr": 1
             },
             {
                 "name": "orc",
@@ -222,20 +222,20 @@ class Game():
                          "features and is covered sparsely by coarse body hair. "
                          "He stands just under five feet in height, is wearing "
                          "a leather cuirass, and is armed with club."),
-                "room": [1, 1]
+                "cr": 1
             },
             {
                 "name": "skeleton warrior",
                 "long": ("The skeleton warrior is wearing tattered armor and "
                          "mouldering bits of old clothing, and is armed with "
                          "{large two-handed} {1}."),
-                "room": [1, 1]
+                "cr": 2
             },
             {
                 "name": "giant bat",
                 "long": ("The giant bat has a wingspan of over twelve feet and "
                          "has wicked looking claws and teeth."),
-                "room": [1, 1]
+                "cr": 0
             },
             {
                 "name": "lizard woman",
@@ -243,7 +243,7 @@ class Game():
                          "humanoid who's features resemble those of a large "
                          "lizard. She has greyish scaley skin, and sharp claws "
                          "and teeth. The lizard woman is armed with scimitar."),
-                "room": [1, 1]
+                "cr": 1
             },
             {
                 "name": "lizard man",
@@ -251,7 +251,7 @@ class Game():
                          "who's features resemble those of a large lizard. He "
                          "has greenish scaley skin, and sharp claws and teeth. "
                          "The lizard man is armed with scimitar."),
-                "room": [1, 1]
+                "cr": 1
             },
             {
                 "name": "female hobgoblin",
@@ -259,7 +259,7 @@ class Game():
                          "skin and pointed ears. She stands just under five "
                          "feet tall, is wearing a leather cuirass, and is armed "
                          "with small one-handed."),
-                "room": [1, 1]
+                "cr": 2
             },
             {
                 "name": "hobgoblin",
@@ -267,14 +267,14 @@ class Game():
                          "skin and pointed ears. He stands just over five feet "
                          "tall, is wearing a leather cuirass, and is armed "
                          "with {small one-handed} {1}."),
-                "room": [1, 1]
+                "cr": 2
             },
             {
                 "name": "cave bear",
                 "long": ("The cave bear has dark brown fur and stands well "
                          "over seven feet tall at the shoulder. Its teeth and "
                          "claws gleam like daggers as it sizes you up."),
-                "room": [1, 1]
+                "cr": 3
             },
             {
                 "name": "female cyclops",
@@ -282,14 +282,14 @@ class Game():
                          "one eye in the center of her forehead. She stands "
                          "over eleven feet tall, and is armed with a spiked "
                          "club."),
-                "room": [1, 1]
+                "cr": 4
             },
             {
                 "name": "cyclops",
                 "long": ("The cyclops resembles a very large man with only one "
                          "eye in the center of his forehead. He stands over "
                          "twelve feet tall, and is armed with a spiked club."),
-                "room": [1, 1]
+                "cr": 4
             },
             {
                 "name": "female minotaur",
@@ -297,7 +297,7 @@ class Game():
                          "and the head, legs, and hooves of a bull. She is "
                          "wearing ringmail armor, and is armed with large "
                          "one-handed."),
-                "room": [1, 1]
+                "cr": 4
             },
             {
                 "name": "minotaur",
@@ -305,7 +305,7 @@ class Game():
                          "and the head, legs, and hooves of a bull. He is "
                          "wearing ringmail armor, and is armed with large "
                          "one-handed."),
-                "room": [1, 1]
+                "cr": 4
             },
             {
                 "name": "ogress",
@@ -313,7 +313,7 @@ class Game():
                          "She stands over seven feet tall and is very muscular. "
                          "Her clothing is filthy and poorly made. She is armed "
                          "with {large two-handed} {1}."),
-                "room": [1, 1]
+                "cr": 4
             },
             {
                 "name": "ogre",
@@ -321,19 +321,19 @@ class Game():
                          "He stands over eight feet tall and is very muscular. "
                          "His clothing is filthy and poorly made. He is armed "
                          "with {0} {1}."),
-                "room": [1, 1]
+                "cr": 4
             },
             {
                 "name": "mork",
                 "long": ("The mork resembles a monkey crossed with and orc. "
                          "He stands over eight feet tall and is very muscular."),
-                "room": [1, 1]
+                "cr": 5
             },
             {
                 "name": "dray",
                 "long": ("The dray is a bat crossed with a dragon. It bites you "
                          "with its huge dragon-like fangs."),
-                "room": [1, 1]
+                "cr": 5
             }
         ]
 
@@ -360,6 +360,8 @@ class Game():
         self._monsters = {}
 
         self._exits = ["north", "south", "east", "west"]
+
+        self._tick = 6  # 6 seconds
 
     @staticmethod
     def _d4():
@@ -409,6 +411,29 @@ class Game():
         roll a d100
         """
         return random.randint(1, 100)
+
+    @staticmethod
+    def _rdiv(num, div):
+        """
+        format coins
+        """
+        return num / div, num % div
+
+    def _format_coins(self, coins):
+        """
+        format coins
+        """
+        print(coins)
+        plat, rem = self._rdiv(coins, 1000)
+        print(plat, rem)
+        gold, rem = self._rdiv(rem, 100)
+        print(gold, rem)
+        silv, rem = self._rdiv(rem, 10)
+        print(silv, rem)
+        copp, rem = self._rdiv(rem, 1)
+        print(copp, rem)
+
+        return "{}p, {}g, {}s, {}c".format(plat, gold, silv, copp)
 
     def _get_modifier(self, value):
         """get modifier"""
@@ -481,6 +506,28 @@ class Game():
 
         return room, exits
 
+    def _get_hurt(self, mid):
+        """ figure out how wounded a monster is """
+        perc = (self._monsters[mid]["current_hp"]
+                / float(self._monsters[mid]["max_hp"]) * 100)
+        # healthy 85 - 100
+        if 85 < perc < 100:
+            status = "in good physical health"
+        # light 61 - 84
+        elif 61 < perc < 84:
+            status = "lightly wounded"
+        # wounded 41 - 60
+        elif 41 < perc < 60:
+            status = "wounded"
+        # moderate 25 - 40
+        elif 25 < perc < 40:
+            status = "moderately"
+        # severe 1 - 24
+        else:
+            status = "severely wounded"
+
+        return status
+
     def _process_look_at_command(self, uid, params):
         """look at stuff"""
 
@@ -512,12 +559,15 @@ class Game():
 
         # look at monsters
         monsters_here = []
-        for _, monster in self._monsters.items():
+        for mid, monster in self._monsters.items():
             if monster["room"] == self._players[uid]["room"]:
                 monsters_here.append(monster["name"])
             if params in monsters_here:
                 desc = [x["long"] for x in self._mm if x["name"] == params]
-                self._mud.send_message(uid, desc[0])
+                hurt = self._get_hurt(mid)
+                self._mud.send_message(
+                    uid, (desc[0] + " The {} appears to be {}.".format(
+                        monster["name"], hurt)))
             else:
                 self._mud.send_message(
                     uid, "You don't see {} nearby.".format(params))
@@ -590,6 +640,9 @@ class Game():
         add a new players name to the dictionary and stick them in a room
         """
         self._players[uid]["name"] = command
+        self._players[uid]["species"] = "Dwarven"
+        self._players[uid]["class"] = "Fighter"
+        self._players[uid]["rune"] = "None"
         self._players[uid]["room"] = [4, 2]
         self._players[uid]["fatigue"] = time.time()
         self._players[uid]["hit_dice"] = (1, 10)
@@ -598,18 +651,24 @@ class Game():
         self._players[uid]["dexterity"] = 10
         self._players[uid]["constitution"] = 16
         self._players[uid]["intelligence"] = 8
-        self._players[uid]["wisdon"] = 13
+        self._players[uid]["wisdom"] = 13
         self._players[uid]["charisma"] = 12
         self._players[uid]["max_hp"] = self._max_hp(uid)
         self._players[uid]["current_hp"] = self._max_hp(uid)
+        self._players[uid]["regen_hp"] = time.time()
+        self._players[uid]["max_mp"] = 0
+        self._players[uid]["current_mp"] = 0
+        self._players[uid]["max_enc"] = 0
+        self._players[uid]["current_enc"] = 0
         self._players[uid]["xp"] = 0
         self._players[uid]["level"] = 1
+        self._players[uid]["status"] = "Healthy"
         self._players[uid]["equipped"] = {
             "weapon": self._weapons[0],
             "armor": self._armors[0]
         }
         self._players[uid]["armor_class"] = self._armor_class(uid)
-        self._players[uid]["gold"] = 2 * self._d4() * 1000
+        self._players[uid]["coins"] = 2 * self._d4() * random.randint(951, 999)
         print(self._players)
 
         # go through all the players in the game
@@ -652,6 +711,86 @@ class Game():
         """
         self._mud.send_message(uid, "You have {} experience.".format(
             self._players[uid]["xp"]))
+
+    def _check_status(self, uid):
+        """
+        output current level and experience
+        """
+        # check fatigue
+        if time.time() - self._players[uid]["fatigue"] < self._tick:
+            self._players[uid]["status"] = "Fatigued"
+        else:
+            self._players[uid]["status"] = "Healthy"
+
+    def _regenerate(self, uid):
+        """
+        output current level and experience
+        """
+        # regen_hp
+        if time.time() - self._players[uid]["regen_hp"] > self._tick:
+            self._players[uid]["current_hp"] += self._d4()
+            self._players[uid]["regen_hp"] = time.time()
+            if self._players[uid]["current_hp"] > self._players[uid]["max_hp"]:
+                self._players[uid]["current_hp"] = self._players[uid]["max_hp"]
+
+    def _process_stats_command(self, uid):
+        """
+        output current level and experience
+        """
+        self._mud.send_message(uid, "Name:         {}".format(
+            self._players[uid]["name"]))
+        self._mud.send_message(uid, "Species:      {}".format(
+            self._players[uid]["species"]))
+        self._mud.send_message(uid, "Class:        {}".format(
+            self._players[uid]["class"]))
+        self._mud.send_message(uid, "Level:        {}".format(
+            self._players[uid]["level"]))
+        self._mud.send_message(uid, "Experience:   {}".format(
+            self._players[uid]["xp"]))
+        self._mud.send_message(uid, "Rune:         {}".format(
+            self._players[uid]["rune"]))
+        self._mud.send_message(uid, "")
+        self._mud.send_message(uid, "Intelligence: {}".format(
+            self._players[uid]["intelligence"]))
+        self._mud.send_message(uid, "Wisdom:       {}".format(
+            self._players[uid]["wisdom"]))
+        self._mud.send_message(uid, "Strength:     {}".format(
+            self._players[uid]["strength"]))
+        self._mud.send_message(uid, "Constitution: {}".format(
+            self._players[uid]["constitution"]))
+        self._mud.send_message(uid, "Dexterity:    {}".format(
+            self._players[uid]["dexterity"]))
+        self._mud.send_message(uid, "Charisma:     {}".format(
+            self._players[uid]["charisma"]))
+        self._mud.send_message(uid, "")
+        self._mud.send_message(uid, "Mana:         {} / {}".format(
+            self._players[uid]["current_mp"], self._players[uid]["max_mp"]))
+        self._mud.send_message(uid, "Hit Points:   {} / {}".format(
+            self._players[uid]["current_hp"], self._players[uid]["max_hp"]))
+        self._mud.send_message(uid, "Status:       {}".format(
+            self._players[uid]["status"]))
+        self._mud.send_message(uid, "Armor Class:  {}".format(
+            self._players[uid]["armor_class"]))
+        self._mud.send_message(uid, "")
+        self._mud.send_message(uid, "Weapon:       {}".format(
+            self._players[uid]["equipped"]["weapon"]["type"]))
+        self._mud.send_message(uid, "Armor:        {}".format(
+            self._players[uid]["equipped"]["armor"]["type"]))
+        self._mud.send_message(uid, "Coins:        {}".format(
+            self._format_coins(self._players[uid]["coins"])))
+        self._mud.send_message(uid, "Encumberance: {} / {}".format(
+            self._players[uid]["current_enc"], self._players[uid]["max_enc"]))
+
+    def _process_health_command(self, uid):
+        """
+        output current level and experience
+        """
+        self._mud.send_message(uid, "Magic Points: {} / {}".format(
+            self._players[uid]["current_mp"], self._players[uid]["max_mp"]))
+        self._mud.send_message(uid, "Hit Points:   {} / {}".format(
+            self._players[uid]["current_hp"], self._players[uid]["max_hp"]))
+        self._mud.send_message(uid, "Status:       {}".format(
+            self._players[uid]["status"]))
 
     def _process_go_command(self, uid, command, params):
         """
@@ -723,7 +862,7 @@ class Game():
         for mid, monster in self._monsters.items():
             if params in monster["name"] and monster["room"] \
                     == self._players[uid]["room"]:
-                if time.time() - self._players[uid]["fatigue"] > 1:
+                if time.time() - self._players[uid]["fatigue"] > self._tick:
                     attack = (
                         self._d20() + self._get_modifier(player["strength"]))
                     print(monster["max_hp"])
@@ -787,15 +926,30 @@ class Game():
             self._monsters[0]["intelligence"] = 8
             self._monsters[0]["wisdon"] = 13
             self._monsters[0]["charisms"] = 12
-            self._monsters[0]["cr"] = 1
             self._monsters[0]["max_hp"] = self._monster_max_hp(0)
             self._monsters[0]["current_hp"] = self._monster_max_hp(0)
+            self._monsters[0]["regen_hp"] = time.time()
             self._monsters[0]["equipped"] = {
                 "weapon": self._weapons[0],
                 "armor": self._armors[0]
             }
             self._monsters[0]["armor_class"] = self._monster_armor_class(0)
-            print("spawned {}".format(self._monsters[0]["name"]))
+            print(
+                "spawned {} with cr {} that has {} xp.".format(
+                    self._monsters[0]["name"],
+                    self._monsters[0]["cr"],
+                    self._cr[self._monsters[0]["cr"]]
+                )
+            )
+
+            for pid, player in self._players.items():
+                if self._monsters[0]["room"] == player["room"]:
+                    self._mud.send_message(
+                        pid, (
+                            "A {} just appeared in a blinding flash of "
+                            "light.".format(self._monsters[0]["name"])
+                        )
+                    )
 
     def _monsters_move(self):
         """
@@ -809,7 +963,7 @@ class Game():
         monster = self._monsters[mid]
         for pid, player in self._players.items():
             if player["room"] == monster["room"]:
-                if time.time() - monster["fatigue"] > 6:
+                if time.time() - monster["fatigue"] > self._tick:
 
                     attack = (
                         self._d20()
@@ -835,6 +989,17 @@ class Game():
                                     monster["equipped"]["weapon"]["type"],
                                     damage))
                                 )
+                        player["current_hp"] -= damage
+                        if player["current_hp"] < 1:
+                            self._mud.send_message(pid, (
+                                "As the final blow strikes your body you "
+                                "fall unconscious."))
+                            self._mud.send_message(pid, (
+                                "You awaken after an unknown amount of "
+                                "time..."))
+                            self._players[pid]["room"] = [4, 2]
+                            self._players[pid]["current_hp"] = 1
+                            self._process_look_command(pid)
                         # del self._monsters[mid]
                         self._monsters[mid]["fatigue"] = time.time()
                     else:
@@ -943,6 +1108,16 @@ class Game():
                 # let's gooooo
                 self._process_experience_command(uid)
 
+            elif command in ["stats", "st"]:
+
+                # let's gooooo
+                self._process_stats_command(uid)
+
+            elif command in ["health", "hp"]:
+
+                # let's gooooo
+                self._process_health_command(uid)
+
             # 'exit' command
             elif command == "quit":
 
@@ -969,6 +1144,21 @@ class Game():
 
             # monsters wander if no one is around and run if they are injured
             self._monsters_move()
+
+    def check_for_status(self):
+        """
+        spawn monsters and move them around
+        """
+        for pid, _ in self._players.items():
+
+            if self._players[pid]["name"] is None:
+                continue
+
+            # monsters attack first and ask questions later
+            self._check_status(pid)
+
+            # monsters wander if no one is around and run if they are injured
+            self._regenerate(pid)
 
 
 def main():
@@ -1002,6 +1192,8 @@ def main():
         game.check_for_disconnected_players()
 
         game.check_for_new_commands()
+
+        game.check_for_status()
 
     return 0
 
