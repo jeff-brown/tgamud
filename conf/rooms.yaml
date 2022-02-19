@@ -1,0 +1,40 @@
+---
+-
+  long: "Go away."
+  short: "You can't be here."
+-
+  long: "You are standing on the docks. The water from the lake laps quietly against the docks making the peaceful scene on the lake all that more serene. An ornately carved marble archway exits through the town wall to the south into the guild hall."
+  short: "You're on the docks."
+-
+  long: "You have entered the town guild hall, where one may seek the training necessary to refine your combat and spell skills. This building is also a center of learning where the ancient art of sorcery is taught to those with the intelligence and skill to wield it effectively. Sages, wizards, and masters-at-arms rush about on errands or to and from training sessions. Ornately carved marble archways exit to the north and south, and a wide stone staircase leads downward."
+  short: "You're in the guild hall."
+-
+  long: "You are standing at the north end of a large open plaza surrounded by shade trees as well as assorted flowering shrubs and hedges whose scent wafts through the warm, dry air. To the west stands an ornate temple adorned with ornate stone and brass architecture. A quaint little shop lies to the northwest, and a dimly lit, smokey little tavern to the northeast. To the east lay the huge wrought iron gates of the arena. To north is the town guild hall. The other half of the plaza lies to the south."
+  short: "You're in the north plaza."
+-
+  long: "You are standing at the south end of a large open plaza surrounded by shade trees as well as assorted flowering shrubs and hedges who's scent wafts through the warm, dry air. To the west stands the town's armor shop. The weapon shop lies to the east. There is a magic shop to the south. To the north lies the other half of the plaza and to the southwest lies the town's outer gate."
+  short: "You're in the south plaza."
+-
+  long: "You're standing in a warm, dimly lit shop where various magical items are bought and sold by a shrewd mage in crimson robes with an air of power and complete confidence about him. He doesn't look like someone whose spells you'd like to be on the wrong end of. The sweet scent of incense drifts in from a workroom in the rear of the shop. The exit is to the north."
+  short: "You're in the magic shop."
+-
+  long: "You are now inside the armor shop, where you may acquire different sorts of armor and protective gear to guard yourself against the blows of your opponents in the arena, or from the various non-human foes to be found in the dungeons beneath the town. The shop keeper sits on a high behind a worn counter along the south wall, eyeing you warily. The exit is to the east."
+  short: "You're in the armor shop."
+-
+  long: "You are now inside the weapon shop, where you may purchase various weapons to use for sparring in the arena or for personal defense from the denizens of the dungeons. The shop keeper sits on a high stool behind a tall counter along the south wall. The exit is to the west."
+  short: "You're in the weapons shop."
+-
+  long: "You now stand inside the gates of the villages most noteworthy and notorious point of interest, the arena. The charred and stained stone walls and scattered bits of bone, armor, and weaponry lying among the debris on the packed earthen floor. A huge brass gong hangs at the center of the arena suspended on a framework made of the bones of some of the less fortunate of the arena's combatants. The exit through the arena gates is to the west."
+  short: "You're in the arena."
+-
+  long: "You are now in the main entry hall of a great temple. Huge black marble columns veined with platinum stretch to the ceiling some 100' overhead. The patterns in the tile floor are so ornate and complex as to be nearly impossible to follow or comprehend. Many black silk tapestries depicting various scenes of a religious or magical nature block your view into the many other areas of the temple. Blue robed priests and acolytes move here and there going about their daily duties. The exit is to the east"
+  short: "You're in the temple."
+-
+  long: "You are now inside the equipment shop, where one may purchase supplies and provisions essential to survival in the dungeons or the wilderness. The shop keeper sits on a tall stool behind a counter along the north wall, eyeing you warily. The exit is to the southeast."
+  short: "You're in the general store."
+-
+  long: "You are in the village tavern. The smoke from the many oil lamps decrease visibility to your immediate surroundings, and the wavering light they cast about the room leaves many shadows and unlit corners. There are several tables about the room, where the tavern's patrons eat, drink, and generally enjoy themselves. The bar stands along the north wall and a door to the kitchen lies to the northeast. A large, full length mirror adorns the west wall. The only visible exits lie up a steep wooden ladder near the rear of the room, and out into the north plaza to the southwest."
+  short: "You're in the tavern."
+-
+  long: "You are standing on a simple cobblestone path."
+  short: "You're on a path."

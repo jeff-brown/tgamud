@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/Library/Frameworks/Python.framework/Versions/3.7/bin/python3
 
 """A simple Multi-User Dungeon (MUD) game. Players can talk to each
 other, examine their surroundings and move between rooms.
@@ -56,8 +56,14 @@ import random
 import sys
 import time
 
+# import library objects
+from lib.monster import Monster
+from lib.room import Room
+from lib.armor import Armor
+from lib.weapon import Weapon
+
 # import the MUD server class
-from mud import Mud
+from server.mud import Mud
 
 
 class Game():
@@ -65,20 +71,16 @@ class Game():
     This class contains all of the functions to allow the game to operate
     """
 
-    _monsters = {}
-
-    _mud = None
-
-    _players = {}
-
-    _commands = []
-
-    _grid = []
-
-    _rooms = []
-
     def __init__(self, mud):
         # start the server
+
+        _monster = Monster()
+
+        _room = Room()
+
+        _armor = Armor()
+
+        _weapon = Weapon()
 
         self._grid = [
             [0,  0,  0,  0,  0],
@@ -91,15 +93,6 @@ class Game():
             [0,  0,  5,  0,  0],
             [0,  0,  0,  0,  0]
         ]
-
-        self._dice = {
-            "d4": random.randint(1, 4),
-            "d6": random.randint(1, 6),
-            "d8": random.randint(1, 8),
-            "d10": random.randint(1, 10),
-            "d12": random.randint(1, 12),
-            "d20": random.randint(1, 20)
-        }
 
         self._modifiers = {
             (0, 1): -5,
@@ -125,254 +118,13 @@ class Game():
                     25000, 33000, 41000, 50000, 62000, 75000, 90000, 105000,
                     120000, 135000, 155000)
 
-        self._rooms = [
-            {  # 0
-                "short": "You can't be here.",
-                "long": "Go away."
-            },
-            {  # 1
-                "short": "You're on the docks.",
-                "long": "You're in the north plaza. It's nice."
-            },
-            {  # 2
-                "short": "You're in the guild hall.",
-                "long": "You're in the south plaza. It's nice."
-            },
-            {  # 3
-                "short": "You're in the north plaza.",
-                "long": ("You are standing at the north end of a large open "
-                         "plaza surrounded by shade trees as well as assorted "
-                         "flowering shrubs and hedges whose scent wafts "
-                         "through the warm, dry air. To the west stands an "
-                         "ornate temple adorned with ornate stone and brass "
-                         "architecture. A quaint little shop lies to the "
-                         "northwest, and a dimly lit, smokey little tavern to "
-                         "the northeast. To the east lay the huge wrought "
-                         "iron gates of the arena. To north is the town guild "
-                         "hall. The other half of the plaza lies to the south.")
-            },
-            {  # 4
-                "short": "You're in the south plaza.",
-                "long": "You're in the general store. Stuff."
-            },
-            {  # 5
-                "short": "You're in the magic shop.",
-                "long": "You're in the general store. Stuff."
-            },
-            {  # 6
-                "short": "You're in the armor shop.",
-                "long": "You're in the general store. Stuff."
-            },
-            {  # 7
-                "short": "You're in the weapons shop.",
-                "long": "You're in the general store. Stuff."
-            },
-            {  # 8
-                "short": "You're in the arena.",
-                "long": "You're in the general store. Stuff."
-            },
-            {  # 9
-                "short": "You're in the temple.",
-                "long": "You're in the general store. Stuff."
-            },
-            {  # 10
-                "short": "You're in the general store.",
-                "long": "You're in the general store. Stuff."
-            },
-            {  # 11
-                "short": "You're in the tavern.",
-                "long": "You're in the general store. Stuff."
-            },
-            {  # 11
-                "short": "You're on a path.",
-                "long": "You're in the general store. Stuff."
-            }
-        ]
+        self._rooms = _room.rooms
 
-        self._mm = [
-            {  # 0
-                "name": "cave bear",
-                "long": (
-                    "The cave bear has dark brown fur and stands well over "
-                    "seven feet tall at the shoulder. Its teeth and claws "
-                    "gleam like daggers as it sizes you up."
-                ),
-                "cr": 1
-            },
-            {  # 1
-                "name": "huge rat",
-                "long": ("The huge rat resembles rats you've seen before, "
-                         "except that it is about two feet tall at the "
-                         "shoulder, and seems much more aggressive."),
-                "cr": 0
-            },
-            {  # 2
-                "name": "imp",
-                "long": ("The imp is a tiny humanoid with pointed ears and "
-                         "bright red skin. It stands just over two feet in "
-                         "height and is armed with a dagger."),
-                "cr": 0
-            },
-            {
-                "name": "female kobold",
-                "long": ("The kobold is a small humanoid with doglike facial "
-                         "features and is covered with coarse body hair. She "
-                         "stands just over three feet in height, is wearing a "
-                         "filthy tunic, and is armed with {small one-handed}."),
-                "cr": 1
-            },
-            {
-                "name": "kobold",
-                "long": ("The kobold is a small humanoid with doglike facial "
-                         "features and is covered with coarse body hair. He "
-                         "stands just under four feet in height, is wearing a "
-                         "filthy tunic, and is armed with {small one-handed}."),
-                "cr": 0
-            },
-            {
-                "name": "female orc",
-                "long": ("The orc is a smallish humanoid with piglike facial "
-                         "features and is covered sparsely by coarse body hair. "
-                         "She stands just over four feet in height, is wearing "
-                         "a leather tunic, and is armed with club."),
-                "cr": 1
-            },
-            {
-                "name": "orc",
-                "long": ("The orc is a smallish humanoid with piglike facial "
-                         "features and is covered sparsely by coarse body hair. "
-                         "He stands just under five feet in height, is wearing "
-                         "a leather cuirass, and is armed with club."),
-                "cr": 1
-            },
-            {
-                "name": "skeleton warrior",
-                "long": ("The skeleton warrior is wearing tattered armor and "
-                         "mouldering bits of old clothing, and is armed with "
-                         "{large two-handed} {1}."),
-                "cr": 2
-            },
-            {
-                "name": "giant bat",
-                "long": ("The giant bat has a wingspan of over twelve feet and "
-                         "has wicked looking claws and teeth."),
-                "cr": 0
-            },
-            {
-                "name": "lizard woman",
-                "long": ("The lizard woman is a five foot tall bipedal "
-                         "humanoid who's features resemble those of a large "
-                         "lizard. She has greyish scaley skin, and sharp claws "
-                         "and teeth. The lizard woman is armed with scimitar."),
-                "cr": 1
-            },
-            {
-                "name": "lizard man",
-                "long": ("The lizard man is a six foot tall bipedal humanoid "
-                         "who's features resemble those of a large lizard. He "
-                         "has greenish scaley skin, and sharp claws and teeth. "
-                         "The lizard man is armed with scimitar."),
-                "cr": 1
-            },
-            {
-                "name": "female hobgoblin",
-                "long": ("The hobgoblin is a squat apelike humanoid with dark "
-                         "skin and pointed ears. She stands just under five "
-                         "feet tall, is wearing a leather cuirass, and is armed "
-                         "with small one-handed."),
-                "cr": 2
-            },
-            {
-                "name": "hobgoblin",
-                "long": ("The hobgoblin is a squat apelike humanoid with dark "
-                         "skin and pointed ears. He stands just over five feet "
-                         "tall, is wearing a leather cuirass, and is armed "
-                         "with {small one-handed} {1}."),
-                "cr": 2
-            },
-            {
-                "name": "cave bear",
-                "long": ("The cave bear has dark brown fur and stands well "
-                         "over seven feet tall at the shoulder. Its teeth and "
-                         "claws gleam like daggers as it sizes you up."),
-                "cr": 3
-            },
-            {
-                "name": "female cyclops",
-                "long": ("The cyclops resembles a very large woman with only "
-                         "one eye in the center of her forehead. She stands "
-                         "over eleven feet tall, and is armed with a spiked "
-                         "club."),
-                "cr": 4
-            },
-            {
-                "name": "cyclops",
-                "long": ("The cyclops resembles a very large man with only one "
-                         "eye in the center of his forehead. He stands over "
-                         "twelve feet tall, and is armed with a spiked club."),
-                "cr": 4
-            },
-            {
-                "name": "female minotaur",
-                "long": ("The minotaur has the upper torso of a muscular woman, "
-                         "and the head, legs, and hooves of a bull. She is "
-                         "wearing ringmail armor, and is armed with large "
-                         "one-handed."),
-                "cr": 4
-            },
-            {
-                "name": "minotaur",
-                "long": ("The minotaur has the upper torso of a muscular man, "
-                         "and the head, legs, and hooves of a bull. He is "
-                         "wearing ringmail armor, and is armed with large "
-                         "one-handed."),
-                "cr": 4
-            },
-            {
-                "name": "ogress",
-                "long": ("The ogress resembles an enormous and very ugly woman. "
-                         "She stands over seven feet tall and is very muscular. "
-                         "Her clothing is filthy and poorly made. She is armed "
-                         "with {large two-handed} {1}."),
-                "cr": 4
-            },
-            {
-                "name": "ogre",
-                "long": ("The ogre resembles an enormous and very ugly man. "
-                         "He stands over eight feet tall and is very muscular. "
-                         "His clothing is filthy and poorly made. He is armed "
-                         "with {0} {1}."),
-                "cr": 4
-            },
-            {
-                "name": "mork",
-                "long": ("The mork resembles a monkey crossed with and orc. "
-                         "He stands over eight feet tall and is very muscular."),
-                "cr": 5
-            },
-            {
-                "name": "dray",
-                "long": ("The dray is a bat crossed with a dragon. It bites you "
-                         "with its huge dragon-like fangs."),
-                "cr": 5
-            }
-        ]
+        self._mm = _monster.mm
 
-        self._weapons = [
-            {
-                "type": "club",
-                "damage": (1, 4),
-                "value": 10
-            }
-        ]
+        self._weapons = _weapon.weapons
 
-        self._armors = [
-            {
-                "type": "padded",
-                "ac": 11,
-                "value": 500
-            }
-        ]
+        self._armors = _armor.armors
 
         self._mud = mud
 
@@ -457,7 +209,7 @@ class Game():
         copp, rem = self._rdiv(rem, 1)
         print(copp, rem)
 
-        return "{}p, {}g, {}s, {}c".format(plat, gold, silv, copp)
+        return "{}p, {}g, {}s, {}c".format(int(plat), int(gold), int(silv), int(copp))
 
     def _get_modifier(self, value):
         """get modifier"""
@@ -892,8 +644,9 @@ class Game():
         try to kill some stuff why not
         """
         player = self._players[uid]
+        monsters = self._monsters.copy()
 
-        for mid, monster in self._monsters.items():
+        for mid, monster in monsters    .items():
             if params in monster["name"] and monster["room"] \
                     == self._players[uid]["room"]:
                 if time.time() - self._players[uid]["fatigue"] > self._tick:
@@ -959,14 +712,14 @@ class Game():
         self._monsters[self._nextid]["intelligence"] = 8
         self._monsters[self._nextid]["wisdon"] = 13
         self._monsters[self._nextid]["charisms"] = 12
-        self._monsters[self._nextid]["max_hp"] = self._monster_max_hp(0)
-        self._monsters[self._nextid]["current_hp"] = self._monster_max_hp(0)
+        self._monsters[self._nextid]["max_hp"] = self._monster_max_hp(self._nextid)
+        self._monsters[self._nextid]["current_hp"] = self._monster_max_hp(self._nextid)
         self._monsters[self._nextid]["regen_hp"] = time.time()
         self._monsters[self._nextid]["equipped"] = {
             "weapon": self._weapons[0],
             "armor": self._armors[0]
         }
-        self._monsters[self._nextid]["armor_class"] = self._monster_armor_class(0)
+        self._monsters[self._nextid]["armor_class"] = self._monster_armor_class(self._nextid)
         print(
             "spawned {} with cr {} that has {} xp.".format(
                 self._monsters[self._nextid]["name"],

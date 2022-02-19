@@ -1,0 +1,6 @@
+---
+- type: club
+  damage:
+  - 1
+  - 4
+  value: 10
