@@ -2,3 +2,30 @@
 - type: padded
   ac: 11
   value: 500
+  size: light
+  weight: 8
+- type: leather
+  ac: 11
+  value: 1000
+  size: light
+  weight: 10
+- type: studded leather
+  ac: 12
+  value: 4500
+  size: light
+  weight: 13
+- type: hide
+  ac: 12
+  value: 1000
+  size: medium
+  weight: 12
+- type: ring mail
+  value: 3000
+  ac: 14
+  size: heavy
+  weight: 40
+- type: diamond plate
+  value: 100000
+  ac: 30
+  size: heavy
+  weight: 100

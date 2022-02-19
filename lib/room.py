@@ -1,6 +1,9 @@
 """ rooms class """
 import yaml
 
+from lib.armor import Armor
+from lib.weapon import Weapon
+
 
 class Room():
     """
@@ -14,3 +17,11 @@ class Room():
                 self.rooms = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
+
+        _armor = Armor()
+
+        _weapon = Weapon()
+
+        self.rooms[6]["items"] = _armor.armors
+
+        self.rooms[7]["items"] = _weapon.weapons

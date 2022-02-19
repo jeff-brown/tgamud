@@ -193,23 +193,32 @@ class Game():
         """
         format coins
         """
-        return num / div, num % div
+        return num // div, num % div
 
     def _format_coins(self, coins):
         """
         format coins
         """
+        wallet = []
         print(coins)
         plat, rem = self._rdiv(coins, 1000)
+        if plat > 0:
+            wallet.append(f"{int(plat)}p")
         print(plat, rem)
         gold, rem = self._rdiv(rem, 100)
+        if gold > 0:
+            wallet.append(f"{int(gold)}g")
         print(gold, rem)
         silv, rem = self._rdiv(rem, 10)
+        if silv > 0:
+            wallet.append(f"{int(silv)}s")
         print(silv, rem)
         copp, rem = self._rdiv(rem, 1)
+        if copp > 0:
+            wallet.append(f"{int(copp)}c")
         print(copp, rem)
 
-        return "{}p, {}g, {}s, {}c".format(int(plat), int(gold), int(silv), int(copp))
+        return " ".join(wallet)
 
     def _get_modifier(self, value):
         """get modifier"""
@@ -798,6 +807,31 @@ class Game():
                         )
                         self._monsters[mid]["fatigue"] = time.time()
 
+    def _process_list_command(self, uid):
+        """ list items if that room has them """
+        current_room, _ = self._movement(uid)
+
+        print(self._rooms[current_room])
+
+        if "items" in self._rooms[current_room].keys():
+
+            self._mud.send_message(uid, "")
+            self._mud.send_message(uid, "+======================+========+")
+            self._mud.send_message(uid, "| Item                 | Price  |")
+            self._mud.send_message(uid, "+----------------------+--------+")
+            for item in self._rooms[current_room]["items"]:
+                self._mud.send_message(
+                    uid, (
+                        f"| {item['type']:21}"
+                        f"| {self._format_coins(item['value']):7}|"
+                    )
+                )
+            self._mud.send_message(uid, "+======================+========+")
+
+        else:
+            self._mud.send_message(uid,
+                "Sorry, that is not an appropriate command.")
+
     def check_for_new_players(self):
         """
         check to see if any new connections arrived since last update
@@ -909,6 +943,12 @@ class Game():
 
                 # let's gooooo
                 self._process_ring_gong(uid)
+
+            # 'list' command
+            elif command == "list":
+
+                # go to another rooms
+                self._process_list_command(uid)
 
             # 'exit' command
             elif command == "quit":
