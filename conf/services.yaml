@@ -1,0 +1,10 @@
+- type: drink
+  value: 1
+  weight: 1
+  equip: false
+  inv: false
+- type: food
+  value: 1
+  weight: 1
+  equip: false
+  inv: false
