@@ -4,8 +4,18 @@
   - 1
   - 4
   value: 10
+  equip: true
+  etype: one-hand
+  inv: true
+  weight: 2
+  size: light
 - type: soldiers broadsword
   damage:
   - 2
   - 6
   value: 200
+  equip: true
+  etype: two-hand
+  inv: true
+  weight: 6
+  size: heavy

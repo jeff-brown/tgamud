@@ -31,13 +31,13 @@ Game Loop:
 Stuff to do:
     * player stats per class
     * implement magic system
-    * implement items
-    * implement stores
+    ! implement items
+    ! implement stores
     * monster stat blocks per monster type / CR
     * monsters drop items / gold
     * more levels
     * implement lairs and wandering monsters
-    * fill in details for current rooms
+    ! fill in details for current rooms
     * monsters can equip stuff (pick stuff up too?)
     * implement other conditions (hungry, thirsty, poisoned, etc)
     * implement environment hazards: doors, traps, etc
@@ -246,6 +246,18 @@ class Game():
             score = self._d100() * dice[0]
         return score
 
+    def _max_enc(self, uid):
+        """determind max hp"""
+        return self._players[uid]["strength"] * 15
+
+    def _cur_enc(self, uid):
+        """determind max hp"""
+        cur_enc = 0
+        for item in self._players[uid]["inventory"]:
+            cur_enc += item["weight"]
+
+        return cur_enc
+
     def _max_hp(self, uid):
         """determind max hp"""
         return self._players[uid]["hit_dice"][1] + \
@@ -258,8 +270,14 @@ class Game():
 
     def _armor_class(self, uid):
         """determine ac"""
-        return self._players[uid]["equipped"]["armor"]["ac"] + \
-            self._get_modifier(self._players[uid]["dexterity"])
+        if self._players[uid]["equipped"]["armor"]["size"] in ["light"]:
+            return self._players[uid]["equipped"]["armor"]["ac"] + \
+                self._get_modifier(self._players[uid]["dexterity"])
+        if self._players[uid]["equipped"]["armor"]["size"] in ["medium"]:
+            modifier = self._get_modifier(self._players[uid]["dexterity"])
+            return self._players[uid]["equipped"]["armor"]["ac"] + \
+                modifier if modifier < 3 else 2
+        return self._players[uid]["equipped"]["armor"]["ac"]
 
     def _monster_armor_class(self, uid):
         """determine ac"""
@@ -443,7 +461,7 @@ class Game():
         self._players[uid]["regen_hp"] = time.time()
         self._players[uid]["max_mp"] = 0
         self._players[uid]["current_mp"] = 0
-        self._players[uid]["max_enc"] = 0
+        self._players[uid]["max_enc"] = self._max_enc(uid)
         self._players[uid]["current_enc"] = 0
         self._players[uid]["xp"] = 0
         self._players[uid]["level"] = 1
@@ -453,6 +471,7 @@ class Game():
             "armor": self._armors[0]
         }
         self._players[uid]["armor_class"] = self._armor_class(uid)
+        self._players[uid]["inventory"] = []
         self._players[uid]["coins"] = 2 * self._d4() * random.randint(951, 999)
         print(self._players)
 
@@ -490,6 +509,80 @@ class Game():
             self._players[uid]["name"]))
         self._mud.get_disconnect(uid)
 
+    def _process_unequip_command(self, uid, params):
+        """
+        output current level and experience
+        """
+        player = self._players[uid]
+
+        if not params:
+            self._mud.send_message(
+                uid, "You need to specify what you want to unequip.")
+            return
+
+        print(params, player["equipped"]["armor"]["type"])
+        print(params, player["equipped"]["weapon"]["type"])
+        if player["equipped"]["armor"] \
+                and params in player["equipped"]["armor"]["type"]:
+            self._mud.send_message(
+                uid, (
+                    f"You just unequipped "
+                    f"{player['equipped']['armor']['type']}."
+                )
+            )
+            self._players[uid]["inventory"].append(player['equipped']['armor'])
+            self._players[uid]["equipped"]["armor"] = None
+
+        elif player["equipped"]["weapon"] \
+                and params in player['equipped']['weapon']['type']:
+            self._mud.send_message(
+                uid, (
+                    f"You just unequipped "
+                    f"{player['equipped']['weapon']['type']}."
+                )
+            )
+            self._players[uid]["inventory"].append(player['equipped']['weapon'])
+            self._players[uid]["equipped"]["weapon"] = None
+        else:
+            self._mud.send_message(
+                uid, (
+                    f"You don't seem to have {params} equipped."
+                )
+            )
+
+    def _process_equip_command(self, uid, params):
+        """
+        output current level and experience
+        """
+        player = self._players[uid]
+
+        if not params:
+            self._mud.send_message(
+                uid, "You need to specify what you want to equip.")
+            return
+
+        for item in player["inventory"]:
+            if params in item["type"] and item["equip"]:
+                if item["etype"] == "armor":
+                    if player["equipped"]["armor"]:
+                        self._process_unequip_command(
+                            uid, player["equipped"]["armor"]["type"])
+                    self._players[uid]["equipped"]["armor"] = item
+                    self._players[uid]["armor_class"] = self._armor_class(uid)
+                    self._players[uid]["inventory"].remove(item)
+                    self._mud.send_message(uid, f"You equipped {item['type']}.")
+
+                elif item["etype"] in ["one-hand", "two-hand"]:
+                    if player["equipped"]["weapon"]:
+                        self._process_unequip_command(
+                            uid, player["equipped"]["weapon"]["type"])
+                    self._players[uid]["equipped"]["weapon"] = item
+                    self._players[uid]["inventory"].remove(item)
+                    self._mud.send_message(uid, f"You equipped {item['type']}.")
+
+                else:
+                    self._mud.send_message(uid, f"You can't equip {params}.")
+
     def _process_experience_command(self, uid):
         """
         output current level and experience
@@ -517,6 +610,26 @@ class Game():
         else:
             self._players[uid]["status"] = "Healthy"
 
+    def _get_inventory(self, items):
+        """
+        output current level and experience
+        """
+        # check fatigue
+        inventory = []
+        for item in items:
+            inventory.append(item["type"])
+
+        if not inventory:
+            return "You aren't carrying anything."
+
+        if len(inventory) == 1:
+            return f"You are carrying a {inventory[0]}."
+
+        if len(inventory) == 2:
+            return f"You are carrying a {inventory[0]} and a {inventory[1]}."
+
+        return f"You are carrying {', '.join(inventory[:-1])} and a {inventory[-1]}."
+
     def _regenerate(self, uid):
         """
         output current level and experience
@@ -527,6 +640,14 @@ class Game():
             self._players[uid]["regen_hp"] = time.time()
             if self._players[uid]["current_hp"] > self._players[uid]["max_hp"]:
                 self._players[uid]["current_hp"] = self._players[uid]["max_hp"]
+
+    def _process_inv_command(self, uid):
+        """
+        output current level and experience
+        """
+        self._mud.send_message(uid, "")
+        self._mud.send_message(
+            uid, self._get_inventory(self._players[uid]["inventory"]))
 
     def _process_stats_command(self, uid):
         """
@@ -573,8 +694,10 @@ class Game():
             self._players[uid]["equipped"]["armor"]["type"]))
         self._mud.send_message(uid, "Coins:        {}".format(
             self._format_coins(self._players[uid]["coins"])))
-        self._mud.send_message(uid, "Encumberance: {} / {}".format(
-            self._players[uid]["current_enc"], self._players[uid]["max_enc"]))
+        self._mud.send_message(uid, "Encumberance: {} / {} lbs".format(
+            self._cur_enc(uid), self._players[uid]["max_enc"]))
+        self._mud.send_message(uid, "Inventory:    {}".format(
+            self._get_inventory(self._players[uid]["inventory"])))
 
     def _process_health_command(self, uid):
         """
@@ -829,8 +952,37 @@ class Game():
             self._mud.send_message(uid, "+======================+========+")
 
         else:
-            self._mud.send_message(uid,
-                "Sorry, that is not an appropriate command.")
+            self._mud.send_message(
+                uid, "Sorry, that is not an appropriate command.")
+
+    def _process_buy_command(self, uid, params):
+        """ list items if that room has them """
+        current_room, _ = self._movement(uid)
+        merch = None
+
+        if "items" in self._rooms[current_room].keys():
+            for item in self._rooms[current_room]["items"]:
+                if params in item["type"]:
+                    merch = item
+
+            if merch:
+                print(f"merch: {merch}")
+                if self._players[uid]["coins"] > merch["value"]:
+                    if merch["inv"]:
+                        self._players[uid]["inventory"].append(merch)
+                    self._players[uid]["coins"] -= merch["value"]
+                    self._mud.send_message(
+                        uid, (
+                            f"You just purchased {merch['type']} for "
+                            f"{self._format_coins(merch['value'])}."
+                        )
+                    )
+                else:
+                    self._mud.send_message(
+                        uid, f"You can't afford {merch['type']}.")
+            else:
+                self._mud.send_message(
+                    uid, f"This shop doesn't offer {params}.")
 
     def check_for_new_players(self):
         """
@@ -949,6 +1101,22 @@ class Game():
 
                 # go to another rooms
                 self._process_list_command(uid)
+
+            # 'list' command
+            elif command == "buy":
+
+                # go to another rooms
+                self._process_buy_command(uid, params)
+
+            elif command == "inv":
+
+                # go to another rooms
+                self._process_inv_command(uid)
+
+            elif command == "equip":
+
+                # go to another rooms
+                self._process_equip_command(uid, params)
 
             # 'exit' command
             elif command == "quit":
