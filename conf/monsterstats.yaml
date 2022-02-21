@@ -1,0 +1,99 @@
+#        self._monsters[self._nextid]["hit_dice"] = (1, 10)
+  #      self._monsters[self._nextid]["fatigue"] = time.time()
+#        self._monsters[self._nextid]["max_hp"] = 13
+#        self._monsters[self._nextid]["armor_class"] = 11
+#        self._monsters[self._nextid]["strength"] = 17
+#        self._monsters[self._nextid]["dexterity"] = 10
+#        self._monsters[self._nextid]["constitution"] = 16
+#        self._monsters[self._nextid]["intelligence"] = 8
+#        self._monsters[self._nextid]["wisdon"] = 13
+#        self._monsters[self._nextid]["charisms"] = 12
+
+---
+- type: 0
+  hit_dice:
+    - 1
+    - 10
+  strength: 10
+  constitution: 14
+  dexterity: 10
+  wisdom: 12
+  charisma: 10
+  intelligence: 8
+  wealth:
+    - 1
+    - 4
+    - 100
+- type: 1
+  hit_dice:
+    - 2
+    - 10
+  strength: 12
+  constitution: 14
+  dexterity: 12
+  wisdom: 12
+  charisma: 10
+  intelligence: 8
+  wealth:
+    - 2
+    - 4
+    - 100
+- type: 2
+  hit_dice:
+    - 3
+    - 10
+  strength: 14
+  constitution: 14
+  dexterity: 14
+  wisdom: 12
+  charisma: 10
+  intelligence: 8
+  wealth:
+    - 3
+    - 4
+    - 100
+- type: 3
+    - 3
+    - 10
+  strength: 16
+  constitution: 14
+  dexterity: 16
+  wisdom: 12
+  charisma: 10
+  intelligence: 8
+  armor:
+    - light
+  weapon:
+    - light
+  wealth:
+    - 3
+    - 4
+    - 100
+- type: 4
+  hit_dice:
+    - 4
+    - 10
+  strength: 18
+  constitution: 14
+  dexterity: 18
+  wisdom: 12
+  charisma: 10
+  intelligence: 8
+  wealth:
+    - 4
+    - 4
+    - 100
+- type: 5
+  hit_dice:
+    - 5
+    - 10
+  strength: 15
+  constitution: 14
+  dexterity: 13
+  wisdom: 12
+  charisma: 10
+  intelligence: 8
+  wealth:
+    - 5
+    - 4
+    - 1

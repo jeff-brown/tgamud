@@ -1,0 +1,72 @@
+- type: dwarf
+  description: Stout, short and hardworking. Those might be the best words to describe a dwarf.
+  strength: 2
+  dexterity: 0
+  constitution: 2
+  intelligence: 0
+  wisdom: 0
+  charisma: 0
+- type: elf
+  description: Elves are magical and gracious beings, as well as very close to being eternal.
+  strength: 0
+  dexterity: 2
+  constitution: 0
+  intelligence: 0
+  wisdom: 1
+  charisma: 0
+- type: halfling
+  description: Halflings are isolated, cheerful people who love the commodity of their homes and communities.
+  strength: 0
+  dexterity: 2
+  constitution: 0
+  intelligence: 0
+  wisdom: 0
+  charisma: 1
+- type: human
+  description: Well… I suppose you are a human, so you should know what we are good at. Absolutely nothing! Or more precisely, a bit in everything.
+  strength: 1
+  dexterity: 1
+  constitution: 1
+  intelligence: 1
+  wisdom: 1
+  charisma: 1
+- type: dragonborn
+  description: Descendants of dragons, these draconic humanoids live in clans who they value more than their life itself.
+  strength: 2
+  dexterity: 0
+  constitution: 0
+  intelligence: 0
+  wisdom: 0
+  charisma: 1
+- type: gnome
+  description: Gnomes are weird super positive beings. Their spirits shine even in the darkest nights. Great inventors, pranksters, and even better intellectuals.
+  strength: 0
+  dexterity: 1
+  constitution: 0
+  intelligence: 2
+  wisdom: 0
+  charisma: 0
+- type: half-elf
+  description: These beings combine the best parts of elves and humans, or so they say.
+  strength: 1
+  dexterity: 1
+  constitution: 0
+  intelligence: 0
+  wisdom: 0
+  charisma: 2
+- type: half-orc
+  description: Half orcs have orc blood running through their veins. This makes them much stronger than normal people, as well as hardy.
+  strength: 2
+  dexterity: 0
+  constitution: 1
+  intelligence: 0
+  wisdom: 0
+  charisma: 0
+- type: tiefling
+  description: Tieflings take lots of forms and colors. These are beings of infernal lineage due to a pact that someone in the long past made with Asmodeus.
+  strength: 0
+  dexterity: 0
+  constitution: 0
+  intelligence: 1
+  wisdom: 0
+  charisma: 2

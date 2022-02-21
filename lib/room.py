@@ -52,14 +52,14 @@ class Room():
         self.rooms[9]["items"] = [
             {
                 "type": "healing",
-                "value": 100,
+                "value": 10,
                 "condition": "hurt",
                 "equip": False,
                 "inv": False
             },
             {
                 "type": "curing",
-                "value": 100,
+                "value": 10,
                 "condition": "poison",
                 "equip": False,
                 "inv": False
@@ -70,14 +70,14 @@ class Room():
         self.rooms[11]["items"] = [
             {
                 "type": "drink",
-                "value": 100,
+                "value": 10,
                 "condition": "thirst",
                 "equip": False,
                 "inv": False
             },
             {
                 "type": "food",
-                "value": 100,
+                "value": 10,
                 "condition": "hunger",
                 "equip": False,
                 "inv": False
@@ -94,19 +94,20 @@ class Room():
                 "inv": True
             },
             {
+                "type": "hearthstone",
+                "value": 100000,
+                "condition": "return",
+                "equip": False,
+                "inv": True
+            },
+            {
                 "type": "soulstone",
                 "value": 1000000,
                 "condition": "death",
                 "equip": False,
                 "inv": True
             },
-            {
-                "type": "hearthstone",
-                "value": 100000,
-                "condition": "return",
-                "equip": False,
-                "inv": True
-            }
+
         ]
 
         # guildhall
