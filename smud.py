@@ -29,12 +29,15 @@ Game Loop:
 6. if not new player then do commands
 
 Stuff to do:
-    * player stats per class
+    ! player stats per class
     * implement magic system
     ! implement items
     ! implement stores
-    * monster stat blocks per monster type / CR
-    * monsters drop items / gold
+    ! monster stat blocks per monster type / CR
+    * monsters drop items /
+    ! monsters drop gold
+    * implement player leveling system
+    * more items (weapons, armor, etc)
     * more levels
     * implement lairs and wandering monsters
     ! fill in details for current rooms
@@ -265,9 +268,6 @@ class Game():
 
     def _get_stat(self, uid, stat):
         """calculate stat with species bonuses"""
-        print(type(uid))
-        print(type(self._players[uid]["class"]))
-        print(type(self._players[uid]["species"]))
         return self._classes[self._players[uid]["class"]][stat] \
             + self._species[self._players[uid]["species"]][stat]
 
@@ -327,7 +327,6 @@ class Game():
 
     def _monster_armor_class(self, uid):
         """determine ac"""
-        print(self._monsters[uid])
         if self._monsters[uid]["equipped"]["armor"]["size"] in ["light"]:
             return self._monsters[uid]["equipped"]["armor"]["ac"] + \
                 self._get_modifier(self._monsters[uid]["dexterity"])
@@ -418,8 +417,6 @@ class Game():
         for mid, monster in self._monsters.items():
             if monster["room"] == self._players[uid]["room"]:
                 monsters_here.append(monster["name"])
-            print(params)
-            print(monsters_here)
             for monster_here in list(set(monsters_here)):
                 if params in monster_here:
                     desc = (
@@ -528,15 +525,10 @@ class Game():
         }
         self._players[uid]["armor_class"] = self._armor_class(uid)
         self._players[uid]["inventory"] = []
-<<<<<<< HEAD
         self._players[uid]["coins"] = (
             self._roll_dice(self._classes[command]["wealth"])
             * self._classes[command]["wealth"][2]
         )
-=======
-        self._players[uid]["coins"] = 2 * self._d4() * random.randint(951, 999)
-        print(self._players)
->>>>>>> ee5cd5226b9e56ce3df5f605968d086c4dcc921c
 
         # go through all the players in the game
         for pid, _ in self._players.items():
@@ -927,8 +919,6 @@ class Game():
             random.choice([x for x in self._mm if x["cr"] < 2])
         )
         self._monsters[self._nextid]["room"] = [4, 3]
-        print(self._monsters[self._nextid])
-        print(self._monsterstats[self._monsters[self._nextid]["cr"]]["hit_dice"])
         self._monsters[self._nextid]["hit_dice"] = (
             self._monsterstats[self._monsters[self._nextid]["cr"]]["hit_dice"]
         )
@@ -965,7 +955,9 @@ class Game():
         self._monsters[self._nextid]["regen_hp"] = time.time()
         self._monsters[self._nextid]["armor_class"] = (
             self._monster_armor_class(self._nextid))
-        self._monsters[self._nextid]["coins"] = self._roll_dice([1, 4]) * 100
+        self._monsters[self._nextid]["coins"] = self._roll_dice(
+            self._monsterstats[self._monsters[self._nextid]["cr"]]["wealth"]
+        ) * self._monsterstats[self._monsters[self._nextid]["cr"]]["wealth"][2]
         print(
             "spawned {} with cr {} that has {} xp.".format(
                 self._monsters[self._nextid]["name"],
@@ -982,6 +974,7 @@ class Game():
                         "light.".format(self._monsters[self._nextid]["name"])
                     )
                 )
+        print(self._monsters[self._nextid])
         self._nextid += 1
 
     def _monsters_move(self):

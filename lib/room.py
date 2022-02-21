@@ -52,22 +52,14 @@ class Room():
         self.rooms[9]["items"] = [
             {
                 "type": "healing",
-<<<<<<< HEAD
                 "value": 10,
-=======
-                "value": 100,
->>>>>>> ee5cd5226b9e56ce3df5f605968d086c4dcc921c
                 "condition": "hurt",
                 "equip": False,
                 "inv": False
             },
             {
                 "type": "curing",
-<<<<<<< HEAD
                 "value": 10,
-=======
-                "value": 100,
->>>>>>> ee5cd5226b9e56ce3df5f605968d086c4dcc921c
                 "condition": "poison",
                 "equip": False,
                 "inv": False
@@ -78,22 +70,14 @@ class Room():
         self.rooms[11]["items"] = [
             {
                 "type": "drink",
-<<<<<<< HEAD
                 "value": 10,
-=======
-                "value": 100,
->>>>>>> ee5cd5226b9e56ce3df5f605968d086c4dcc921c
                 "condition": "thirst",
                 "equip": False,
                 "inv": False
             },
             {
                 "type": "food",
-<<<<<<< HEAD
                 "value": 10,
-=======
-                "value": 100,
->>>>>>> ee5cd5226b9e56ce3df5f605968d086c4dcc921c
                 "condition": "hunger",
                 "equip": False,
                 "inv": False
@@ -110,7 +94,6 @@ class Room():
                 "inv": True
             },
             {
-<<<<<<< HEAD
                 "type": "hearthstone",
                 "value": 100000,
                 "condition": "return",
@@ -118,25 +101,14 @@ class Room():
                 "inv": True
             },
             {
-=======
->>>>>>> ee5cd5226b9e56ce3df5f605968d086c4dcc921c
+
                 "type": "soulstone",
                 "value": 1000000,
                 "condition": "death",
                 "equip": False,
                 "inv": True
             },
-<<<<<<< HEAD
 
-=======
-            {
-                "type": "hearthstone",
-                "value": 100000,
-                "condition": "return",
-                "equip": False,
-                "inv": True
-            }
->>>>>>> ee5cd5226b9e56ce3df5f605968d086c4dcc921c
         ]
 
         # guildhall

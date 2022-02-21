@@ -87,13 +87,13 @@
   hit_dice:
     - 5
     - 10
-  strength: 15
+  strength: 20
   constitution: 14
-  dexterity: 13
+  dexterity: 20
   wisdom: 12
   charisma: 10
   intelligence: 8
   wealth:
     - 5
     - 4
-    - 1
+    - 100
