@@ -528,10 +528,15 @@ class Game():
         }
         self._players[uid]["armor_class"] = self._armor_class(uid)
         self._players[uid]["inventory"] = []
+<<<<<<< HEAD
         self._players[uid]["coins"] = (
             self._roll_dice(self._classes[command]["wealth"])
             * self._classes[command]["wealth"][2]
         )
+=======
+        self._players[uid]["coins"] = 2 * self._d4() * random.randint(951, 999)
+        print(self._players)
+>>>>>>> ee5cd5226b9e56ce3df5f605968d086c4dcc921c
 
         # go through all the players in the game
         for pid, _ in self._players.items():
@@ -670,6 +675,26 @@ class Game():
             self._players[uid]["status"] = "Fatigued"
         else:
             self._players[uid]["status"] = "Healthy"
+
+    def _get_inventory(self, items):
+        """
+        output current level and experience
+        """
+        # check fatigue
+        inventory = []
+        for item in items:
+            inventory.append(item["type"])
+
+        if not inventory:
+            return "You aren't carrying anything."
+
+        if len(inventory) == 1:
+            return f"You are carrying a {inventory[0]}."
+
+        if len(inventory) == 2:
+            return f"You are carrying a {inventory[0]} and a {inventory[1]}."
+
+        return f"You are carrying {', '.join(inventory[:-1])} and a {inventory[-1]}."
 
     def _regenerate(self, uid):
         """
