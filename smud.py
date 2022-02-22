@@ -37,11 +37,12 @@ Stuff to do:
     * monsters drop items /
     ! monsters drop gold
     * implement player leveling system
-    * more items (weapons, armor, etc)
+    ! more items (weapons, armor, etc)
     * more levels
     * implement lairs and wandering monsters
     ! fill in details for current rooms
-    * monsters can equip stuff (pick stuff up too?)
+    ! monsters can equip stuff
+    * monsters pick stuff up too?)
     * implement other conditions (hungry, thirsty, poisoned, etc)
     * implement environment hazards: doors, traps, etc
     * fix pronoun and plural agreement (grammar, basically)
@@ -266,6 +267,21 @@ class Game():
                 return modifer
         return value
 
+    def _can_equip(self, uid, merch):
+        """get modifier"""
+        armor_types = self._classes[self._players[uid]["class"]]["armor"]
+        weapon_types = self._classes[self._players[uid]["class"]]["weapon"]
+
+        for weapon in self._weapons:
+            if merch["type"] in weapon["type"]:
+                if weapon["size"] in weapon_types:
+                    return True
+        for armor in self._armors:
+            if merch["type"] in armor["type"]:
+                if armor["size"] in armor_types:
+                    return True
+        return False
+
     def _get_stat(self, uid, stat):
         """calculate stat with species bonuses"""
         return self._classes[self._players[uid]["class"]][stat] \
@@ -336,6 +352,35 @@ class Game():
                 modifier if modifier < 3 else 2
         return self._monsters[uid]["equipped"]["armor"]["ac"]
 
+    def _get_monster_weapon(self, uid):
+        """determine ac"""
+        weapon_of_choice = []
+        wtype = self._monsters[uid]["weapon"]
+        if not wtype:
+            return self._weapons[0]
+        print(wtype)
+        for weapon in self._weapons:
+            print(weapon["size"], weapon["etype"], weapon["modifier"])
+            if wtype[0] in weapon["size"] \
+                    and wtype[1] in weapon["etype"] \
+                    and wtype[2] in weapon["modifier"]:
+                weapon_of_choice.append(weapon)
+        print(weapon_of_choice)
+        return random.choice(weapon_of_choice)
+
+    def _get_monster_armor(self, uid):
+        """determine ac"""
+        armor_of_choice = []
+        atype = self._monsters[uid]["armor"]
+        print(atype)
+        if not atype:
+            return self._armors[0]
+        for armor in self._armors:
+            print(armor["size"])
+            if atype in armor["size"]:
+                armor_of_choice.append(armor)
+        return random.choice(armor_of_choice)
+
     def _movement(self, uid):
         """
         return current room and possible exits
@@ -366,7 +411,7 @@ class Game():
         perc = (self._monsters[mid]["current_hp"]
                 / float(self._monsters[mid]["max_hp"]) * 100)
         # healthy 85 - 100
-        if 85 < perc < 100:
+        if 85 < perc < 101:
             status = "in good physical health"
         # light 61 - 84
         elif 61 < perc < 84:
@@ -416,16 +461,27 @@ class Game():
         monsters_here = []
         for mid, monster in self._monsters.items():
             if monster["room"] == self._players[uid]["room"]:
-                monsters_here.append(monster["name"])
-            for monster_here in list(set(monsters_here)):
-                if params in monster_here:
-                    desc = (
-                        [x["long"] for x in self._mm if x["name"] == monster_here]
-                    )
+                monsters_here.append(monster)
+            for monster_here in monsters_here:
+                if params in monster_here["name"]:
+                    long = monster_here["long"]
+                    if long.count('{}') > 1:
+                        desc = long.format(
+                            monster_here["equipped"]["armor"]["type"],
+                            monster_here["equipped"]["weapon"]["type"]
+                        )
+                    elif long.count('{}') == 1:
+                        desc = long.format(
+                            monster_here["equipped"]["weapon"]["type"]
+                        )
+                    else:
+                        desc = long
                     hurt = self._get_hurt(mid)
                     self._mud.send_message(
-                        uid, (desc[0] + " The {} appears to be {}.".format(
-                            monster["name"], hurt)))
+                        uid, (
+                            desc + " The {} appears to be {}."
+                            .format(monster["name"], hurt))
+                        )
                 else:
                     self._mud.send_message(
                         uid, "You don't see {} nearby.".format(params))
@@ -946,8 +1002,8 @@ class Game():
         self._monsters[self._nextid]["current_hp"] = (
             self._monster_max_hp(self._nextid))
         self._monsters[self._nextid]["equipped"] = {
-            "weapon": self._weapons[0],
-            "armor": self._armors[0]
+            "weapon": self._get_monster_weapon(self._nextid),
+            "armor": self._get_monster_armor(self._nextid)
         }
         self._monsters[self._nextid]["armor_class"] = (
             self._monster_armor_class(self._nextid)
@@ -1074,6 +1130,13 @@ class Game():
 
             if merch:
                 print(f"merch: {merch}")
+                if not self._can_equip(uid, merch):
+                    self._mud.send_message(
+                        uid, (
+                            "Sorry, you may not equip {}.".format(merch["type"])
+                        )
+                    )
+                    return False
                 if self._players[uid]["coins"] > merch["value"]:
                     if merch["inv"]:
                         self._players[uid]["inventory"].append(merch)

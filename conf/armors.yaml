@@ -15,7 +15,7 @@
   equip: true
   etype: armor
   inv: true
-- type: studded leather
+- type: studded
   ac: 12
   value: 4500
   size: light
@@ -31,7 +31,39 @@
   equip: true
   etype: armor
   inv: true
-- type: ring mail
+- type: chainshirt
+  ac: 13
+  value: 5000
+  size: medium
+  weight: 20
+  equip: true
+  etype: armor
+  inv: true
+- type: scalemail
+  ac: 14
+  value: 10000
+  size: medium
+  weight: 45
+  equip: true
+  etype: armor
+  inv: true
+- type: breastplate
+  ac: 15
+  value: 40000
+  size: medium
+  weight: 20
+  equip: true
+  etype: armor
+  inv: true
+- type: halfplate
+  ac: 16
+  value: 75000
+  size: medium
+  weight: 40
+  equip: true
+  etype: armor
+  inv: true
+- type: ringmail
   value: 3000
   ac: 14
   size: heavy
@@ -39,9 +71,33 @@
   equip: true
   etype: armor
   inv: true
+- type: chainmail
+  value: 7500
+  ac: 16
+  size: heavy
+  weight: 55
+  equip: true
+  etype: armor
+  inv: true
+- type: splint
+  value: 20000
+  ac: 17
+  size: heavy
+  weight: 55
+  equip: true
+  etype: armor
+  inv: true
+- type: plate
+  value: 150000
+  ac: 18
+  size: heavy
+  weight: 65
+  equip: true
+  etype: armor
+  inv: true
 - type: diamond plate
-  value: 100000
-  ac: 30
+  value: 1000000
+  ac: 20
   size: heavy
   weight: 100
   equip: true

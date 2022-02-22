@@ -20,9 +20,9 @@
   wealth:
     - 2
     - 4
-    - 100
+    - 10000
 - type: bard
-  description: An inspiring magician whose power echose the music of creation.
+  description: An inspiring magician whose power echoes the music of creation.
   hit_dice:
     - 1
     - 8
@@ -106,7 +106,7 @@
   wealth:
     - 5
     - 4
-    - 100
+    - 10000
 - type: monk
   description: A master of martial arts, harnessing the power of the body in pursuit of physical and spiritual perfection.
   hit_dice:

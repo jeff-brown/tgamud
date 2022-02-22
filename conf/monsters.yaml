@@ -2,98 +2,157 @@
 - name: cave bear
   long: The cave bear has dark brown fur and stands well over seven feet tall at the
     shoulder. Its teeth and claws gleam like daggers as it sizes you up.
+  weapon: null
+  armor: null
+  natural: claws
   cr: 1
 - name: huge rat
   long: The huge rat resembles rats you've seen before except that it is about two
     feet tall at the shoulder, and seems much more aggressive.
   cr: 0
+  weapon: null
+  armor: null
+  natural: claws
 - name: imp
   long: The imp is a tiny humanoid with pointed ears and bright red skin. It stands
-    just over two feet in height and is armed with a dagger.
+    just over two feet in height and is armed with a {}.
   cr: 0
+  weapon: [light, one-hand, strength]
+  armor: null
+  natural: null
 - name: female kobold
   long: The kobold is a small humanoid with doglike facial features and is covered
     with coarse body hair. She stands just over three feet in height, is wearing a
-    filthy tunic, and is armed with {small one-handed}.
+    filthy tunic, and is armed with {}.
   cr: 1
+  weapon: [light, one-hand, strength]
+  armor: null
+  natural: null
 - name: kobold
   long: The kobold is a small humanoid with doglike facial features and is covered
     with coarse body hair. He stands just under four feet in height, is wearing a
-    filthy tunic, and is armed with {small one-handed}.
+    filthy tunic, and is armed with {}.
   cr: 0
+  weapon: [light, one-hand, strength]
+  armor: null
+  natural: null
 - name: female orc
   long: The orc is a smallish humanoid with piglike facial features and is covered
     sparsely by coarse body hair. She stands just over four feet in height, is wearing
-    a leather tunic, and is armed with club.
+    a {}, and is armed with {}.
+  weapon: [light, one-hand, strength]
+  armor: light
+  natural: null
   cr: 1
 - name: orc
   long: The orc is a smallish humanoid with piglike facial features and is covered
     sparsely by coarse body hair. He stands just under five feet in height, is wearing
-    a leather cuirass, and is armed with club.
+    a {}, and is armed with a {}.
   cr: 1
+  weapon: [light, one-hand, strength]
+  armor: light
+  natural: null
 - name: skeleton warrior
   long: The skeleton warrior is wearing tattered armor and mouldering bits of old
-    clothing, and is armed with {large two-handed} {1}.
+    clothing, and is armed with {}.
   cr: 2
+  weapon: [medium, two-hand, strength]
+  armor: null
+  natural: null
 - name: giant bat
   long: The giant bat has a wingspan of over twelve feet and has wicked looking claws
     and teeth.
   cr: 0
+  weapon: null
+  armor: null
+  natural: wicked claws
 - name: lizard woman
   long: The lizard woman is a five foot tall bipedal humanoid who's features resemble
     those of a large lizard. She has greyish scaley skin, and sharp claws and teeth.
-    The lizard woman is armed with scimitar.
+    The lizard woman is armed with a {}.
   cr: 1
+  weapon: [light, one-hand, dexterity]
+  armor: null
+  natural: null
 - name: lizard man
   long: The lizard man is a six foot tall bipedal humanoid who's features resemble
     those of a large lizard. He has greenish scaley skin, and sharp claws and teeth.
-    The lizard man is armed with scimitar.
+    The lizard man is armed with a {}.
+  weapon: [light, one-hand, dexterity]
+  armor: null
+  natural: null
   cr: 1
 - name: female hobgoblin
   long: The hobgoblin is a squat apelike humanoid with dark skin and pointed ears.
-    She stands just under five feet tall, is wearing a leather cuirass, and is armed
-    with small one-handed.
+    She stands just under five feet tall, is wearing a {}, and is armed
+    with a {}.
   cr: 2
+  weapon: [medium, one-hand, strength]
+  armor: medium
+  natural: null
 - name: hobgoblin
   long: The hobgoblin is a squat apelike humanoid with dark skin and pointed ears.
-    He stands just over five feet tall, is wearing a leather cuirass, and is armed
-    with {small one-handed} {1}.
+    He stands just over five feet tall, is wearing a {}, and is armed
+    with {}.
   cr: 2
-- name: cave bear
-  long: The cave bear has dark brown fur and stands well over seven feet tall at the
-    shoulder. Its teeth and claws gleam like daggers as it sizes you up.
-  cr: 3
+  weapon: [medium, one-hand, strength]
+  armor: medium
+  natural: null
 - name: female cyclops
   long: The cyclops resembles a very large woman with only one eye in the center of
     her forehead. She stands over eleven feet tall, and is armed with a spiked club.
   cr: 4
+  weapon: [heavy, two-hand, strength]
+  armor: null
+  natural: null
 - name: cyclops
   long: The cyclops resembles a very large man with only one eye in the center of
     his forehead. He stands over twelve feet tall, and is armed with a spiked club.
   cr: 4
+  weapon: [heavy, two-hand, strength]
+  armor: null
+  natural: null
 - name: female minotaur
   long: The minotaur has the upper torso of a muscular woman, and the head, legs,
-    and hooves of a bull. She is wearing ringmail armor, and is armed with large {one-handed}.
+    and hooves of a bull. She is wearing {}, and is armed with a {}.
   cr: 4
+  weapon: [heavy, two-hand, strength]
+  armor: medium
+  natural: null
 - name: minotaur
   long: The minotaur has the upper torso of a muscular man, and the head, legs, and
-    hooves of a bull. He is wearing ringmail armor, and is armed with large {one-handed}.
+    hooves of a bull. He is wearing ringmail armor, and is armed with large {one-hand}.
   cr: 4
+  weapon: [heavy, two-hand, strength]
+  armor: medium
+  natural: null
 - name: ogress
   long: The ogress resembles an enormous and very ugly woman. She stands over seven
     feet tall and is very muscular. Her clothing is filthy and poorly made. She is
-    armed with {large-two-handed}.
+    armed with a {}.
   cr: 4
+  weapon: [heavy, two-hand, strength]
+  armor: null
+  natural: null
 - name: ogre
   long: The ogre resembles an enormous and very ugly man. He stands over eight feet
     tall and is very muscular. His clothing is filthy and poorly made. He is armed
-    with {large-two-handed}.
+    with a {}.
   cr: 4
+  weapon: [heavy, two-hand, strength]
+  armor: null
+  natural: null
 - name: mork
   long: The mork resembles a monkey crossed with and orc. He stands over eight feet
     tall and is very muscular.
   cr: 5
+  weapon: [heavy, two-hand, strength]
+  armor: heavy
+  natural: null
 - name: dray
   long: The dray is a bat crossed with a dragon. It bites you with its huge dragon-like
     fangs.
   cr: 5
+  weapon: null
+  armor: null
+  natural: huge fangs

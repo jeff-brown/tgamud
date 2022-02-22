@@ -6,9 +6,311 @@
   value: 10
   equip: true
   etype: one-hand
+  dtype: bludgeoning
   inv: true
   weight: 2
   size: light
+  modifier: strength
+- type: dagger
+  damage:
+  - 1
+  - 4
+  value: 200
+  equip: true
+  etype: one-hand
+  dtype: piercing
+  inv: true
+  weight: 1
+  size: light
+  modifier: dexterity
+- type: greatclub
+  damage:
+  - 1
+  - 8
+  value: 20
+  equip: true
+  etype: two-hand
+  dtype: bludgeoning
+  inv: true
+  weight: 10
+  size: light
+  modifier: strength
+- type: handaxe
+  damage:
+  - 1
+  - 6
+  value: 500
+  equip: true
+  etype: one-hand
+  dtype: slashing
+  inv: true
+  weight: 2
+  size: light
+  modifier: strength
+- type: javelin
+  damage:
+  - 1
+  - 6
+  value: 500
+  equip: true
+  etype: one-hand
+  dtype: piercing
+  inv: true
+  weight: 2
+  size: light
+  modifier: strength
+- type: hammer
+  damage:
+  - 1
+  - 4
+  value: 200
+  equip: true
+  etype: one-hand
+  dtype: bludgeoning
+  inv: true
+  weight: 1
+  size: light
+  modifier: strength
+- type: mace
+  damage:
+  - 1
+  - 6
+  value: 500
+  equip: true
+  etype: one-hand
+  dtype: bludgeoning
+  inv: true
+  weight: 4
+  size: light
+  modifier: strength
+- type: quarterstaff
+  damage:
+  - 1
+  - 8
+  value: 20
+  equip: true
+  etype: two-hand
+  dtype: bludgeoning
+  inv: true
+  weight: 4
+  size: light
+  modifier: strength
+- type: sickle
+  damage:
+  - 1
+  - 4
+  value: 100
+  equip: true
+  etype: one-hand
+  dtype: slashing
+  inv: true
+  weight: 2
+  size: light
+  modifier: strength
+- type: spear
+  damage:
+  - 1
+  - 6
+  value: 100
+  equip: true
+  etype: one-hand
+  dtype: piercing
+  inv: true
+  weight: 3
+  size: light
+  modifier: strength
+- type: battleaxe
+  damage:
+  - 1
+  - 10
+  value: 1000
+  equip: true
+  etype: two-hand
+  dtype: slashing
+  inv: true
+  weight: 4
+  size: medium
+  modifier: strength
+- type: flail
+  damage:
+  - 1
+  - 8
+  value: 1000
+  equip: true
+  etype: one-hand
+  dtype: bludgeoning
+  inv: true
+  weight: 2
+  size: medium
+  modifier: strength
+- type: glaive
+  damage:
+  - 1
+  - 10
+  value: 2000
+  equip: true
+  etype: two-hand
+  dtype: slashing
+  inv: true
+  weight: 6
+  size: heavy
+  modifier: strength
+- type: greataxe
+  damage:
+  - 1
+  - 12
+  value: 3000
+  equip: true
+  etype: two-hand
+  dtype: slashing
+  inv: true
+  weight: 7
+  size: heavy
+  modifier: strength
+- type: greatsword
+  damage:
+  - 2
+  - 6
+  value: 5000
+  equip: true
+  etype: two-hand
+  dtype: slashing
+  inv: true
+  weight: 6
+  size: heavy
+  modifier: strength
+- type: halberd
+  damage:
+  - 1
+  - 10
+  value: 2000
+  equip: true
+  etype: two-hand
+  dtype: slashing
+  inv: true
+  weight: 6
+  size: heavy
+  modifier: strength
+- type: longsword
+  damage:
+  - 1
+  - 10
+  value: 1500
+  equip: true
+  etype: two-hand
+  dtype: slashing
+  inv: true
+  weight: 3
+  size: medium
+  modifier: strength
+- type: maul
+  damage:
+  - 2
+  - 6
+  value: 1000
+  equip: true
+  etype: two-hand
+  dtype: bludgeoning
+  inv: true
+  weight: 10
+  size: heavy
+  modifier: strength
+- type: morningstar
+  damage:
+  - 1
+  - 8
+  value: 1500
+  equip: true
+  etype: one-hand
+  dtype: piercing
+  inv: true
+  weight: 4
+  size: medium
+  modifier: strength
+- type: pike
+  damage:
+  - 1
+  - 10
+  value: 500
+  equip: true
+  etype: two-hand
+  dtype: piercing
+  inv: true
+  weight: 18
+  size: heavy
+  modifier: strength
+- type: rapier
+  damage:
+  - 1
+  - 8
+  value: 2500
+  equip: true
+  etype: one-hand
+  dtype: piercing
+  inv: true
+  weight: 2
+  size: medium
+  modifier: dexterity
+- type: shortsword
+  damage:
+  - 1
+  - 6
+  value: 1000
+  equip: true
+  etype: one-hand
+  dtype: piercing
+  inv: true
+  weight: 2
+  size: light
+  modifier: dexterity
+- type: scimitar
+  damage:
+  - 1
+  - 6
+  value: 2500
+  equip: true
+  etype: one-hand
+  dtype: slashing
+  inv: true
+  weight: 3
+  size: light
+  modifier: dexterity
+- type: trident
+  damage:
+  - 1
+  - 8
+  value: 500
+  equip: true
+  etype: two-hand
+  dtype: piercing
+  inv: true
+  weight: 4
+  size: medium
+  modifier: strength
+- type: warhammer
+  damage:
+  - 1
+  - 10
+  value: 1500
+  equip: true
+  etype: two-hand
+  dtype: bludgeoning
+  inv: true
+  weight: 2
+  size: medium
+  modifier: strength
+- type: whip
+  damage:
+  - 1
+  - 4
+  value: 200
+  equip: true
+  etype: one-hand
+  dtype: slashing
+  inv: true
+  weight: 3
+  size: medium
+  modifier: dexterity
 - type: soldiers broadsword
   damage:
   - 2
@@ -16,6 +318,8 @@
   value: 200
   equip: true
   etype: two-hand
+  dtype: slashing
   inv: true
   weight: 6
   size: heavy
+  modifier: strength
