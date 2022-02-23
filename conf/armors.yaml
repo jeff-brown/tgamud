@@ -1,5 +1,5 @@
 ---
-- type: padded
+- type: padded armor
   ac: 11
   value: 500
   size: light
@@ -7,7 +7,7 @@
   equip: true
   etype: armor
   inv: true
-- type: leather
+- type: leather armor
   ac: 11
   value: 1000
   size: light
@@ -15,7 +15,7 @@
   equip: true
   etype: armor
   inv: true
-- type: studded
+- type: studded armor
   ac: 12
   value: 4500
   size: light
@@ -23,7 +23,7 @@
   equip: true
   etype: armor
   inv: true
-- type: hide
+- type: hide armor
   ac: 12
   value: 1000
   size: medium
@@ -39,7 +39,7 @@
   equip: true
   etype: armor
   inv: true
-- type: scalemail
+- type: scalemail armor
   ac: 14
   value: 10000
   size: medium
@@ -79,7 +79,7 @@
   equip: true
   etype: armor
   inv: true
-- type: splint
+- type: splint armor
   value: 20000
   ac: 17
   size: heavy
@@ -87,7 +87,7 @@
   equip: true
   etype: armor
   inv: true
-- type: plate
+- type: plate armor
   value: 150000
   ac: 18
   size: heavy
@@ -95,7 +95,7 @@
   equip: true
   etype: armor
   inv: true
-- type: diamond plate
+- type: diamond plate armor
   value: 1000000
   ac: 20
   size: heavy

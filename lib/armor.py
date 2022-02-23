@@ -9,8 +9,12 @@ class Armor():
 
     def __init__(self):
         """ read in the config files """
+        self.armors = []
+
         with open("conf/armors.yaml", "rb") as stream:
             try:
-                self.armors = yaml.safe_load(stream)
+                __armors = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
+
+        self.armors = __armors

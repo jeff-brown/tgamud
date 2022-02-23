@@ -52,6 +52,7 @@ class Room():
         self.rooms[9]["items"] = [
             {
                 "type": "healing",
+                "etype": "temple",
                 "value": 10,
                 "condition": "hurt",
                 "equip": False,
@@ -59,6 +60,7 @@ class Room():
             },
             {
                 "type": "curing",
+                "etype": "temple",
                 "value": 10,
                 "condition": "poison",
                 "equip": False,
@@ -70,6 +72,7 @@ class Room():
         self.rooms[11]["items"] = [
             {
                 "type": "drink",
+                "etype": "tavern",
                 "value": 10,
                 "condition": "thirst",
                 "equip": False,
@@ -77,6 +80,7 @@ class Room():
             },
             {
                 "type": "food",
+                "etype": "tavern",
                 "value": 10,
                 "condition": "hunger",
                 "equip": False,
@@ -88,24 +92,30 @@ class Room():
         self.rooms[5]["items"] = [
             {
                 "type": "glowstone",
+                "etype": "magic",
                 "value": 10000,
                 "condition": "light",
                 "equip": False,
+                "weight": 1,
                 "inv": True
             },
             {
                 "type": "hearthstone",
+                "etype": "magic",
                 "value": 100000,
                 "condition": "return",
                 "equip": False,
+                "weight": 1,
                 "inv": True
             },
             {
 
                 "type": "soulstone",
+                "etype": "magic",
                 "value": 1000000,
                 "condition": "death",
                 "equip": False,
+                "weight": 1,
                 "inv": True
             },
 
@@ -114,7 +124,8 @@ class Room():
         # guildhall
         self.rooms[2]["items"] = [
             {
-                "type": "leveling",
+                "type": "training",
+                "etype": "guild",
                 "value": 100,
                 "condition": "level",
                 "equip": False,

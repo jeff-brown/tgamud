@@ -1,11 +1,13 @@
 ---
 - type: ration
+  etype: food
   value: 1
   weight: 1
   condition: hunger
   equip: false
   inv: true
 - type: waterskin
+  etype: food
   value: 1
   weight: 1
   condition: thirst

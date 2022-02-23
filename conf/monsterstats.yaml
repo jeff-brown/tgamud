@@ -1,14 +1,3 @@
-#        self._monsters[self._nextid]["hit_dice"] = (1, 10)
-  #      self._monsters[self._nextid]["fatigue"] = time.time()
-#        self._monsters[self._nextid]["max_hp"] = 13
-#        self._monsters[self._nextid]["armor_class"] = 11
-#        self._monsters[self._nextid]["strength"] = 17
-#        self._monsters[self._nextid]["dexterity"] = 10
-#        self._monsters[self._nextid]["constitution"] = 16
-#        self._monsters[self._nextid]["intelligence"] = 8
-#        self._monsters[self._nextid]["wisdon"] = 13
-#        self._monsters[self._nextid]["charisms"] = 12
-
 ---
 - type: 0
   hit_dice:
