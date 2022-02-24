@@ -17,6 +17,7 @@
     - light
     - medium
   shield: True
+  magic: False
   wealth:
     - 2
     - 4
@@ -37,6 +38,7 @@
   weapon:
     - light
   shield: False
+  magic: True
   wealth:
     - 5
     - 4
@@ -58,6 +60,7 @@
   weapon:
     - light
   shield: True
+  magic: True
   wealth:
     - 5
     - 4
@@ -79,6 +82,7 @@
   weapon:
     - light
   shield: True
+  magic: True
   wealth:
     - 2
     - 4
@@ -103,6 +107,7 @@
     - medium
     - heavy
   shield: True
+  magic: False
   wealth:
     - 5
     - 4
@@ -123,6 +128,7 @@
   weapon:
     - light
   shield: False
+  magic: False
   wealth:
     - 5
     - 4
@@ -146,6 +152,7 @@
     - light
     - medium
   shield: True
+  magic: True
   wealth:
     - 5
     - 4
@@ -167,6 +174,7 @@
   weapon:
     - light
   shield: True
+  magic: True
   wealth:
     - 5
     - 4
@@ -188,6 +196,7 @@
     - light
     - medium
   shield: True
+  magic: False
   wealth:
     - 4
     - 4
@@ -208,6 +217,7 @@
   weapon:
     - light
   shield: False
+  magic: True
   wealth:
     - 3
     - 4
@@ -228,6 +238,7 @@
   weapon:
     - light
   shield: False
+  magic: True
   wealth:
     - 4
     - 4
@@ -248,6 +259,7 @@
   weapon:
     - light
   shield: False
+  magic: True
   wealth:
     - 4
     - 4

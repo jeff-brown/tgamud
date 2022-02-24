@@ -4,6 +4,7 @@ import yaml
 from lib.armor import Armor
 from lib.weapon import Weapon
 from lib.gear import Gear
+from lib.magic import Magic
 
 
 class Room():
@@ -36,6 +37,8 @@ class Room():
         _weapon = Weapon()
 
         _gear = Gear()
+
+        _magic = Magic()
 
         # armor shop
         self.rooms[6]["items"] = _armor.armors
@@ -132,3 +135,5 @@ class Room():
                 "inv": False
             }
         ]
+
+        self.rooms[2]["spells"] = _magic.magics

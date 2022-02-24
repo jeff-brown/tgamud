@@ -1,0 +1,111 @@
+---
+- name: magic missle
+  description: You fire three glowing darts of magical force at a single creature and they all strike simultaneously.
+  effect:
+    - 3
+    - 4
+    - 3
+  ctime: 1
+  duration: 0
+  type: evocation
+  level: 1
+  components: V, S
+  value: 1000
+  result: damage
+  class:
+    - sorceror
+    - wizard
+- name: mage armor
+  description: You touch a willing creature and a protective magical force surrounds it until the spell ends.
+  effect:
+    - 13
+    - ac
+    - modifier
+  ctime: 1
+  duration: 50
+  type: abjuration
+  level: 1
+  components: V, S
+  value: 1000
+  result: buff
+  class:
+    - sorceror
+    - wizard
+- name: healing word
+  description: A minor healing spell.
+  effect:
+    - 1
+    - 4
+    - 0
+  ctime: 1
+  duration: 0
+  type: evocation
+  level: 1
+  components: V
+  value: 1000
+  result: heal
+  class:
+    - bard
+    - cleric
+    - druid
+- name: eldritch blast
+  description: A beam of crackling energy streaks toward a creature within range.
+  effect:
+    - 1
+    - 10
+    - 0
+  ctime: 1
+  duration: 0
+  type: evocation
+  level: 0
+  components: V, S
+  value: 1000
+  result: damage
+  class:
+    - warlock
+- name: light
+  description: You create a small glowing orb that gives off a dim light.
+  effect:
+    - 0
+    - 0
+    - 0
+  ctime: 1
+  duration: 600
+  type: evocation
+  level: 0
+  components: V, S
+  value: 1000
+  result: enchant
+  class:
+    - cleric
+- name: bless
+  description: You bless all creatures in a room.
+  effect:
+    - 1
+    - 4
+    - 0
+  ctime: 1
+  duration: 10
+  type: enchantment
+  level: 1
+  components: V, S
+  value: 1000
+  result: buff
+  class:
+    - cleric
+    - paladin
+- name: cure wounds
+  description: A minor healing spell.
+  effect:
+    - 1
+    - 8
+    - modifier
+  ctime: 1
+  duration: 0
+  type: enchantment
+  level: 1
+  components: V, S
+  value: 1000
+  result: heal
+  class:
+    - ranger

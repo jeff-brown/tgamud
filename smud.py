@@ -31,19 +31,34 @@ Game Loop:
 Stuff to do:
     ! player stats per class
     * implement magic system
+     ! add spells to shop for each class
+     - add ability to "learn" spells and add them to your spellbook
+     - add ability to "cast" spells on players, mobs and items
+     - differentiate between cantrips (can cast each round), with spells that
+        must be added to spell slots and can only be cast once before a rest
+    - examine items - use ability checks here
+    * need npcs - they have stat blocks and alignments
+    * encumberance needs to include equipped items
     ! implement items
     ! implement stores
     ! implement buy/sell
+     - charisma needs to influence buy/sell price
+    * look at players,
+     - players need to have long descriptions
+     - show health status
+    * temporary stats - each stat needs temp and perm
     ! monster stat blocks per monster type / CR
     ! monsters drop items / get items
     ! monsters drop gold
     * implement player leveling system
     ! more items (weapons, armor, etc)
-    * more levels
+    * more dungeons
     * implement lairs and wandering monsters
     ! fill in details for current rooms
     ! monsters can equip stuff
     * monsters pick stuff up too?)
+    * monsters attack monsters
+    * pvp?
     * implement other conditions (hungry, thirsty, poisoned, etc)
     * implement environment hazards: doors, traps, etc
     * fix pronoun and plural agreement (grammar, basically)
@@ -53,6 +68,8 @@ Stuff to do:
     * day / night cycle? short / long rest?
     * quests?!
     * runes
+    * alignment
+    * durability (and item properties)
 
 author: Mark Frimston - mfrimston@gmail.com
 """
@@ -1293,6 +1310,41 @@ class Game():
             self._mud.send_message(
                 uid, "Sorry, that is not an appropriate command.")
 
+    def _process_list_at_command(self, uid, params):
+        """ list items if that room has them """
+        current_room, _ = self._movement(uid)
+
+        print(self._rooms[current_room])
+
+        if not self._classes[self._players[uid]["class"]]["magic"]:
+            self._mud.send_message(uid, "Sorry, your class cannot use magic.")
+            return False
+
+        if "spells" in self._rooms[current_room].keys():
+
+            self._mud.send_message(uid, "")
+            self._mud.send_message(uid, "+======================+========+")
+            self._mud.send_message(uid, "| Spell                | Price  |")
+            self._mud.send_message(uid, "+----------------------+--------+")
+
+            for item in sorted(
+                    self._rooms[current_room]["spells"],
+                    key=lambda x: x['value']
+                    ):
+                if self._classes[self._players[uid]["class"]]["type"] \
+                        in item["class"]:
+                    self._mud.send_message(
+                        uid, (
+                            f"| {item['name']:21}"
+                            f"| {self._format_coins(item['value']):7}|"
+                        )
+                    )
+            self._mud.send_message(uid, "+======================+========+")
+
+        else:
+            self._mud.send_message(
+                uid, "Sorry, that is not an appropriate command.")
+
     def _process_sell_command(self, uid, params):
         """ list items if that room has them """
         current_room, _ = self._movement(uid)
@@ -1523,7 +1575,10 @@ class Game():
             elif command == "list":
 
                 # go to another rooms
-                self._process_list_command(uid)
+                if params:
+                    self._process_list_at_command(uid, params)
+                else:
+                    self._process_list_command(uid)
 
             # 'list' command
             elif command == "buy":
