@@ -28,3 +28,11 @@
   duration: 900
   equip: false
   inv: true
+- type: spellbook
+  etype: magic
+  value: 100
+  weight: 1
+  equip: false
+  inv: true
+  spells: []
+  slots: []

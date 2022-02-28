@@ -19,9 +19,9 @@
   shield: True
   magic: False
   wealth:
-    - 2
+    - 200
     - 4
-    - 10000
+    - 100
 - type: bard
   description: An inspiring magician whose power echoes the music of creation.
   hit_dice:
@@ -40,7 +40,7 @@
   shield: False
   magic: True
   wealth:
-    - 5
+    - 500
     - 4
     - 100
 - type: cleric
@@ -62,7 +62,7 @@
   shield: True
   magic: True
   wealth:
-    - 5
+    - 500
     - 4
     - 100
 - type: druid
@@ -84,7 +84,7 @@
   shield: True
   magic: True
   wealth:
-    - 2
+    - 200
     - 4
     - 100
 - type: figther
@@ -109,9 +109,9 @@
   shield: True
   magic: False
   wealth:
-    - 5
+    - 500
     - 4
-    - 10000
+    - 100
 - type: monk
   description: A master of martial arts, harnessing the power of the body in pursuit of physical and spiritual perfection.
   hit_dice:
@@ -130,9 +130,9 @@
   shield: False
   magic: False
   wealth:
-    - 5
+    - 100
     - 4
-    - 1
+    - 100
 - type: paladin
   description: A holy warrior bound to a sacred faith.
   hit_dice:
@@ -154,7 +154,7 @@
   shield: True
   magic: True
   wealth:
-    - 5
+    - 500
     - 4
     - 100
 - type: ranger
@@ -176,7 +176,7 @@
   shield: True
   magic: True
   wealth:
-    - 5
+    - 500
     - 4
     - 100
 - type: rogue
@@ -198,7 +198,7 @@
   shield: True
   magic: False
   wealth:
-    - 4
+    - 400
     - 4
     - 100
 - type: sorcerer
@@ -219,7 +219,7 @@
   shield: False
   magic: True
   wealth:
-    - 3
+    - 300
     - 4
     - 100
 - type: warlock
@@ -240,7 +240,7 @@
   shield: False
   magic: True
   wealth:
-    - 4
+    - 400
     - 4
     - 100
 - type: wizard
@@ -261,6 +261,6 @@
   shield: False
   magic: True
   wealth:
-    - 4
+    - 400
     - 4
     - 100

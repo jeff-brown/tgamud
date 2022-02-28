@@ -1,0 +1,21 @@
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# macOS
+.DS_Store
+
+# Python
+*.pyc
+*.egg-info
+__pycache__
+/build
+/dist
+/docs/_build/*
+/.cache
+/.eggs
+/.tox
+/pytestdebug.log
+/.pytest_cache

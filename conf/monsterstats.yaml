@@ -10,9 +10,9 @@
   charisma: 10
   intelligence: 8
   wealth:
-    - 1
-    - 4
     - 100
+    - 4
+    - 10
 - type: 1
   hit_dice:
     - 2
@@ -24,9 +24,9 @@
   charisma: 10
   intelligence: 8
   wealth:
-    - 2
-    - 4
     - 100
+    - 4
+    - 10
 - type: 2
   hit_dice:
     - 3
@@ -38,9 +38,9 @@
   charisma: 10
   intelligence: 8
   wealth:
-    - 3
-    - 4
     - 100
+    - 4
+    - 10
 - type: 3
     - 3
     - 10
@@ -55,9 +55,9 @@
   weapon:
     - light
   wealth:
-    - 3
-    - 4
     - 100
+    - 4
+    - 10
 - type: 4
   hit_dice:
     - 4
@@ -69,9 +69,9 @@
   charisma: 10
   intelligence: 8
   wealth:
-    - 4
-    - 4
     - 100
+    - 4
+    - 10
 - type: 5
   hit_dice:
     - 5
@@ -83,6 +83,6 @@
   charisma: 10
   intelligence: 8
   wealth:
-    - 5
-    - 4
     - 100
+    - 4
+    - 10

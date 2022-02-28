@@ -7,6 +7,15 @@
   equip: true
   etype: armor
   inv: true
+  graphics: image.file
+- type: carbon armor
+  ac: 19
+  value: 5000000
+  size: light
+  weight: 8
+  equip: true
+  etype: armor
+  inv: true
 - type: leather armor
   ac: 11
   value: 1000
@@ -26,6 +35,15 @@
 - type: hide armor
   ac: 12
   value: 1000
+  size: medium
+  weight: 12
+  equip: true
+  etype: armor
+  inv: true
+  inv: true
+- type: dragonhide armor
+  ac: 12
+  value: 250000000
   size: medium
   weight: 12
   equip: true
@@ -100,6 +118,15 @@
   ac: 20
   size: heavy
   weight: 100
+  equip: true
+  etype: armor
+  inv: true
+- type: dragonplate armor
+  value: 10000000
+  level: 20
+  ac: 22
+  size: heavy
+  weight: 50
   equip: true
   etype: armor
   inv: true

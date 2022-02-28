@@ -1,6 +1,6 @@
 ---
 - name: magic missle
-  description: You fire three glowing darts of magical force at a single creature and they all strike simultaneously.
+  description: You fire three glowing darts of magical force at {} for {} damage.
   effect:
     - 3
     - 4
@@ -102,7 +102,7 @@
     - modifier
   ctime: 1
   duration: 0
-  type: enchantment
+  type: evocation
   level: 1
   components: V, S
   value: 1000
