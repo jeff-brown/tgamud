@@ -29,16 +29,19 @@ Game Loop:
 6. if not new player then do commands
 
 Stuff to do:
+    * need a way to travel between dungeons (teleporter)
+    * can cheat by letting monsters fight
+    * need to have level restrictions on equipment (monsters too)
     ! player stats per class
     * implement magic system
      ! add spells to shop for each class
-     - add ability to "learn" spells and add them to your spellbook
-     - add ability to "cast" spells on players, mobs and items
+     ! add ability to "learn" spells and add them to your spellbook
+     ! add ability to "cast" spells on players, mobs and items
      - differentiate between cantrips (can cast each round), with spells that
         must be added to spell slots and can only be cast once before a rest
     - examine items - use ability checks here
     * need npcs - they have stat blocks and alignments
-    * encumberance needs to include equipped items
+    ! encumberance needs to include equipped items
     ! implement items
     ! implement stores
     ! implement buy/sell
@@ -57,7 +60,7 @@ Stuff to do:
     ! fill in details for current rooms
     ! monsters can equip stuff
     * monsters pick stuff up too?)
-    * monsters attack monsters
+    ! monsters attack monsters
     * pvp?
     * implement other conditions (hungry, thirsty, poisoned, etc)
     * implement environment hazards: doors, traps, etc
@@ -87,6 +90,7 @@ from lib.classes import Classes
 from lib.species import Species
 from lib.monsterstats import MonsterStats
 from lib.magic import Magic
+from lib.dungeon import Dungeon
 
 # import the MUD server class
 from server.mud import Mud
@@ -108,7 +112,7 @@ class Game():
 
         self._weapon = Weapon()
 
-        self._classes = Classes()
+        self._class = Classes()
 
         self._species = Species()
 
@@ -116,67 +120,17 @@ class Game():
 
         self._magic = Magic(mud)
 
-        self._grid = [
-            [0,  0,  0,  0,  0],
-            [0,  0,  1,  0,  0],
-            [0,  10, 2,  11, 0],
-            [0,  0,  12, 0,  0],
-            [0,  9,  3,  8,  0],
-            [0,  0,  12, 0,  0],
-            [0,  6,  4,  7,  0],
-            [0,  0,  5,  0,  0],
-            [0,  0,  0,  0,  0]
-        ]
+        self._dungeon = Dungeon()
 
-        self._modifiers = {
-            (0, 1): -5,
-            (2, 3): -4,
-            (4, 5): -3,
-            (6, 7): -2,
-            (8, 9): -1,
-            (10, 11): 0,
-            (12, 13): 1,
-            (14, 15): 2,
-            (16, 17): 3,
-            (18, 19): 4,
-            (20, 21): 5,
-            (22, 23): 6,
-            (24, 25): 7,
-            (26, 27): 8,
-            (28, 29): 9,
-            (30, 31): 10
-        }
+        self._grid = self._dungeon.grid[0]  # town
 
-        self._proficiency = {
-            0: 1,
-            1: 2,
-            2: 2,
-            3: 2,
-            4: 2,
-            5: 3,
-            6: 3,
-            7: 3,
-            8: 3,
-            9: 4,
-            10: 4,
-            11: 4,
-            12: 4,
-            13: 5,
-            14: 5,
-            15: 5,
-            16: 5,
-            17: 6,
-            18: 6,
-            19: 6,
-            20: 6
-        }
+        self._proficiency = self._class.prof
 
-        self._cr = (25, 50, 100, 150, 200, 450, 700, 1100, 1800, 2300, 2900, 3900, 5000,
-                    5900, 7200, 8400, 10000, 11500, 13500, 18000, 20000, 22000,
-                    25000, 33000, 41000, 50000, 62000, 75000, 90000, 105000,
-                    120000, 135000, 155000)
+        self._cr = self._monster.challenge
 
-        self._classes = self._classes.classes
+        self._classes = self._class.classes
+
+        self._modifiers = self._class.mod
 
         self._species = self._species.species
 
