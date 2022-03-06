@@ -1,6 +1,9 @@
 """ Classes class """
+import random
+
 import yaml
 
+from lib.dice import Dice
 
 class Classes():
     """
@@ -15,7 +18,10 @@ class Classes():
             except yaml.YAMLError as exc:
                 print(exc)
 
+        self._dice = Dice()
+
         self.exp = [  # exp, lvl, pro
+            (-1, 0, 0),
             (0, 1, 2),
             (300, 2, 2),
             (900, 3, 2),
@@ -80,3 +86,66 @@ class Classes():
             19: 6,
             20: 6
         }
+
+        self.abilities = ("strength", "constitution", "dexterity", "wisdom",
+                          "charisma", "intelligence")
+
+    def _get_modifier(self, value):
+        """get modifier"""
+        for scores, modifer in self.mod.items():
+            if value in scores:
+                return modifer
+        return value
+
+    def _max_hp(self, player):
+        """determind max hp"""
+        return player["max_hp"] \
+            + self._dice.roll([1, player["hit_dice"][1]]) \
+            + self._get_modifier(player["constitution"])
+
+    def _ability_score_increase(self, player):
+        """ randomly increase ability scores based on level """
+        if player["level"] not in self.classes[player["class"]]["asi"]:
+            return
+
+        for _ in range(2):
+            print(_)
+            ability = random.choice(self.abilities)
+            max_stats = []
+            while True:
+                if player[ability] < 20:
+                    break
+                max_stats.append(ability)
+                if len(max_stats) is len(self.abilities):
+                    break
+                ability = random.choice(self.abilities)
+            if len(max_stats) < len(self.abilities):
+                player[ability] += 1
+
+    def check_level(self, player):
+        """ see if player can advance """
+        if player["level"] == 20:
+            return False
+
+        if player["xp"] > self.exp[player["level"] + 1][0]:
+            return True
+        return False
+
+    def level_up(self, player):
+        """ level up a player to the next level """
+        if self.check_level(player):
+
+            # increment player level
+            player["level"] += 1
+
+            # increase proficiency based on level
+            player["proficiency"] = self.exp[player["level"]][2]
+
+            # increase ability scores if needed
+            self._ability_score_increase(player)
+
+            # add another hit dice
+            player["hit_dice"][0] += 1
+
+            # increment max_hp
+            player["max_hp"] = self._max_hp(player)

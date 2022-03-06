@@ -54,6 +54,8 @@ Stuff to do:
     ! monsters drop items / get items
     ! monsters drop gold
     * implement player leveling system
+     ! added leveling to Classes class
+     - need to be able to purchse leveling in guild hall
     ! more items (weapons, armor, etc)
     * more dungeons
     * implement lairs and wandering monsters
@@ -91,6 +93,7 @@ from lib.species import Species
 from lib.monsterstats import MonsterStats
 from lib.magic import Magic
 from lib.dungeon import Dungeon
+from lib.dice import Dice
 
 # import the MUD server class
 from server.mud import Mud
@@ -121,6 +124,8 @@ class Game():
         self._magic = Magic(mud)
 
         self._dungeon = Dungeon()
+
+        self._dice = Dice()
 
         self._grid = self._dungeon.grid[0]  # town
 
@@ -156,57 +161,10 @@ class Game():
 
         self._tick = 6  # 6 seconds
 
+        self._roll_dice = self._dice.roll
+
         # counter for assigning each client a new id
         self._nextid = 0
-
-    @staticmethod
-    def _d4():
-        """
-        roll a d4
-        """
-        return random.randint(1, 4)
-
-    @staticmethod
-    def _d6():
-        """
-        roll a d6
-        """
-        return random.randint(1, 6)
-
-    @staticmethod
-    def _d8():
-        """
-        roll a d8
-        """
-        return random.randint(1, 8)
-
-    @staticmethod
-    def _d10():
-        """
-        roll a d10
-        """
-        return random.randint(1, 10)
-
-    @staticmethod
-    def _d12():
-        """
-        roll a d12
-        """
-        return random.randint(1, 12)
-
-    @staticmethod
-    def _d20():
-        """
-        roll a d20
-        """
-        return random.randint(1, 20)
-
-    @staticmethod
-    def _d100():
-        """
-        roll a d100
-        """
-        return random.randint(1, 100)
 
     @staticmethod
     def _rdiv(num, div):
@@ -307,41 +265,6 @@ class Game():
         return self._classes[self._players[uid]["class"]][stat] \
             + self._species[self._players[uid]["species"]][stat]
 
-    def _roll_dice(self, dice):
-        """ roll the dice"""
-        score = 0
-        histo = []
-        print(histo)
-        if dice[1] == 4:
-            result = 0
-            histo = [0 for x in range(dice[1] + 1)]
-            for _ in range(dice[0]):
-                result = self._d4()
-                score += result
-                histo[result] += 1
-        elif dice[1] == 6:
-            for _ in range(dice[0]):
-                score += self._d6()
-        elif dice[1] == 8:
-            for _ in range(dice[0]):
-                score += self._d8()
-        elif dice[1] == 10:
-            for _ in range(dice[0]):
-                score += self._d10()
-        elif dice[1] == 12:
-            for _ in range(dice[0]):
-                score += self._d12()
-        elif dice[1] == 20:
-            for _ in range(dice[0]):
-                score += self._d20()
-        elif dice[1] == 100:
-            for _ in range(dice[0]):
-                score += self._d100()
-        print(histo)
-        if len(dice) > 2:
-            return score + dice[2]
-        return score
-
     def _max_enc(self, uid):
         """determind max hp"""
         return self._players[uid]["strength"] * 15
@@ -361,7 +284,6 @@ class Game():
     def _max_hp(self, uid):
         """determind max hp"""
         return self._players[uid]["hit_dice"][1] \
-            * self._players[uid]["hit_dice"][0] \
             + self._get_modifier(self._players[uid]["constitution"])
 
     def _monster_max_hp(self, uid):
@@ -714,6 +636,8 @@ class Game():
 
         # send the new player the description of their current room
         self._process_look_command(uid)
+        print(self._players[uid])
+        print(self._classes[self._players[uid]["class"]])
 
     def _process_unknown_command(self, uid, command, params):
         """
@@ -882,7 +806,7 @@ class Game():
 
         # regen_hp
         if time.time() - self._players[uid]["regen_hp"] > self._tick:
-            self._players[uid]["current_hp"] += self._d4()
+            self._players[uid]["current_hp"] += self._roll_dice([1, 4])
             self._players[uid]["regen_hp"] = time.time()
             if self._players[uid]["current_hp"] > self._players[uid]["max_hp"]:
                 self._players[uid]["current_hp"] = self._players[uid]["max_hp"]
@@ -1132,7 +1056,7 @@ class Game():
         player = self._players[uid]
 
         attack = (
-            self._d20()
+            self._roll_dice([1, 20])
             + self._get_modifier(player["strength"])
             + player["proficiency"]
         )
@@ -1328,7 +1252,7 @@ class Game():
             if time.time() - monster["fatigue"] > self._tick:
 
                 attack = (
-                    self._d20()
+                    self._roll_dice([1, 20])
                     + self._get_modifier(monster["strength"])
                     + monster["proficiency"]
                 )
@@ -1393,7 +1317,7 @@ class Game():
             if time.time() - monster["fatigue"] > self._tick:
 
                 attack = (
-                    self._d20()
+                    self._roll_dice([1, 20])
                     + self._get_modifier(monster["strength"])
                     + monster["proficiency"]
                 )
