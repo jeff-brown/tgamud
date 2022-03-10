@@ -507,6 +507,15 @@ class Game():
                         uid, "You don't see {} nearby.".format(params))
                 return True
 
+    def _process_long_look_command(self, uid):
+        """
+        write out the room and any players or items in it
+        """
+        room, exits = self._movement(uid)
+        cur_room = self._rooms[self._players[uid]["room"][0]][room]
+        exit_list = ", ".join(exits)
+        self._mud.send_message(uid, cur_room["long"] + exit_list)
+
     def _process_look_command(self, uid):
         """
         write out the room and any players or items in it
@@ -1786,13 +1795,19 @@ class Game():
                 self._process_say_command(uid, params)
 
             # 'look' command
-            elif command in ["look", "l", ""]:
+            elif command in ["look", "l"]:
 
                 # look around to see who and what is around
                 if params == "":
-                    self._process_look_command(uid)
+                    self._process_long_look_command(uid)
                 else:
                     self._process_look_at_command(uid, params)
+
+            # 'look' command
+            elif command in [""]:
+
+                # look around to see who and what is around
+                self._process_look_command(uid)
 
             # 'go' command
             elif command in ["go", "east", "west", "north", "south", "up", "down"]:
