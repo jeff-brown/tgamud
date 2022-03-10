@@ -26,11 +26,19 @@ class Room():
 
     def __init__(self):
         """ read in the config files """
-        with open("conf/rooms.yaml", "rb") as stream:
+        with open("conf/t1.yaml", "rb") as stream:
             try:
-                self.rooms = yaml.safe_load(stream)
+                self._t1 = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
+
+        with open("conf/d1.yaml", "rb") as stream:
+            try:
+                self._d1 = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+
+        self.rooms = []
 
         _armor = Armor()
 
@@ -41,18 +49,18 @@ class Room():
         _magic = Magic()
 
         # armor shop
-        self.rooms[6]["items"] = _armor.armors
+        self._t1[6]["items"] = _armor.armors
 
         # weapon shop
-        self.rooms[7]["items"] = _weapon.weapons
+        self._t1[7]["items"] = _weapon.weapons
 
         # adventure gear shop
-        self.rooms[10]["items"] = _gear.gears
+        self._t1[10]["items"] = _gear.gears
 
         # temple
         #   equip: true
         #   inv: true
-        self.rooms[9]["items"] = [
+        self._t1[9]["items"] = [
             {
                 "type": "healing",
                 "etype": "temple",
@@ -72,7 +80,7 @@ class Room():
         ]
 
         # tavern
-        self.rooms[11]["items"] = [
+        self._t1[11]["items"] = [
             {
                 "type": "drink",
                 "etype": "tavern",
@@ -92,7 +100,7 @@ class Room():
         ]
 
         # magic shop
-        self.rooms[5]["items"] = [
+        self._t1[5]["items"] = [
             {
                 "type": "glowstone",
                 "etype": "magic",
@@ -125,15 +133,19 @@ class Room():
         ]
 
         # guildhall
-        self.rooms[2]["items"] = [
+        self._t1[2]["items"] = [
             {
                 "type": "training",
                 "etype": "guild",
-                "value": 100,
+                "value": 1000,
                 "condition": "level",
                 "equip": False,
                 "inv": False
             }
         ]
 
-        self.rooms[2]["spells"] = _magic.magics
+        self._t1[2]["spells"] = _magic.magics
+
+        self.rooms.append([])
+        self.rooms.append(self._t1)
+        self.rooms.append(self._d1)

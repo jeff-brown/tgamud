@@ -1,0 +1,9 @@
+- short: "Go away."
+  long: "You can't be here."
+  floor: []
+- short: "You're in a cave."
+  long: "You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light."
+  floor: []
+- short: "You are inside the dungeon entrance."
+  long: "You are standing inside the entrance to the dungeon. This rounded stone and earth room bears the marks of digging tools and a number of assorted claw and hoof marks in the walls and floor. The only obvious exits are back up the stone stairway you just descended, to the west, down a plain earthen tunnel, and to the east through an enormous rough-hewn and iron-bound stone door."
+  floor: []

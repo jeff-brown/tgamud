@@ -29,6 +29,7 @@ Game Loop:
 6. if not new player then do commands
 
 Stuff to do:
+    * fix traveling between floors IMPORTANT game broken
     * need a way to travel between dungeons (teleporter)
     * can cheat by letting monsters fight
     * need to have level restrictions on equipment (monsters too)
@@ -127,7 +128,7 @@ class Game():
 
         self._dice = Dice()
 
-        self._grid = self._dungeon.grid[0]  # town
+        self._grid = self._dungeon.grid  # town
 
         self._proficiency = self._class.prof
 
@@ -346,7 +347,7 @@ class Game():
     def _monster_room(self, room):
         """ wheres that monster """
 
-        return self._grid[room[0]][room[1]]
+        return self._grid[room[0]][room[1]][room[2]]
 
     def _movement(self, uid):
         """
@@ -355,21 +356,28 @@ class Game():
         exits = []
         room = None
 
-        x_coord = self._players[uid]["room"][0]
-        y_coord = self._players[uid]["room"][1]
+        z_coord = self._players[uid]["room"][0]
+        x_coord = self._players[uid]["room"][1]
+        y_coord = self._players[uid]["room"][2]
 
-        room = self._grid[x_coord][y_coord]
-        print("{}'s current loc [{},{}] in {}.".format(
+        room = self._grid[z_coord][x_coord][y_coord]
+        print(room)
+        print(self._rooms)
+        print("{}'s current loc [{},{},{}] in {}.".format(
             self._players[uid]["name"],
-            x_coord, y_coord, self._rooms[room]["short"]))
-        if self._grid[x_coord - 1][y_coord] > 0:
+            z_coord, x_coord, y_coord, self._rooms[z_coord][room]["short"]))
+        if self._grid[z_coord][x_coord - 1][y_coord] > 0:
             exits.append("north")
-        if self._grid[x_coord + 1][y_coord] > 0:
+        if self._grid[z_coord][x_coord + 1][y_coord] > 0:
             exits.append("south")
-        if self._grid[x_coord][y_coord - 1] > 0:
+        if self._grid[z_coord][x_coord][y_coord - 1] > 0:
             exits.append("west")
-        if self._grid[x_coord][y_coord + 1] > 0:
+        if self._grid[z_coord][x_coord][y_coord + 1] > 0:
             exits.append("east")
+        if self._grid[z_coord + 1][x_coord][y_coord] > 0:
+            exits.append("down")
+        if self._grid[z_coord - 1][x_coord][y_coord] > 0:
+            exits.append("up")
 
         return room, exits
 
@@ -399,11 +407,12 @@ class Game():
         """drop stuff"""
 
         room, _ = self._movement(uid)
+        cur_room = self._rooms[self._players[uid]["room"][0]][room]
 
         for item in self._players[uid]["inventory"]:
             if params in item["type"]:
-                if len(self._rooms[room]["floor"]) < 10:
-                    self._rooms[room]["floor"].append(item)
+                if len(cur_room["floor"]) < 10:
+                    cur_room["floor"].append(item)
                     self._players[uid]["inventory"].remove(item)
                     self._mud.send_message(
                         uid, f"You dropped your {item['type']}.")
@@ -419,11 +428,12 @@ class Game():
         """get stuff"""
 
         room, _ = self._movement(uid)
+        cur_room = self._rooms[self._players[uid]["room"][0]][room]
 
-        for item in self._rooms[room]["floor"]:
+        for item in cur_room["floor"]:
             if params in item["type"]:
                 self._players[uid]["inventory"].append(item)
-                self._rooms[room]["floor"].remove(item)
+                cur_room["floor"].remove(item)
                 self._mud.send_message(
                     uid, f"You picked up a {item['type']}.")
                 return True
@@ -434,7 +444,7 @@ class Game():
     def _process_look_at_command(self, uid, params):
         """look at stuff"""
 
-        current_room, valid_exits = self._movement(uid)
+        _, valid_exits = self._movement(uid)
 
         # look at _rooms
         if params == "spellbook":
@@ -502,6 +512,7 @@ class Game():
         write out the room and any players or items in it
         """
         room, _ = self._movement(uid)
+        cur_room = self._rooms[self._players[uid]["room"][0]][room]
 
         players_here = []
         monsters_here = []
@@ -534,7 +545,7 @@ class Game():
             else:
                 monster_line = "There is a {} here.".format(monsters_here[0])
 
-        self._mud.send_message(uid, self._rooms[room]["short"])
+        self._mud.send_message(uid, cur_room["short"])
 
         # this logic is tortured.  fix it later
         if monsters_here:
@@ -545,7 +556,7 @@ class Game():
         elif not players_here and not monsters_here:
             self._mud.send_message(uid, who)
 
-        for item in self._rooms[room]["floor"]:
+        for item in cur_room["floor"]:
             items_here.append(item["type"])
 
         if items_here:
@@ -589,7 +600,7 @@ class Game():
         """
         self._players[uid]["class"] = command
         self._players[uid]["rune"] = "None"
-        self._players[uid]["room"] = [4, 2]
+        self._players[uid]["room"] = [1, 4, 2]
         self._players[uid]["fatigue"] = time.time()
         self._players[uid]["hit_dice"] = self._classes[command]["hit_dice"]
         self._players[uid]["level"] = 1
@@ -606,7 +617,7 @@ class Game():
         self._players[uid]["current_mp"] = 0
         self._players[uid]["max_enc"] = self._max_enc(uid)
         self._players[uid]["current_enc"] = 0
-        self._players[uid]["xp"] = 0
+        self._players[uid]["xp"] = 1000000
         self._players[uid]["level"] = 1
         self._players[uid]["proficiency"] = (
             self._proficiency[self._players[uid]["level"]]
@@ -920,13 +931,17 @@ class Game():
 
             # update the player's current room to the one the exit leads to
             if door == "south":
-                self._players[uid]["room"][0] += 1
-            if door == "north":
-                self._players[uid]["room"][0] -= 1
-            if door == "east":
                 self._players[uid]["room"][1] += 1
-            if door == "west":
+            if door == "north":
                 self._players[uid]["room"][1] -= 1
+            if door == "east":
+                self._players[uid]["room"][2] += 1
+            if door == "west":
+                self._players[uid]["room"][2] -= 1
+            if door == "up":
+                self._players[uid]["room"][0] -= 1
+            if door == "down":
+                self._players[uid]["room"][0] += 1
 
             # go through all the players in the game
             for pid, player in self._players.items():
@@ -961,6 +976,7 @@ class Game():
         try to kill some stuff why not
         """
         room, _ = self._movement(uid)
+        cur_room = self._rooms[self._players[uid]["room"][0]][room]
         monsters = self._monsters.copy()
 
         for mid, monster in monsters.items():
@@ -1000,8 +1016,8 @@ class Game():
                         )
 
                         if monster["equipped"]["weapon"]:
-                            if len(self._rooms[room]["floor"]) < 10:
-                                self._rooms[room]["floor"].append(
+                            if len(cur_room["floor"]) < 10:
+                                cur_room["floor"].append(
                                     monster["equipped"]["weapon"]
                                 )
                                 self._mud.send_message(
@@ -1012,8 +1028,8 @@ class Game():
                                     )
                                 )
                         if monster["equipped"]["armor"]:
-                            if len(self._rooms[room]["floor"]) < 10:
-                                self._rooms[room]["floor"].append(
+                            if len(cur_room["floor"]) < 10:
+                                cur_room["floor"].append(
                                     monster["equipped"]["armor"]
                                 )
                                 self._mud.send_message(
@@ -1158,7 +1174,7 @@ class Game():
         self._monsters[self._nextid] = (
             random.choice([x for x in self._mm if x["cr"] < 2])
         )
-        self._monsters[self._nextid]["room"] = [4, 3]
+        self._monsters[self._nextid]["room"] = [1, 4, 3]
         self._monsters[self._nextid]["proficiency"] = (
             self._proficiency[self._monsters[self._nextid]["cr"]]
         )
@@ -1235,6 +1251,7 @@ class Game():
             return False
 
         room = self._monster_room(monster["room"])
+        cur_room = self._rooms[monster["room"][0]][room]
         players_here = {}
         monsters_here = {}
 
@@ -1295,7 +1312,7 @@ class Game():
                         self._mud.send_message(pid, (
                             "You awaken after an unknown amount of "
                             "time..."))
-                        self._players[pid]["room"] = [4, 2]
+                        self._players[pid]["room"] = [1, 4, 2]
                         self._players[pid]["current_hp"] = 1
                         self._process_look_command(pid)
                     # del self._monsters[mid]
@@ -1344,8 +1361,8 @@ class Game():
                         self._monsters[mid]["coins"] += player["coins"]
 
                         if player["equipped"]["weapon"]:
-                            if len(self._rooms[room]["floor"]) < 10:
-                                self._rooms[room]["floor"].append(
+                            if len(cur_room["floor"]) < 10:
+                                cur_room["floor"].append(
                                     player["equipped"]["weapon"]
                                 )
                                 print(
@@ -1354,8 +1371,8 @@ class Game():
                                         f"on the floor."
                                     )
                         if player["equipped"]["armor"]:
-                            if len(self._rooms[room]["floor"]) < 10:
-                                self._rooms[room]["floor"].append(
+                            if len(cur_room["floor"]) < 10:
+                                cur_room["floor"].append(
                                     player["equipped"]["armor"]
                                 )
                                 print(
@@ -1371,11 +1388,12 @@ class Game():
 
     def _process_list_command(self, uid):
         """ list items if that room has them """
-        current_room, _ = self._movement(uid)
+        room, _ = self._movement(uid)
+        cur_room = self._rooms[self._players[uid]["room"][0]][room]
 
-        print(self._rooms[current_room])
+        print(cur_room)
 
-        if "items" in self._rooms[current_room].keys():
+        if "items" in cur_room.keys():
 
             self._mud.send_message(uid, "")
             self._mud.send_message(uid, "+======================+========+")
@@ -1383,15 +1401,15 @@ class Game():
             self._mud.send_message(uid, "+----------------------+--------+")
             try:
                 light = [
-                    x for x in self._rooms[current_room]["items"]
+                    x for x in cur_room["items"]
                     if x["size"] == "light"
                 ]
                 medium = [
-                    x for x in self._rooms[current_room]["items"]
+                    x for x in cur_room["items"]
                     if x["size"] == "medium"
                 ]
                 heavy = [
-                    x for x in self._rooms[current_room]["items"]
+                    x for x in cur_room["items"]
                     if x["size"] == "heavy"
                 ]
                 for item in sorted(light, key=lambda x: x['value']):
@@ -1419,7 +1437,7 @@ class Game():
                     )
             except KeyError:
                 for item in sorted(
-                        self._rooms[current_room]["items"],
+                        cur_room["items"],
                         key=lambda x: x['value']
                         ):
                     self._mud.send_message(
@@ -1436,15 +1454,16 @@ class Game():
 
     def _process_list_at_command(self, uid, params):
         """ list items if that room has them """
-        current_room, _ = self._movement(uid)
+        room, _ = self._movement(uid)
+        cur_room = self._rooms[self._players[uid]["room"][0]][room]
 
-        print(self._rooms[current_room])
+        print(cur_room)
 
         if not self._classes[self._players[uid]["class"]]["magic"]:
             self._mud.send_message(uid, "Sorry, your class cannot use magic.")
             return False
 
-        if "spells" in self._rooms[current_room].keys():
+        if "spells" in cur_room.keys():
 
             self._mud.send_message(uid, "")
             self._mud.send_message(uid, "+======================+========+")
@@ -1452,7 +1471,7 @@ class Game():
             self._mud.send_message(uid, "+----------------------+--------+")
 
             for item in sorted(
-                    self._rooms[current_room]["spells"],
+                    cur_room["spells"],
                     key=lambda x: x['value']
                     ):
                 if self._classes[self._players[uid]["class"]]["type"] \
@@ -1471,11 +1490,12 @@ class Game():
 
     def _process_sell_command(self, uid, params):
         """ list items if that room has them """
-        current_room, _ = self._movement(uid)
+        room, _ = self._movement(uid)
+        cur_room = self._rooms[self._players[uid]["room"][0]][room]
         merch = None
         merchant_wants = False
 
-        if "items" not in self._rooms[current_room].keys():
+        if "items" not in cur_room.keys():
             self._mud.send_message(uid, "Sorry, you can't do that here.")
             return False
 
@@ -1488,7 +1508,7 @@ class Game():
             self._mud.send_message(uid, "Sorry, you don't seem to have that.")
             return False
 
-        for item in self._rooms[current_room]["items"]:
+        for item in cur_room["items"]:
             if merch["etype"] in item["etype"]:
                 merchant_wants = True
                 break
@@ -1530,12 +1550,13 @@ class Game():
 
     def _process_learn_command(self, uid, params):
         """ list items if that room has them """
-        current_room, _ = self._movement(uid)
+        room, _ = self._movement(uid)
+        cur_room = self._rooms[self._players[uid]["room"][0]][room]
         spell = None
         index = 0
 
-        if "spells" in self._rooms[current_room].keys():
-            for index, spell in enumerate(self._rooms[current_room]["spells"]):
+        if "spells" in cur_room.keys():
+            for index, spell in enumerate(cur_room["spells"]):
                 if params in spell["name"]:
                     break
 
@@ -1579,13 +1600,50 @@ class Game():
                     uid, f"This shop doesn't offer {params}.")
         return False
 
-    def _process_buy_command(self, uid, params):
+    def _process_train_command(self, uid):
         """ list items if that room has them """
-        current_room, _ = self._movement(uid)
+        room, _ = self._movement(uid)
+        cur_room = self._rooms[self._players[uid]["room"][0]][room]
+        player = self._players[uid]
         merch = None
 
-        if "items" in self._rooms[current_room].keys():
-            for item in self._rooms[current_room]["items"]:
+        if "items" in cur_room.keys():
+            for item in cur_room["items"]:
+                if "training" in item["type"]:
+                    merch = item
+                    break
+
+        if not merch:
+            self._mud.send_message(
+                uid, "Sir, you can't train here, this is a Wendy's.")
+            return
+
+        amount = player["level"] * player["level"] * merch["value"]
+        if self._class.check_level(player):
+            if player["coins"] > amount:
+                self._class.level_up(player)
+                player["coins"] -= amount
+                self._mud.send_message(
+                    uid, (
+                        f"You just purchased {merch['type']} for "
+                        f"{self._format_coins(amount)}."
+                    )
+                )
+            else:
+                self._mud.send_message(
+                    uid, f"You can't afford {merch['type']}.")
+        else:
+            self._mud.send_message(
+                uid, "You are not ready for training, yet.")
+
+    def _process_buy_command(self, uid, params):
+        """ list items if that room has them """
+        room, _ = self._movement(uid)
+        cur_room = self._rooms[self._players[uid]["room"][0]][room]
+        merch = None
+
+        if "items" in cur_room.keys():
+            for item in cur_room["items"]:
                 if params in item["type"]:
                     merch = item
                     break
@@ -1737,7 +1795,7 @@ class Game():
                     self._process_look_at_command(uid, params)
 
             # 'go' command
-            elif command in ["go", "east", "west", "north", "south"]:
+            elif command in ["go", "east", "west", "north", "south", "up", "down"]:
 
                 # go to another rooms
                 self._process_go_command(uid, command, params)
@@ -1781,7 +1839,16 @@ class Game():
             elif command == "buy":
 
                 # go to another rooms
-                self._process_buy_command(uid, params)
+                if "training" in params:
+                    self._process_train_command(uid)
+                else:
+                    self._process_buy_command(uid, params)
+
+            # 'list' command
+            elif command == "train":
+
+                # go to another rooms
+                self._process_train_command(uid, params)
 
             # 'list' command
             elif command == "sell":

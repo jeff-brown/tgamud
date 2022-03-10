@@ -5,6 +5,7 @@ import yaml
 
 from lib.dice import Dice
 
+
 class Classes():
     """
     This class contains all of the functions to allow the game to operate
@@ -109,14 +110,13 @@ class Classes():
             return
 
         for _ in range(2):
-            print(_)
             ability = random.choice(self.abilities)
             max_stats = []
             while True:
                 if player[ability] < 20:
                     break
                 max_stats.append(ability)
-                if len(max_stats) is len(self.abilities):
+                if len(max_stats) == len(self.abilities):
                     break
                 ability = random.choice(self.abilities)
             if len(max_stats) < len(self.abilities):

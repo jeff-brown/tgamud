@@ -27,7 +27,12 @@
   wealth:
     - 200
     - 4
-    - 100
+    - 100000000
+  attacks: 1
+  special:
+    - rage:
+      rages: 2
+      bonus_damage: 2
 - type: bard
   description: An inspiring magician whose power echoes the music of creation.
   hit_dice:
@@ -55,6 +60,7 @@
     - 500
     - 4
     - 100
+  attacks: 1
 - type: cleric
   description: A priestly champion who wields divine magic in service of a higher power.
   hit_dice:
@@ -83,6 +89,7 @@
     - 500
     - 4
     - 100
+  attacks: 1
 - type: druid
   description: A priest of the Old Faith, wielding the powers of nature--moonlight and plant growth, fire and lightning--and adopting animal forms.
   hit_dice:
@@ -117,6 +124,7 @@
     - 12
     - 16
     - 19
+  attacks: 1
 - type: figther
   description: A master of martial combat, skilled with a variety of weapons and armor.
   hit_dice:
@@ -150,11 +158,18 @@
     - 14
     - 16
     - 19
+  attacks: 1
 - type: monk
   description: A master of martial arts, harnessing the power of the body in pursuit of physical and spiritual perfection.
   hit_dice:
     - 1
     - 8
+  asi:
+    - 4
+    - 8
+    - 12
+    - 16
+    - 19
   strength: 13
   constitution: 12
   dexterity: 15
@@ -171,11 +186,18 @@
     - 100
     - 4
     - 100
+  attacks: 1
 - type: paladin
   description: A holy warrior bound to a sacred faith.
   hit_dice:
     - 1
     - 10
+  asi:
+    - 4
+    - 8
+    - 12
+    - 16
+    - 19
   strength: 15
   constitution: 12
   dexterity: 10
@@ -195,11 +217,18 @@
     - 500
     - 4
     - 100
+  attacks: 1
 - type: ranger
   description: A warrior who uses martial prowess and nature magic to combat threats on the edges of civilization.
   hit_dice:
     - 1
     - 10
+  asi:
+    - 4
+    - 8
+    - 12
+    - 16
+    - 19
   strength: 13
   constitution: 12
   dexterity: 15
@@ -217,11 +246,19 @@
     - 500
     - 4
     - 100
+  attacks: 1
 - type: rogue
   description: A scoundrel who uses stealth and trickery to overcome obstacles and enemies.
   hit_dice:
     - 1
     - 8
+  asi:
+    - 4
+    - 8
+    - 10
+    - 12
+    - 16
+    - 19
   strength: 10
   constitution: 8
   dexterity: 15
@@ -239,11 +276,18 @@
     - 400
     - 4
     - 100
+  attacks: 1
 - type: sorcerer
   description: A spellcaster who draws on inherent magic from a gift or bloodline.
   hit_dice:
     - 1
     - 6
+  asi:
+    - 4
+    - 8
+    - 12
+    - 16
+    - 19
   strength: 10
   constitution: 14
   dexterity: 12
@@ -260,11 +304,18 @@
     - 300
     - 4
     - 100
+  attacks: 1
 - type: warlock
   description: A wielder of magic that is derived from a bargain with an extraplanar entity.
   hit_dice:
     - 1
     - 8
+  asi:
+    - 4
+    - 8
+    - 12
+    - 16
+    - 19
   strength: 8
   constitution: 14
   dexterity: 10
@@ -281,11 +332,18 @@
     - 400
     - 4
     - 100
+  attacks: 1
 - type: wizard
   description: A scholarly magic user capable of manipulating the structures of reality.
   hit_dice:
     - 1
     - 6
+  asi:
+    - 4
+    - 8
+    - 12
+    - 16
+    - 19
   strength: 8
   constitution: 14
   dexterity: 10
@@ -302,3 +360,4 @@
     - 400
     - 4
     - 100
+  attacks: 1
