@@ -35,7 +35,6 @@
   long: "You now stand inside the gates of the villages most noteworthy and notorious point of interest, the arena. The charred and stained stone walls and scattered bits of bone, armor, and weaponry lying among the debris on the packed earthen floor. A huge brass gong hangs at the center of the arena suspended on a framework made of the bones of some of the less fortunate of the arena's combatants. The exit through the arena gates is to the west."
   short: "You're in the arena."
   floor: []
-  lair: True
 - # 0
   long: "You are now in the main entry hall of a great temple. Huge black marble columns veined with platinum stretch to the ceiling some 100' overhead. The patterns in the tile floor are so ornate and complex as to be nearly impossible to follow or comprehend. Many black silk tapestries depicting various scenes of a religious or magical nature block your view into the many other areas of the temple. Blue robed priests and acolytes move here and there going about their daily duties. The exit is to the east"
   short: "You're in the temple."

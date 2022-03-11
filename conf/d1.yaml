@@ -1,16 +1,18 @@
-- short: "Go away."
+- short: "Go away." # 0
   long: "You can't be here."
   floor: []
-- short: "You're in a cave."
+- short: "You're in a cave." # 1
   long: "You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light."
   floor: []
-- short: "You are inside the dungeon entrance."
+- short: "You are inside the dungeon entrance." # 2
   long: "You are standing inside the entrance to the dungeon. This rounded stone and earth room bears the marks of digging tools and a number of assorted claw and hoof marks in the walls and floor. The only obvious exits are back up the stone stairway you just descended, to the west, down a plain earthen tunnel, and to the east through an enormous rough-hewn and iron-bound stone door."
   floor: []
-- short: "You are in a large cavern."
+- short: "You are in a large cavern." # 3
   long: "You stand in a large cavern cluttered with stalagmites and stalactites that divide the room into many smaller chambers and passages and limit vision in any direction to a few feet. The maze-like form of this cavern is somewhat unnerving, as if someone or something had used natural forces to create a very unnatural labyrinth. You have entered the lair of the minotaur."
   lair: True
   mobs:
     - 15
     - 16
   num: 1
+  floor: []
+  spawn_timer: 0

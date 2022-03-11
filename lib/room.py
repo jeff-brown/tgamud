@@ -146,6 +146,12 @@ class Room():
 
         self._t1[2]["spells"] = _magic.magics
 
-        self.rooms.append([])
+        self._d0 = []
+        self._d9 = []
+        self._d0.append(self._t1[0])
+        self._d9.append(self._t1[0])
+
+        self.rooms.append(self._d0)
         self.rooms.append(self._t1)
         self.rooms.append(self._d1)
+        self.rooms.append(self._d9)

@@ -1,4 +1,6 @@
 """ monsters class """
+import time
+
 import yaml
 
 
@@ -21,3 +23,6 @@ class Monster():
             33000, 41000, 50000, 62000, 75000, 90000, 105000, 120000, 135000,
             155000
         )
+
+        self.populate = time.time()
+        self.spawn_timer = time.time()

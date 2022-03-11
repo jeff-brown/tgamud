@@ -54,12 +54,16 @@ Stuff to do:
     ! monster stat blocks per monster type / CR
     ! monsters drop items / get items
     ! monsters drop gold
-    * implement player leveling system
+    ! implement player leveling system
      ! added leveling to Classes class
-     - need to be able to purchse leveling in guild hall
+     ! need to be able to purchse leveling in guild hall
     ! more items (weapons, armor, etc)
-    * more dungeons
+    ! more dungeons
     * implement lairs and wandering monsters
+      ! lairs done
+      - wandering...
+    * can only equip if you are proficient
+    * all send_message commands need player and other_player text
     ! fill in details for current rooms
     ! monsters can equip stuff
     * monsters pick stuff up too?)
@@ -1012,6 +1016,8 @@ class Game():
                                 "lifeless!".format(monster["name"])
                             )
                         )
+                        if "spawn_timer" in cur_room.keys():
+                            cur_room["spawn_timer"] = time.time()
                         self._players[uid]["coins"] += monster["coins"]
                         self._mud.send_message(
                             uid,
@@ -1176,14 +1182,19 @@ class Game():
             self._mud.send_message(
                 uid, f"Sorry, you don't seem to have learned {params.split()[0]}")
 
-    def _spawn_monsters(self):
+    def _spawn_monsters(self, mob=None, room=None):
         """
         check lairs and spawn monsters if they are empty
         """
-        self._monsters[self._nextid] = (
-            random.choice([x for x in self._mm if x["cr"] < 2])
-        )
-        self._monsters[self._nextid]["room"] = [1, 4, 3]
+        if not mob:
+            self._monsters[self._nextid] = (
+                random.choice([x for x in self._mm if x["cr"] < 2])
+            )
+            self._monsters[self._nextid]["room"] = [1, 4, 3]
+        else:
+            self._monsters[self._nextid] = self._mm[mob]
+            self._monsters[self._nextid]["room"] = room
+
         self._monsters[self._nextid]["proficiency"] = (
             self._proficiency[self._monsters[self._nextid]["cr"]]
         )
@@ -1860,12 +1871,6 @@ class Game():
                     self._process_buy_command(uid, params)
 
             # 'list' command
-            elif command == "train":
-
-                # go to another rooms
-                self._process_train_command(uid, params)
-
-            # 'list' command
             elif command == "sell":
 
                 # go to another rooms
@@ -1913,12 +1918,31 @@ class Game():
 
                 self._process_unknown_command(uid, command, params)
 
+    def _monsters_here(self, room):
+        for _, monster in self._monsters.items():
+            if monster["room"] == room:
+                return True
+        return False
+
     def populate_lairs(self):
         """ check for all rooms that are lairs and populate them """
 
-        for level in self._rooms:
-            for room in level:
-                print(level, room)
+        for z_coord, level in enumerate(self._grid):
+            for y_coord, row in enumerate(level):
+                for x_coord, room_num in enumerate(row):
+                    if "lair" in self._rooms[z_coord][room_num]:
+                        lair = self._rooms[z_coord][room_num]
+                        room = [z_coord, y_coord, x_coord]
+                        for _ in range(lair["num"]):
+                            if not self._monsters_here(room):
+                                if time.time() - lair["spawn_timer"] \
+                                        > self._tick * 10:
+                                    self._spawn_monsters(
+                                        random.choice(lair["mobs"]), room)
+                                    print(
+                                        f"spawning "
+                                        f"{random.choice(lair['mobs'])} "
+                                        f"in {room}")
 
     def check_for_monsters(self):
         """
@@ -1926,8 +1950,13 @@ class Game():
         """
         # spawn rnd monster in arena if empty
         # self._spawn_monsters()
+        if time.time() - self._monster.populate > self._tick:
 
-        populate_lairs()
+            # populate lairs
+            self.populate_lairs()
+
+            # reset populate timer
+            self._monster.populate = time.time()
 
         monsters = self._monsters.copy()
 
@@ -1943,9 +1972,10 @@ class Game():
         """
         spawn monsters and move them around
         """
-        for pid, _ in self._players.items():
 
-            if self._players[pid]["name"] is None:
+        for pid, player in self._players.items():
+
+            if player["name"] is None:
                 continue
 
             # monsters attack first and ask questions later
