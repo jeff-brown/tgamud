@@ -29,7 +29,7 @@ Game Loop:
 6. if not new player then do commands
 
 Stuff to do:
-    * fix traveling between floors IMPORTANT game broken
+    ! fix traveling between floors IMPORTANT game broken
     * need a way to travel between dungeons (teleporter)
     * can cheat by letting monsters fight
     * need to have level restrictions on equipment (monsters too)
@@ -1913,12 +1913,22 @@ class Game():
 
                 self._process_unknown_command(uid, command, params)
 
+    def populate_lairs(self):
+        """ check for all rooms that are lairs and populate them """
+
+        for level in self._rooms:
+            for room in level:
+                print(level, room)
+
     def check_for_monsters(self):
         """
         spawn monsters and move them around
         """
         # spawn rnd monster in arena if empty
         # self._spawn_monsters()
+
+        populate_lairs()
+
         monsters = self._monsters.copy()
 
         for mid, _ in monsters.items():

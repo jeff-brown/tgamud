@@ -1,26 +1,26 @@
 ---
-- name: cave bear
+- name: cave bear # 0
   long: The cave bear has dark brown fur and stands well over seven feet tall at the
     shoulder. Its teeth and claws gleam like daggers as it sizes you up.
   weapon: null
   armor: null
   natural: claws
   cr: 1
-- name: huge rat
+- name: huge rat # 1
   long: The huge rat resembles rats you've seen before except that it is about two
     feet tall at the shoulder, and seems much more aggressive.
   cr: 0
   weapon: null
   armor: null
   natural: claws
-- name: imp
+- name: imp # 2
   long: The imp is a tiny humanoid with pointed ears and bright red skin. It stands
     just over two feet in height and is armed with a {}.
   cr: 0
   weapon: [light, one-hand, strength]
   armor: null
   natural: null
-- name: female kobold
+- name: female kobold # 3
   long: The kobold is a small humanoid with doglike facial features and is covered
     with coarse body hair. She stands just over three feet in height, is wearing a
     filthy tunic, and is armed with {}.
@@ -28,7 +28,7 @@
   weapon: [light, one-hand, strength]
   armor: null
   natural: null
-- name: kobold
+- name: kobold # 4
   long: The kobold is a small humanoid with doglike facial features and is covered
     with coarse body hair. He stands just under four feet in height, is wearing a
     filthy tunic, and is armed with {}.
@@ -36,7 +36,7 @@
   weapon: [light, one-hand, strength]
   armor: null
   natural: null
-- name: female orc
+- name: female orc # 5
   long: The orc is a smallish humanoid with piglike facial features and is covered
     sparsely by coarse body hair. She stands just over four feet in height, is wearing
     a {}, and is armed with {}.
@@ -44,7 +44,7 @@
   armor: light
   natural: null
   cr: 1
-- name: orc
+- name: orc # 6
   long: The orc is a smallish humanoid with piglike facial features and is covered
     sparsely by coarse body hair. He stands just under five feet in height, is wearing
     a {}, and is armed with a {}.
@@ -52,21 +52,21 @@
   weapon: [light, one-hand, strength]
   armor: light
   natural: null
-- name: skeleton warrior
+- name: skeleton warrior # 7
   long: The skeleton warrior is wearing tattered armor and mouldering bits of old
     clothing, and is armed with {}.
   cr: 2
   weapon: [medium, two-hand, strength]
   armor: null
   natural: null
-- name: giant bat
+- name: giant bat # 8
   long: The giant bat has a wingspan of over twelve feet and has wicked looking claws
     and teeth.
   cr: 0
   weapon: null
   armor: null
   natural: wicked claws
-- name: lizard woman
+- name: lizard woman # 9
   long: The lizard woman is a five foot tall bipedal humanoid who's features resemble
     those of a large lizard. She has greyish scaley skin, and sharp claws and teeth.
     The lizard woman is armed with a {}.
@@ -74,7 +74,7 @@
   weapon: [light, one-hand, dexterity]
   armor: null
   natural: null
-- name: lizard man
+- name: lizard man # 10
   long: The lizard man is a six foot tall bipedal humanoid who's features resemble
     those of a large lizard. He has greenish scaley skin, and sharp claws and teeth.
     The lizard man is armed with a {}.
@@ -82,7 +82,7 @@
   armor: null
   natural: null
   cr: 1
-- name: female hobgoblin
+- name: female hobgoblin # 11
   long: The hobgoblin is a squat apelike humanoid with dark skin and pointed ears.
     She stands just under five feet tall, is wearing a {}, and is armed
     with a {}.
@@ -90,7 +90,7 @@
   weapon: [medium, one-hand, strength]
   armor: medium
   natural: null
-- name: hobgoblin
+- name: hobgoblin # 12
   long: The hobgoblin is a squat apelike humanoid with dark skin and pointed ears.
     He stands just over five feet tall, is wearing a {}, and is armed
     with {}.
@@ -98,30 +98,30 @@
   weapon: [medium, one-hand, strength]
   armor: medium
   natural: null
-- name: female cyclops
+- name: female cyclops # 13
   long: The cyclops resembles a very large woman with only one eye in the center of
     her forehead. She stands over eleven feet tall, and is armed with a spiked club.
   cr: 4
   weapon: [heavy, two-hand, strength]
   armor: null
   natural: null
-- name: cyclops
+- name: cyclops # 14
   long: The cyclops resembles a very large man with only one eye in the center of
     his forehead. He stands over twelve feet tall, and is armed with a spiked club.
   cr: 4
   weapon: [heavy, two-hand, strength]
   armor: null
   natural: null
-- name: female minotaur
+- name: female minotaur # 15
   long: The minotaur has the upper torso of a muscular woman, and the head, legs,
     and hooves of a bull. She is wearing {}, and is armed with a {}.
   cr: 4
   weapon: [heavy, two-hand, strength]
   armor: medium
   natural: null
-- name: minotaur
+- name: minotaur # 16
   long: The minotaur has the upper torso of a muscular man, and the head, legs, and
-    hooves of a bull. He is wearing ringmail armor, and is armed with large {one-hand}.
+    hooves of a bull. He is wearing {} armor, and is armed with a {}.
   cr: 4
   weapon: [heavy, two-hand, strength]
   armor: medium
@@ -156,3 +156,5 @@
   weapon: null
   armor: null
   natural: huge fangs
+- name: minotaur
+  long: The minotaur has the upper torso of a muscular man, and the head, legs, and hooves of a bull. He is wearing {} armor, and is armed with {}.
