@@ -126,7 +126,7 @@
   weapon: [heavy, two-hand, strength]
   armor: medium
   natural: null
-- name: ogress
+- name: ogress # 17
   long: The ogress resembles an enormous and very ugly woman. She stands over seven
     feet tall and is very muscular. Her clothing is filthy and poorly made. She is
     armed with a {}.
@@ -134,7 +134,7 @@
   weapon: [heavy, two-hand, strength]
   armor: null
   natural: null
-- name: ogre
+- name: ogre # 18
   long: The ogre resembles an enormous and very ugly man. He stands over eight feet
     tall and is very muscular. His clothing is filthy and poorly made. He is armed
     with a {}.
@@ -156,5 +156,3 @@
   weapon: null
   armor: null
   natural: huge fangs
-- name: minotaur
-  long: The minotaur has the upper torso of a muscular man, and the head, legs, and hooves of a bull. He is wearing {} armor, and is armed with {}.

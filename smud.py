@@ -29,6 +29,7 @@ Game Loop:
 6. if not new player then do commands
 
 Stuff to do:
+    ! FIXIT need to use .copy() whenever assign items to characters/monsters
     ! fix traveling between floors IMPORTANT game broken
     * need a way to travel between dungeons (teleporter)
     * can cheat by letting monsters fight
@@ -62,7 +63,7 @@ Stuff to do:
     * implement lairs and wandering monsters
       ! lairs done
       - wandering...
-    * can only equip if you are proficient
+    ! can only equip if you are proficient
     * all send_message commands need player and other_player text
     ! fill in details for current rooms
     ! monsters can equip stuff
@@ -204,23 +205,22 @@ class Game():
         format coins
         """
         wallet = []
-        print(coins)
+
         plat, rem = self._rdiv(coins, 1000)
         if plat > 0:
             wallet.append(f"{int(plat)}p")
-        print(plat, rem)
+
         gold, rem = self._rdiv(rem, 100)
         if gold > 0:
             wallet.append(f"{int(gold)}g")
-        print(gold, rem)
+
         silv, rem = self._rdiv(rem, 10)
         if silv > 0:
             wallet.append(f"{int(silv)}s")
-        print(silv, rem)
+
         copp, rem = self._rdiv(rem, 1)
         if copp > 0:
             wallet.append(f"{int(copp)}c")
-        print(copp, rem)
 
         return " ".join(wallet)
 
@@ -325,25 +325,23 @@ class Game():
         wtype = self._monsters[uid]["weapon"]
         if not wtype:
             return self._weapons[0]
-        print(wtype)
+
         for weapon in self._weapons:
-            print(weapon["size"], weapon["etype"], weapon["modifier"])
             if wtype[0] in weapon["size"] \
                     and wtype[1] in weapon["etype"] \
                     and wtype[2] in weapon["modifier"]:
                 weapon_of_choice.append(weapon)
-        print(weapon_of_choice)
+
         return random.choice(weapon_of_choice)
 
     def _get_monster_armor(self, uid):
         """determine ac"""
         armor_of_choice = []
         atype = self._monsters[uid]["armor"]
-        print(atype)
+
         if not atype:
             return self._armors[0]
         for armor in self._armors:
-            print(armor["size"])
             if atype in armor["size"]:
                 armor_of_choice.append(armor)
         return random.choice(armor_of_choice)
@@ -365,8 +363,6 @@ class Game():
         y_coord = self._players[uid]["room"][2]
 
         room = self._grid[z_coord][x_coord][y_coord]
-        print(room)
-        print(self._rooms)
         print("{}'s current loc [{},{},{}] in {}.".format(
             self._players[uid]["name"],
             z_coord, x_coord, y_coord, self._rooms[z_coord][room]["short"]))
@@ -515,8 +511,33 @@ class Game():
         """
         write out the room and any players or items in it
         """
+        has_light = []
         room, exits = self._movement(uid)
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
+        cur_player = self._players[uid]
+
+        for item in cur_player["inventory"]:
+            if "effect" in item.keys():
+                if item["effect"] == "light":
+                    has_light.append(item)
+
+        for pid, player in self._players.items():
+            # if they're in the same room as the player
+            if player["room"] == self._players[uid]["room"] and \
+                    pid != uid:
+                # ... and they have a name to be shown
+                if player["name"] is not None:
+                    # add their name to the list
+
+                    for item in player["inventory"]:
+                        if "effect" in item.keys():
+                            if item["effect"] == "light":
+                                has_light.append(item)
+
+        if cur_room["dark"] and not has_light:
+            self._mud.send_message(uid, "It's too dark to see.")
+            return
+
         exit_list = ", ".join(exits)
         self._mud.send_message(uid, cur_room["long"] + exit_list)
 
@@ -524,8 +545,15 @@ class Game():
         """
         write out the room and any players or items in it
         """
+        has_light = []
         room, _ = self._movement(uid)
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
+        cur_player = self._players[uid]
+
+        for item in cur_player["inventory"]:
+            if "effect" in item.keys():
+                if item["effect"] == "light":
+                    has_light.append(item)
 
         players_here = []
         monsters_here = []
@@ -539,6 +567,11 @@ class Game():
                 if player["name"] is not None:
                     # add their name to the list
                     players_here.append(player["name"])
+
+                    for item in player["inventory"]:
+                        if "effect" in item.keys():
+                            if item["effect"] == "light":
+                                has_light.append(item)
 
         for _, monster in self._monsters.items():
             if monster["room"] == self._players[uid]["room"]:
@@ -558,9 +591,14 @@ class Game():
             else:
                 monster_line = "There is a {} here.".format(monsters_here[0])
 
+        print(cur_room["dark"], has_light)
+        if cur_room["dark"] and not has_light:
+            self._mud.send_message(uid, "It's too dark to see.")
+            return
+
         self._mud.send_message(uid, cur_room["short"])
 
-        # this logic is tortured.  fix it later
+        # TBD this logic is tortured.  fix it later
         if monsters_here:
             self._mud.send_message(uid, monster_line)
         if players_here and monsters_here or players_here \
@@ -660,8 +698,6 @@ class Game():
 
         # send the new player the description of their current room
         self._process_look_command(uid)
-        print(self._players[uid])
-        print(self._classes[self._players[uid]["class"]])
 
     def _process_unknown_command(self, uid, command, params):
         """
@@ -708,8 +744,6 @@ class Game():
                 uid, "You need to specify what you want to unequip.")
             return
 
-        print(params, player["equipped"]["armor"]["type"])
-        print(params, player["equipped"]["weapon"]["type"])
         if player["equipped"]["armor"] \
                 and params in player["equipped"]["armor"]["type"]:
             self._mud.send_message(
@@ -743,6 +777,7 @@ class Game():
         output current level and experience
         """
         player = self._players[uid]
+        pclass = self._classes[player["class"]]
 
         if not params:
             self._mud.send_message(
@@ -752,20 +787,28 @@ class Game():
         for item in player["inventory"]:
             if params in item["type"] and item["equip"]:
                 if item["etype"] == "armor":
+                    if not item["size"] in pclass["armor"]:
+                        self._mud.send_message(
+                            uid, "Sorry, you may not equip that.")
+                        return
                     if player["equipped"]["armor"]:
                         self._process_unequip_command(
                             uid, player["equipped"]["armor"]["type"])
-                    self._players[uid]["equipped"]["armor"] = item
-                    self._players[uid]["armor_class"] = self._armor_class(uid)
-                    self._players[uid]["inventory"].remove(item)
+                    player["equipped"]["armor"] = item
+                    player["armor_class"] = self._armor_class(uid)
+                    player["inventory"].remove(item)
                     self._mud.send_message(uid, f"You equipped {item['type']}.")
 
                 elif item["etype"] in ["one-hand", "two-hand"]:
+                    if not item["size"] in pclass["weapon"]:
+                        self._mud.send_message(
+                            uid, "Sorry, you may not equip that.")
+                        return
                     if player["equipped"]["weapon"]:
                         self._process_unequip_command(
                             uid, player["equipped"]["weapon"]["type"])
-                    self._players[uid]["equipped"]["weapon"] = item
-                    self._players[uid]["inventory"].remove(item)
+                    player["equipped"]["weapon"] = item
+                    player["inventory"].remove(item)
                     self._mud.send_message(uid, f"You equipped {item['type']}.")
 
                 else:
@@ -783,8 +826,8 @@ class Game():
         output current level and experience
         """
         # check fatigue
-        if len(self._monsters) < 9:
-            self._spawn_monsters()
+        if len(list(self._monsters.keys())) < 9:
+            self._spawn_monsters(room=[1, 4, 3])
         else:
             print("rooms full")
 
@@ -991,80 +1034,83 @@ class Game():
         room, _ = self._movement(uid)
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
         monsters = self._monsters.copy()
-
-        for mid, monster in monsters.items():
-            if target in monster["name"] and monster["room"] \
+        monsters_here = {}
+        for hmid, hmonster in monsters.items():
+            if target in hmonster["name"] and hmonster["room"] \
                     == self._players[uid]["room"]:
-
-                if time.time() - self._players[uid]["fatigue"] > self._tick:
-                    damage = 0
-                    if spell is not None:
-                        damage = self._process_spell_damage(
-                            uid, spell, monster)
-                    else:
-                        damage = self._process_melee_damage(
-                            uid, monster)
-
-                    if damage is not None:
-                        monster["current_hp"] -= damage
-
-                    if monster["current_hp"] < 1:
-                        self._mud.send_message(
-                            uid,
-                            (
-                                "The {} falls to the ground "
-                                "lifeless!".format(monster["name"])
-                            )
-                        )
-                        if "spawn_timer" in cur_room.keys():
-                            cur_room["spawn_timer"] = time.time()
-                        self._players[uid]["coins"] += monster["coins"]
-                        self._mud.send_message(
-                            uid,
-                            (
-                                "You found {} gold crowns while searching "
-                                "the {}'s corpse.".format(
-                                    self._format_coins(monster["coins"]),
-                                    monster["name"]
-                                )
-                            )
-                        )
-
-                        if monster["equipped"]["weapon"]:
-                            if len(cur_room["floor"]) < 10:
-                                cur_room["floor"].append(
-                                    monster["equipped"]["weapon"]
-                                )
-                                self._mud.send_message(
-                                    uid, (
-                                        f"The {monster['name']} dropped a "
-                                        f"{monster['equipped']['weapon']['type']} "
-                                        f"on the floor."
-                                    )
-                                )
-                        if monster["equipped"]["armor"]:
-                            if len(cur_room["floor"]) < 10:
-                                cur_room["floor"].append(
-                                    monster["equipped"]["armor"]
-                                )
-                                self._mud.send_message(
-                                    uid, (
-                                        f"The {monster['name']} dropped a "
-                                        f"{monster['equipped']['armor']['type']} "
-                                        f"on the floor."
-                                    )
-                                )
-                        del self._monsters[mid]
+                monsters_here.update({hmid: hmonster})
+        print(monsters_here)
+        if monsters_here:
+            mid, monster = random.choice(list(monsters_here.items()))
+            if time.time() - self._players[uid]["fatigue"] > self._tick:
+                damage = 0
+                if spell is not None:
+                    damage = self._process_spell_damage(
+                        uid, spell, monster)
                 else:
+                    damage = self._process_melee_damage(
+                        uid, monster)
+
+                if damage is not None:
+                    monster["current_hp"] -= damage
+
+                if monster["current_hp"] < 1:
                     self._mud.send_message(
-                        uid, (
-                            "You are still physically exhausted from your "
-                            "previous activities!"
+                        uid,
+                        (
+                            "The {} falls to the ground "
+                            "lifeless!".format(monster["name"])
                         )
                     )
+                    if "spawn_timer" in cur_room.keys():
+                        cur_room["spawn_timer"] = time.time()
+                    self._players[uid]["coins"] += monster["coins"]
+                    self._mud.send_message(
+                        uid,
+                        (
+                            "You found {} gold crowns while searching "
+                            "the {}'s corpse.".format(
+                                self._format_coins(monster["coins"]),
+                                monster["name"]
+                            )
+                        )
+                    )
+
+                    if monster["equipped"]["weapon"]:
+                        if len(cur_room["floor"]) < 10:
+                            cur_room["floor"].append(
+                                monster["equipped"]["weapon"]
+                            )
+                            self._mud.send_message(
+                                uid, (
+                                    f"The {monster['name']} dropped a "
+                                    f"{monster['equipped']['weapon']['type']} "
+                                    f"on the floor."
+                                )
+                            )
+                    if monster["equipped"]["armor"]:
+                        if len(cur_room["floor"]) < 10:
+                            cur_room["floor"].append(
+                                monster["equipped"]["armor"]
+                            )
+                            self._mud.send_message(
+                                uid, (
+                                    f"The {monster['name']} dropped a "
+                                    f"{monster['equipped']['armor']['type']} "
+                                    f"on the floor."
+                                )
+                            )
+                    del self._monsters[mid]
             else:
                 self._mud.send_message(
-                    uid, f"Sorry, you don't see {target} nearby.")
+                    uid, (
+                        "You are still physically exhausted from your "
+                        "previous activities!"
+                    )
+                )
+        else:
+            self._mud.send_message(
+                uid, f"Sorry, you don't see {target} nearby.")
 
     def _process_spell_damage(self, uid, spell, target):
         """ try to cast a damaging spell """
@@ -1186,15 +1232,16 @@ class Game():
         """
         check lairs and spawn monsters if they are empty
         """
+        print(self._nextid, room, mob)
+        print([monster["room"] for num, monster in self._monsters.items()])
         if not mob:
             self._monsters[self._nextid] = (
-                random.choice([x for x in self._mm if x["cr"] < 2])
+                random.choice([x for x in self._mm if x["cr"] < 2]).copy()
             )
-            self._monsters[self._nextid]["room"] = [1, 4, 3]
         else:
-            self._monsters[self._nextid] = self._mm[mob]
-            self._monsters[self._nextid]["room"] = room
+            self._monsters[self._nextid] = self._mm[mob].copy()
 
+        self._monsters[self._nextid]["room"] = room
         self._monsters[self._nextid]["proficiency"] = (
             self._proficiency[self._monsters[self._nextid]["cr"]]
         )
@@ -1237,12 +1284,15 @@ class Game():
         self._monsters[self._nextid]["coins"] = self._roll_dice(
             self._monsterstats[self._monsters[self._nextid]["cr"]]["wealth"])
         print(
-            "spawned {} with cr {} that has {} xp.".format(
+            "spawned {} with cr {} that has {} xp in {}.".format(
                 self._monsters[self._nextid]["name"],
                 self._monsters[self._nextid]["cr"],
-                self._cr[self._monsters[self._nextid]["cr"]]
+                self._cr[self._monsters[self._nextid]["cr"]],
+                room
             )
         )
+        print([monster["room"] for num, monster in self._monsters.items()])
+        print()
 
         for pid, player in self._players.items():
             if self._monsters[self._nextid]["room"] == player["room"]:
@@ -1252,7 +1302,7 @@ class Game():
                         "light.".format(self._monsters[self._nextid]["name"])
                     )
                 )
-        print(self._monsters[self._nextid])
+
         self._nextid += 1
 
     def _monsters_move(self):
@@ -1293,8 +1343,8 @@ class Game():
                     + self._get_modifier(monster["strength"])
                     + monster["proficiency"]
                 )
-                print("monster attack: {}".format(attack))
-                print("player ac: {}".format(player["armor_class"]))
+                print("{} attack: {}".format(monster["name"], attack))
+                print("{} ac: {}".format(player["name"], player["armor_class"]))
                 if attack > player["armor_class"]:
                     dice = (
                         self._roll_dice(
@@ -1350,6 +1400,8 @@ class Game():
                 return False
 
             pid, player = random.choice(list(monsters_here.items()))
+            if player["name"].split(" ")[-1] == monster["name"].split(" ")[-1]:
+                return False
 
             if time.time() - monster["fatigue"] > self._tick:
 
@@ -1358,8 +1410,8 @@ class Game():
                     + self._get_modifier(monster["strength"])
                     + monster["proficiency"]
                 )
-                print("monster attack: {}".format(attack))
-                print("player ac: {}".format(player["armor_class"]))
+                print("{} attack: {}".format(monster["name"], attack))
+                print("{} ac: {}".format(player["name"], player["armor_class"]))
                 if attack > player["armor_class"]:
                     dice = (
                         self._roll_dice(
@@ -1411,10 +1463,7 @@ class Game():
         room, _ = self._movement(uid)
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
 
-        print(cur_room)
-
         if "items" in cur_room.keys():
-
             self._mud.send_message(uid, "")
             self._mud.send_message(uid, "+======================+========+")
             self._mud.send_message(uid, "| Item                 | Price  |")
@@ -1476,8 +1525,6 @@ class Game():
         """ list items if that room has them """
         room, _ = self._movement(uid)
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
-
-        print(cur_room)
 
         if not self._classes[self._players[uid]["class"]]["magic"]:
             self._mud.send_message(uid, "Sorry, your class cannot use magic.")
@@ -1581,8 +1628,6 @@ class Game():
                     break
 
             if spell:
-                print(f"merch: {index}:{spell}")
-
                 if not self._can_learn(uid, index):
                     self._mud.send_message(
                         uid, (
@@ -1611,7 +1656,6 @@ class Game():
                             f"{self._format_coins(spell['value'])}."
                         )
                     )
-                    print(self._players[uid]["inventory"])
                 else:
                     self._mud.send_message(
                         uid, f"You can't afford to learn {spell['name']}.")
@@ -1669,7 +1713,6 @@ class Game():
                     break
 
             if merch:
-                print(f"merch: {merch}")
                 if not self._can_equip(uid, merch):
                     self._mud.send_message(
                         uid, (
@@ -1919,41 +1962,64 @@ class Game():
                 self._process_unknown_command(uid, command, params)
 
     def _monsters_here(self, room):
+        monsters_here = []
+        print("checking: ", room)
         for _, monster in self._monsters.items():
+            print(room, monster["room"], end='')
             if monster["room"] == room:
-                return True
-        return False
+                print("yes")
+                monsters_here.append(monster)
+            else:
+                print("no")
+        return bool(monsters_here)
 
-    def populate_lairs(self):
+    def _populate_lairs(self):
         """ check for all rooms that are lairs and populate them """
+        lairs = {}
 
         for z_coord, level in enumerate(self._grid):
             for y_coord, row in enumerate(level):
                 for x_coord, room_num in enumerate(row):
                     if "lair" in self._rooms[z_coord][room_num]:
                         lair = self._rooms[z_coord][room_num]
-                        room = [z_coord, y_coord, x_coord]
-                        for _ in range(lair["num"]):
-                            if not self._monsters_here(room):
-                                if time.time() - lair["spawn_timer"] \
-                                        > self._tick * 10:
-                                    self._spawn_monsters(
-                                        random.choice(lair["mobs"]), room)
-                                    print(
-                                        f"spawning "
-                                        f"{random.choice(lair['mobs'])} "
-                                        f"in {room}")
+                        room = (z_coord, y_coord, x_coord)
+                        lairs.update({room: lair})
+
+        if not lairs:
+            return
+
+        print(list(lairs.keys()))
+        print([monster["room"] for num, monster in self._monsters.items()])
+        try:
+            print(list(self._monsters["room"]))
+        except KeyError:
+            pass
+
+        for lroom, llair in lairs.items():
+            print("check first to see if monsters in ", list(lroom))
+            if self._monsters_here(list(lroom)):
+                print("monsters here, continue")
+                print()
+                continue
+            print("all clear, spawn away")
+            for _ in range(llair["num"]):
+                if time.time() - llair["spawn_timer"] \
+                        > self._tick * 10:
+                    self._spawn_monsters(
+                        random.choice(llair["mobs"]), list(lroom))
+
+        print([monster["room"] for num, monster in self._monsters.items()])
 
     def check_for_monsters(self):
         """
         spawn monsters and move them around
         """
-        # spawn rnd monster in arena if empty
-        # self._spawn_monsters()
+
+        # only try to populate lairs every 6s or so
         if time.time() - self._monster.populate > self._tick:
 
             # populate lairs
-            self.populate_lairs()
+            self._populate_lairs()
 
             # reset populate timer
             self._monster.populate = time.time()

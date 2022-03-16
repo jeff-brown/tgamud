@@ -25,6 +25,7 @@
   etype: gear
   value: 1
   weight: 1
+  effect: light
   duration: 900
   equip: false
   inv: true
