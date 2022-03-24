@@ -2,7 +2,7 @@
 - type: barbarian
   description: A fierce warrior of primitive background who can enter a battle rage.
   hit_dice:
-    - 1
+    - 20
     - 12
   asi:
     - 4

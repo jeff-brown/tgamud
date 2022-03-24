@@ -37,3 +37,25 @@
   inv: true
   spells: []
   slots: []
+- type: glowstone
+  etype: magic
+  value: 1000
+  weight: 1
+  effect: light
+  duration: -1
+  equip: false
+  inv: true
+- type: hearthstonne
+  etype: magic
+  value: 10000
+  weight: 1
+  effect: return
+  equip: false
+  inv: true
+- type: soulstone
+  etype: magic
+  value: 100000
+  weight: 1
+  effect: resurrection
+  equip: false
+  inv: true

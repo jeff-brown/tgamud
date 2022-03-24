@@ -1,0 +1,15 @@
+---
+- type: healing
+  etype: temple
+  value: 1
+  weight: 1
+  effect: hurt
+  equip: false
+  inv: false
+- type: curing
+  etype: temple
+  value: 1
+  weight: 1
+  effect: poison
+  equip: false
+  inv: false

@@ -1,0 +1,22 @@
+---
+- type: iron door # 0
+  etype: door
+  value: 1
+  weight: 1
+  effect: locked
+  equip: false
+  inv: false
+- type: brass door # 1
+  etype: door
+  value: 1
+  weight: 1
+  effect: locked
+  equip: false
+  inv: false
+- type: bronze door # 2
+  etype: door
+  value: 1
+  weight: 1
+  effect: locked
+  equip: false
+  inv: false

@@ -28,59 +28,62 @@ Game Loop:
 5. check for new commands (mud.get_commands())
 6. if not new player then do commands
 
-Stuff to do:
-    ! FIXIT need to use .copy() whenever assign items to characters/monsters
-    ! fix traveling between floors IMPORTANT game broken
-    * need a way to travel between dungeons (teleporter)
-    * can cheat by letting monsters fight
-    * need to have level restrictions on equipment (monsters too)
-    ! player stats per class
-    * implement magic system
-     ! add spells to shop for each class
-     ! add ability to "learn" spells and add them to your spellbook
+Feature Requests:
      ! add ability to "cast" spells on players, mobs and items
-     - differentiate between cantrips (can cast each round), with spells that
-        must be added to spell slots and can only be cast once before a rest
-    - examine items - use ability checks here
-    * need npcs - they have stat blocks and alignments
-    ! encumberance needs to include equipped items
-    ! implement items
-    ! implement stores
-    ! implement buy/sell
-     - charisma needs to influence buy/sell price
-    * look at players,
-     - players need to have long descriptions
-     - show health status
-    * temporary stats - each stat needs temp and perm
-    ! monster stat blocks per monster type / CR
-    ! monsters drop items / get items
-    ! monsters drop gold
-    ! implement player leveling system
+     ! add ability to "learn" spells and add them to your spellbook
+     ! add spells to shop for each class
      ! added leveling to Classes class
-     ! need to be able to purchse leveling in guild hall
-    ! more items (weapons, armor, etc)
-    ! more dungeons
-    * implement lairs and wandering monsters
-      ! lairs done
-      - wandering...
     ! can only equip if you are proficient
-    * all send_message commands need player and other_player text
+    ! encumberance needs to include equipped items
     ! fill in details for current rooms
-    ! monsters can equip stuff
-    * monsters pick stuff up too?)
+    ! fix traveling between floors IMPORTANT game broken
+    ! FIXIT need to use .copy() whenever assign items to characters/monsters
+    ! implement buy/sell
+    ! implement items
+    ! implement player leveling system
+    ! implement stores
+      ! lairs done
+    ! monster stat blocks per monster type / CR
     ! monsters attack monsters
-    * pvp?
-    * implement other conditions (hungry, thirsty, poisoned, etc)
-    * implement environment hazards: doors, traps, etc
-    * fix pronoun and plural agreement (grammar, basically)
+    ! monsters can equip stuff
+    ! monsters drop gold
+    ! monsters drop items / get items
+    ! more dungeons
+    ! more items (weapons, armor, etc)
+     ! need to be able to purchse leveling in guild hall
+    ! darkness / light
+    ! player stats per class
     * add ColOrS!1!!
-    * implement character save and restore
-    * darkness / light
+    * alignment
+    * all send_message commands need player and other_player text
+    * can cheat by letting monsters fight
+
     * day / night cycle? short / long rest?
+    * durability (and item properties)
+    * fix pronoun and plural agreement (grammar, basically)
+    * implement character save and restore
+    * implement environment hazards: doors, traps, etc
+    * implement wandering monsters
+    * implement magic system
+    * implement other conditions (hungry, thirsty, poisoned, etc)
+    * look at players,
+    * monsters pick stuff up too?)
+    * need a way to travel between dungeons (teleporter)
+    * need npcs - they have stat blocks and alignments
+    * need to have level restrictions on equipment (monsters too)
+    * pvp?
     * quests?!
     * runes
-    * alignment
-    * durability (and item properties)
+    * temporary stats - each stat needs temp and perm
+     - cantrips must be added to spell slots and can only be cast once before a rest
+     - charisma needs to influence buy/sell price
+     - differentiate between cantrips (can cast each round), with spells that
+    - examine items - use ability checks here
+     - players need to have long descriptions
+     - show health status
+      - wandering...
+
+    bugs:
 
 author: Mark Frimston - mfrimston@gmail.com
 """
@@ -100,6 +103,8 @@ from lib.monsterstats import MonsterStats
 from lib.magic import Magic
 from lib.dungeon import Dungeon
 from lib.dice import Dice
+from lib.key import Key
+from lib.door import Door
 
 # import the MUD server class
 from server.mud import Mud
@@ -168,6 +173,10 @@ class Game():
         self._tick = 6  # 6 seconds
 
         self._roll_dice = self._dice.roll
+
+        self._key = Key()
+
+        self._door = Door()
 
         # counter for assigning each client a new id
         self._nextid = 0
@@ -289,6 +298,7 @@ class Game():
     def _max_hp(self, uid):
         """determind max hp"""
         return self._players[uid]["hit_dice"][1] \
+            * self._players[uid]["hit_dice"][0] \
             + self._get_modifier(self._players[uid]["constitution"])
 
     def _monster_max_hp(self, uid):
@@ -351,20 +361,19 @@ class Game():
 
         return self._grid[room[0]][room[1]][room[2]]
 
-    def _movement(self, uid):
+    def _movement(self, coords):
         """
         return current room and possible exits
         """
         exits = []
         room = None
 
-        z_coord = self._players[uid]["room"][0]
-        x_coord = self._players[uid]["room"][1]
-        y_coord = self._players[uid]["room"][2]
+        z_coord = coords[0]
+        x_coord = coords[1]
+        y_coord = coords[2]
 
         room = self._grid[z_coord][x_coord][y_coord]
-        print("{}'s current loc [{},{},{}] in {}.".format(
-            self._players[uid]["name"],
+        print("current loc [{},{},{}] in {}.".format(
             z_coord, x_coord, y_coord, self._rooms[z_coord][room]["short"]))
         if self._grid[z_coord][x_coord - 1][y_coord] > 0:
             exits.append("north")
@@ -406,7 +415,7 @@ class Game():
     def _process_drop_command(self, uid, params):
         """drop stuff"""
 
-        room, _ = self._movement(uid)
+        room, _ = self._movement(self._players[uid]["room"])
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
 
         for item in self._players[uid]["inventory"]:
@@ -427,7 +436,7 @@ class Game():
     def _process_get_command(self, uid, params):
         """get stuff"""
 
-        room, _ = self._movement(uid)
+        room, _ = self._movement(self._players[uid]["room"])
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
 
         for item in cur_room["floor"]:
@@ -444,7 +453,7 @@ class Game():
     def _process_look_at_command(self, uid, params):
         """look at stuff"""
 
-        _, valid_exits = self._movement(uid)
+        _, valid_exits = self._movement(self._players[uid]["room"])
 
         # look at _rooms
         if params == "spellbook":
@@ -512,7 +521,7 @@ class Game():
         write out the room and any players or items in it
         """
         has_light = []
-        room, exits = self._movement(uid)
+        room, exits = self._movement(self._players[uid]["room"])
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
         cur_player = self._players[uid]
 
@@ -546,7 +555,7 @@ class Game():
         write out the room and any players or items in it
         """
         has_light = []
-        room, _ = self._movement(uid)
+        room, _ = self._movement(self._players[uid]["room"])
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
         cur_player = self._players[uid]
 
@@ -654,7 +663,7 @@ class Game():
         self._players[uid]["room"] = [1, 4, 2]
         self._players[uid]["fatigue"] = time.time()
         self._players[uid]["hit_dice"] = self._classes[command]["hit_dice"]
-        self._players[uid]["level"] = 1
+        self._players[uid]["level"] = 20
         self._players[uid]["strength"] = self._get_stat(uid, "strength")
         self._players[uid]["dexterity"] = self._get_stat(uid, "dexterity")
         self._players[uid]["constitution"] = self._get_stat(uid, "constitution")
@@ -669,7 +678,6 @@ class Game():
         self._players[uid]["max_enc"] = self._max_enc(uid)
         self._players[uid]["current_enc"] = 0
         self._players[uid]["xp"] = 1000000
-        self._players[uid]["level"] = 1
         self._players[uid]["proficiency"] = (
             self._proficiency[self._players[uid]["level"]]
         )
@@ -950,9 +958,7 @@ class Game():
             self._players[uid]["status"]))
 
     def _process_go_command(self, uid, command, params):
-        """
-        move around
-        """
+        """ move around """
         if time.time() - self._players[uid]["fatigue"] < self._tick:
             self._mud.send_message(
                 uid, (
@@ -968,10 +974,66 @@ class Game():
             door = command.lower()
 
         # get current room and list of exits
-        _, exits = self._movement(uid)
+        cur_room_num, cur_exits = self._movement(self._players[uid]["room"])
+
+        cur_room = self._rooms[self._players[uid]["room"][0]][cur_room_num]
+        cur_player = self._players[uid]
+        cur_player_room = self._players[uid]["room"]
+        next_player_room = cur_player_room.copy()
 
         # if the specified exit is found in the room's exits list
-        if door in exits:
+        if door in cur_exits:
+            print("_process_go_command:cur_room", cur_room)
+            print("next_player_room", next_player_room)
+            # update the player's current room to the one the exit leads to
+            if door == "south":
+                next_player_room[1] += 1
+            if door == "north":
+                next_player_room[1] -= 1
+            if door == "east":
+                next_player_room[2] += 1
+            if door == "west":
+                next_player_room[2] -= 1
+            if door == "up":
+                next_player_room[0] -= 1
+            if door == "down":
+                next_player_room[0] += 1
+
+            next_room_num, _ = (
+                self._movement(next_player_room)
+            )
+            next_room = self._rooms[next_player_room[0]][next_room_num]
+            print("next_player_room", next_player_room)
+            print("next_room_num", next_room_num)
+            print("next_room", next_room)
+
+            # TBD only check for doors and traps on *next room* not cur_room
+
+            if 'door' in next_room.keys():
+                keychain = self._get_item_handle("key", cur_player["inventory"])
+                print("keychain", keychain)
+                key_num = next_room["door"]
+                key = self._key.keys[key_num]
+                door = self._door.doors[key_num]
+                print("key", key)
+                print("door", door)
+                if keychain:
+                    if key["type"] == keychain["type"]:
+                        self._mud.send_message(
+                            uid,
+                            f"Your {key['type']} unlocks the {door['type']}."
+                        )
+                    else:
+                        self._mud.send_message(
+                            uid, f"The {door['type']} blocks your passage.")
+                        return
+                else:
+                    self._mud.send_message(
+                        uid, f"The {door['type']} blocks your passage.")
+                    return
+
+            # move player to next room
+            self._players[uid]["room"] = next_player_room
 
             # go through all the players in the game
             for pid, player in self._players.items():
@@ -984,20 +1046,6 @@ class Game():
                     self._mud.send_message(
                         pid, "{} just left to the {}.".format(
                             self._players[uid]["name"], door))
-
-            # update the player's current room to the one the exit leads to
-            if door == "south":
-                self._players[uid]["room"][1] += 1
-            if door == "north":
-                self._players[uid]["room"][1] -= 1
-            if door == "east":
-                self._players[uid]["room"][2] += 1
-            if door == "west":
-                self._players[uid]["room"][2] -= 1
-            if door == "up":
-                self._players[uid]["room"][0] -= 1
-            if door == "down":
-                self._players[uid]["room"][0] += 1
 
             # go through all the players in the game
             for pid, player in self._players.items():
@@ -1027,11 +1075,24 @@ class Game():
         """
         self._process_attack(uid, params)
 
+    def _get_loot(self, player, loots):
+        """
+        try to kill some stuff why not
+        """
+        loot = []
+
+        for loot_type in loots:
+            if 'keys' in loot_type:
+                for num in loot_type['keys']:
+                    loot.append(self._key.keys[num])
+
+        player["inventory"] += loot
+
     def _process_attack(self, uid, target, spell=None):
         """
         try to kill some stuff why not
         """
-        room, _ = self._movement(uid)
+        room, _ = self._movement(self._players[uid]["room"])
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
         monsters = self._monsters.copy()
         monsters_here = {}
@@ -1039,7 +1100,7 @@ class Game():
             if target in hmonster["name"] and hmonster["room"] \
                     == self._players[uid]["room"]:
                 monsters_here.update({hmid: hmonster})
-        print(monsters_here)
+
         if monsters_here:
             mid, monster = random.choice(list(monsters_here.items()))
             if time.time() - self._players[uid]["fatigue"] > self._tick:
@@ -1062,8 +1123,17 @@ class Game():
                             "lifeless!".format(monster["name"])
                         )
                     )
+
+                    # set the clock to respawn monsters if this is a lair
                     if "spawn_timer" in cur_room.keys():
                         cur_room["spawn_timer"] = time.time()
+
+                    # check for loot
+                    if "loot" in cur_room.keys():
+                        print(cur_room["loot"])
+                        self._get_loot(self._players[uid], cur_room['loot'])
+                        print(self._players[uid])
+
                     self._players[uid]["coins"] += monster["coins"]
                     self._mud.send_message(
                         uid,
@@ -1460,7 +1530,7 @@ class Game():
 
     def _process_list_command(self, uid):
         """ list items if that room has them """
-        room, _ = self._movement(uid)
+        room, _ = self._movement(self._players[uid]["room"])
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
 
         if "items" in cur_room.keys():
@@ -1523,7 +1593,7 @@ class Game():
 
     def _process_list_at_command(self, uid, params):
         """ list items if that room has them """
-        room, _ = self._movement(uid)
+        room, _ = self._movement(self._players[uid]["room"])
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
 
         if not self._classes[self._players[uid]["class"]]["magic"]:
@@ -1557,7 +1627,7 @@ class Game():
 
     def _process_sell_command(self, uid, params):
         """ list items if that room has them """
-        room, _ = self._movement(uid)
+        room, _ = self._movement(self._players[uid]["room"])
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
         merch = None
         merchant_wants = False
@@ -1617,7 +1687,7 @@ class Game():
 
     def _process_learn_command(self, uid, params):
         """ list items if that room has them """
-        room, _ = self._movement(uid)
+        room, _ = self._movement(self._players[uid]["room"])
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
         spell = None
         index = 0
@@ -1666,7 +1736,7 @@ class Game():
 
     def _process_train_command(self, uid):
         """ list items if that room has them """
-        room, _ = self._movement(uid)
+        room, _ = self._movement(self._players[uid]["room"])
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
         player = self._players[uid]
         merch = None
@@ -1702,7 +1772,7 @@ class Game():
 
     def _process_buy_command(self, uid, params):
         """ list items if that room has them """
-        room, _ = self._movement(uid)
+        room, _ = self._movement(self._players[uid]["room"])
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
         merch = None
 
@@ -1963,14 +2033,10 @@ class Game():
 
     def _monsters_here(self, room):
         monsters_here = []
-        print("checking: ", room)
         for _, monster in self._monsters.items():
-            print(room, monster["room"], end='')
             if monster["room"] == room:
-                print("yes")
                 monsters_here.append(monster)
-            else:
-                print("no")
+
         return bool(monsters_here)
 
     def _populate_lairs(self):
@@ -1988,27 +2054,16 @@ class Game():
         if not lairs:
             return
 
-        print(list(lairs.keys()))
-        print([monster["room"] for num, monster in self._monsters.items()])
-        try:
-            print(list(self._monsters["room"]))
-        except KeyError:
-            pass
-
         for lroom, llair in lairs.items():
-            print("check first to see if monsters in ", list(lroom))
+
             if self._monsters_here(list(lroom)):
-                print("monsters here, continue")
-                print()
                 continue
-            print("all clear, spawn away")
+
             for _ in range(llair["num"]):
                 if time.time() - llair["spawn_timer"] \
                         > self._tick * 10:
                     self._spawn_monsters(
                         random.choice(llair["mobs"]), list(lroom))
-
-        print([monster["room"] for num, monster in self._monsters.items()])
 
     def check_for_monsters(self):
         """

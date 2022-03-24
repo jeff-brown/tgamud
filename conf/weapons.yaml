@@ -241,7 +241,7 @@
   modifier: strength
 - type: rapier
   damage:
-  - 1
+  - 20
   - 8
   value: 2500
   equip: true

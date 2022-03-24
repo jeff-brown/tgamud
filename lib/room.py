@@ -5,23 +5,15 @@ from lib.armor import Armor
 from lib.weapon import Weapon
 from lib.gear import Gear
 from lib.magic import Magic
+from lib.service import Service
+from lib.trap import Trap
+from lib.key import Key
+from lib.door import Door
 
 
 class Room():
     """
     This class contains all of the functions to allow the game to operate
-
-            self._grid = [
-                [0,  0,  0,  0,  0],
-                [0,  0,  1,  0,  0],
-                [0,  10, 2,  11, 0],
-                [0,  0,  12, 0,  0],
-                [0,  9,  3,  8,  0],
-                [0,  0,  12, 0,  0],
-                [0,  6,  4,  7,  0],
-                [0,  0,  5,  0,  0],
-                [0,  0,  0,  0,  0]
-            ]
     """
 
     def __init__(self):
@@ -40,6 +32,12 @@ class Room():
 
         self.rooms = []
 
+        self._trap = Trap()
+
+        self._door = Door()
+
+        self._key = Key()
+
         _armor = Armor()
 
         _weapon = Weapon()
@@ -48,6 +46,8 @@ class Room():
 
         _magic = Magic()
 
+        _service = Service()
+
         # armor shop
         self._t1[6]["items"] = _armor.armors
 
@@ -55,94 +55,24 @@ class Room():
         self._t1[7]["items"] = _weapon.weapons
 
         # adventure gear shop
-        self._t1[10]["items"] = _gear.gears
+        self._t1[10]["items"] = [
+            x for x in _gear.gears if x['etype'] == 'gear']
 
         # temple
-        #   equip: true
-        #   inv: true
         self._t1[9]["items"] = [
-            {
-                "type": "healing",
-                "etype": "temple",
-                "value": 10,
-                "condition": "hurt",
-                "equip": False,
-                "inv": False
-            },
-            {
-                "type": "curing",
-                "etype": "temple",
-                "value": 10,
-                "condition": "poison",
-                "equip": False,
-                "inv": False
-            }
-        ]
+            x for x in _service.services if x['etype'] == ' temple']
 
         # tavern
         self._t1[11]["items"] = [
-            {
-                "type": "drink",
-                "etype": "tavern",
-                "value": 10,
-                "condition": "thirst",
-                "equip": False,
-                "inv": False
-            },
-            {
-                "type": "food",
-                "etype": "tavern",
-                "value": 10,
-                "condition": "hunger",
-                "equip": False,
-                "inv": False
-            }
-        ]
+            x for x in _service.services if x['etype'] == 'tavern']
 
         # magic shop
         self._t1[5]["items"] = [
-            {
-                "type": "glowstone",
-                "etype": "magic",
-                "value": 10000,
-                "condition": "light",
-                "equip": False,
-                "weight": 1,
-                "inv": True
-            },
-            {
-                "type": "hearthstone",
-                "etype": "magic",
-                "value": 100000,
-                "condition": "return",
-                "equip": False,
-                "weight": 1,
-                "inv": True
-            },
-            {
-
-                "type": "soulstone",
-                "etype": "magic",
-                "value": 1000000,
-                "condition": "death",
-                "equip": False,
-                "weight": 1,
-                "inv": True
-            },
-
-        ]
+            x for x in _gear.gears if x['etype'] == 'magic']
 
         # guildhall
         self._t1[2]["items"] = [
-            {
-                "type": "training",
-                "etype": "guild",
-                "value": 1000,
-                "condition": "level",
-                "equip": False,
-                "inv": False
-            }
-        ]
+            x for x in _service.services if x['etype'] == 'guild']
 
         self._t1[2]["spells"] = _magic.magics
 
@@ -155,3 +85,9 @@ class Room():
         self.rooms.append(self._t1)
         self.rooms.append(self._d1)
         self.rooms.append(self._d9)
+
+    def process_trap(self, player):
+        """ what happens when you walk into a trap dummy """
+
+    def process_door(self, player):
+        """ can you open this door do you have the key """

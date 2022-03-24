@@ -1,10 +1,36 @@
-- type: drink
+---
+- type: healing
+  etype: temple
   value: 1
   weight: 1
+  effect: hurt
   equip: false
   inv: false
-- type: food
+- type: curing
+  etype: temple
   value: 1
   weight: 1
+  effect: poison
+  equip: false
+  inv: false
+- type: drink
+  etype: tavern
+  value: 1
+  weight: 1
+  effect: thirst
+  equip: false
+  inv: false
+- type: meal
+  etype: tavern
+  value: 1
+  weight: 1
+  effect: hunger
+  equip: false
+  inv: false
+- type: training
+  etype: guild
+  value: 1
+  weight: 1
+  effect: level
   equip: false
   inv: false
