@@ -62,7 +62,8 @@ Feature Requests:
     * durability (and item properties)
     * fix pronoun and plural agreement (grammar, basically)
     * implement character save and restore
-    * implement environment hazards: doors, traps, etc
+    * implement environment hazards: traps, etc
+    ! doors work - probably need more work
     * implement wandering monsters
     * implement magic system
     * implement other conditions (hungry, thirsty, poisoned, etc)
@@ -84,6 +85,8 @@ Feature Requests:
       - wandering...
 
     bugs:
+     ! look into next room
+     ! doors don't stay unlocked
 
 author: Mark Frimston - mfrimston@gmail.com
 """

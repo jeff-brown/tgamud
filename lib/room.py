@@ -30,6 +30,18 @@ class Room():
             except yaml.YAMLError as exc:
                 print(exc)
 
+        with open("conf/d2.yaml", "rb") as stream:
+            try:
+                self._d2 = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+
+        with open("conf/d3.yaml", "rb") as stream:
+            try:
+                self._d3 = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+
         self.rooms = []
 
         self._trap = Trap()
@@ -84,6 +96,8 @@ class Room():
         self.rooms.append(self._d0)
         self.rooms.append(self._t1)
         self.rooms.append(self._d1)
+        self.rooms.append(self._d2)
+        self.rooms.append(self._d3)
         self.rooms.append(self._d9)
 
     def process_trap(self, player):
