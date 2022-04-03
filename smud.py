@@ -168,7 +168,7 @@ class Game():
 
         self._monsters = {}
 
-        self._exits = ["north", "south", "east", "west"]
+        self._exits = ["north", "south", "east", "west", "down", "up"]
 
         self._tick = 6  # 6 seconds
 
@@ -467,20 +467,26 @@ class Game():
                 )
             return
 
-        # look outside the room
+        cur_player_room = self._players[uid]["room"]
+        next_player_room = cur_player_room.copy()
+        print("_process_look_at_command:cur_player_room", cur_player_room)
+
         if params in self._exits:
             if params in valid_exits:
-                x_coord = self._players[uid]["room"][0]
-                y_coord = self._players[uid]["room"][1]
+                if params == "south":
+                    next_player_room[1] += 1
+                if params == "north":
+                    next_player_room[1] -= 1
                 if params == "east":
-                    next_room = self._grid[x_coord][y_coord + 1]
-                elif params == "west":
-                    next_room = self._grid[x_coord][y_coord - 1]
-                elif params == "north":
-                    next_room = self._grid[x_coord - 1][y_coord]
-                elif params == "south":
-                    next_room = self._grid[x_coord + 1][y_coord]
-                self._mud.send_message(uid, self._rooms[next_room]["long"])
+                    next_player_room[2] += 1
+                if params == "west":
+                    next_player_room[2] -= 1
+                if params == "up":
+                    next_player_room[0] -= 1
+                if params == "down":
+                    next_player_room[0] += 1
+                print("_process_look_at_command:next_player_room", next_player_room)
+                self._process_look_command(uid, next_player_room)
             else:
                 self._mud.send_message(
                     uid, "You can't see anything to the {}.".format(params))
@@ -550,15 +556,21 @@ class Game():
         exit_list = ", ".join(exits)
         self._mud.send_message(uid, cur_room["long"] + exit_list)
 
-    def _process_look_command(self, uid):
+    def _process_look_command(self, uid, loc=None):
         """
         write out the room and any players or items in it
         """
         has_light = []
-        room, _ = self._movement(self._players[uid]["room"])
-        cur_room = self._rooms[self._players[uid]["room"][0]][room]
-        cur_player = self._players[uid]
 
+        if not loc:
+            loc = self._players[uid]["room"]
+
+        print("cur_room", loc)
+        room, _ = self._movement(loc)
+        cur_room = self._rooms[loc[0]][room]
+
+        cur_player = self._players[uid]
+        print("room", room)
         for item in cur_player["inventory"]:
             if "effect" in item.keys():
                 if item["effect"] == "light":
@@ -570,7 +582,7 @@ class Game():
         # go through every player in the game
         for pid, player in self._players.items():
             # if they're in the same room as the player
-            if player["room"] == self._players[uid]["room"] and \
+            if player["room"] == loc and \
                     pid != uid:
                 # ... and they have a name to be shown
                 if player["name"] is not None:
@@ -583,7 +595,7 @@ class Game():
                                 has_light.append(item)
 
         for _, monster in self._monsters.items():
-            if monster["room"] == self._players[uid]["room"]:
+            if monster["room"] == loc:
                 monsters_here.append(monster["name"])
 
         # send player a message containing the list of players in the room
@@ -1017,8 +1029,9 @@ class Game():
                 door = self._door.doors[key_num]
                 print("key", key)
                 print("door", door)
-                if keychain:
+                if keychain and door["locked"]:
                     if key["type"] == keychain["type"]:
+                        door["locked"] = False
                         self._mud.send_message(
                             uid,
                             f"Your {key['type']} unlocks the {door['type']}."
@@ -1027,7 +1040,7 @@ class Game():
                         self._mud.send_message(
                             uid, f"The {door['type']} blocks your passage.")
                         return
-                else:
+                elif door["locked"]:
                     self._mud.send_message(
                         uid, f"The {door['type']} blocks your passage.")
                     return
