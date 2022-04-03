@@ -36,6 +36,18 @@ class Dungeon():
             except Exception as exc:
                 print(exc)
 
+        with open("dungeons/d2.json", "rb") as stream:
+            try:
+                _d2 = json.loads(stream.read())
+            except Exception as exc:
+                print(exc)
+
+        with open("dungeons/d3.json", "rb") as stream:
+            try:
+                _d3 = json.loads(stream.read())
+            except Exception as exc:
+                print(exc)
+
         with open("dungeons/d9.json", "rb") as stream:
             try:
                 _d9 = json.loads(stream.read())
@@ -47,4 +59,6 @@ class Dungeon():
         self.grid.append(_d0)
         self.grid.append(_t1)
         self.grid.append(_d1)
+        self.grid.append(_d2)
+        self.grid.append(_d3)
         self.grid.append(_d9)

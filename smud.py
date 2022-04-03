@@ -524,6 +524,8 @@ class Game():
                     self._mud.send_message(
                         uid, "You don't see {} nearby.".format(params))
                 return True
+        self._mud.send_message(
+            uid, "Sorry, you can't see {} right now.".format(params))
 
     def _process_long_look_command(self, uid):
         """
@@ -848,8 +850,12 @@ class Game():
         """
         output current level and experience
         """
-        # check fatigue
-        if len(list(self._monsters.keys())) < 9:
+        monsters_here = {}
+        monsters = self._monsters.copy()
+        for mid, monster in monsters.items():
+            if monster["room"] == self._players[uid]["room"]:
+                monsters_here.update({mid: monster})
+        if len(list(monsters_here.keys())) < 9:
             self._spawn_monsters(room=[1, 4, 3])
         else:
             print("rooms full")
