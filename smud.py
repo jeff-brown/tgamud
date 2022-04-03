@@ -458,7 +458,7 @@ class Game():
 
         _, valid_exits = self._movement(self._players[uid]["room"])
 
-        # look at _rooms
+        # look at spellbook
         if params == "spellbook":
             spellbook = self._get_item_handle(
                 "spellbook", self._players[uid]["inventory"])
@@ -470,6 +470,7 @@ class Game():
                 )
             return
 
+        # look at next room
         cur_player_room = self._players[uid]["room"]
         next_player_room = cur_player_room.copy()
         print("_process_look_at_command:cur_player_room", cur_player_room)
@@ -524,6 +525,8 @@ class Game():
                     self._mud.send_message(
                         uid, "You don't see {} nearby.".format(params))
                 return True
+
+        # can't see shit!
         self._mud.send_message(
             uid, "Sorry, you can't see {} right now.".format(params))
 
