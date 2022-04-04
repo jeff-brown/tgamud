@@ -6,24 +6,18 @@
   long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
   dark: True
-- short: You are inside the dungeon entrance. # 2
-  long: You are standing inside the entrance to the dungeon. This rounded stone and earth room bears the marks of digging tools and a number of assorted claw and hoof marks in the walls and floor. The only obvious exits is back up the stone stairway you just descended.
-  floor: []
-  dark: False
-- short: You are in a large cavern. # 3
-  long: You stand in a large cavern cluttered with stalagmites and stalactites that divide the room into many smaller chambers and passages and limit vision in any direction to a few feet. The maze-like form of this cavern is somewhat unnerving, as if someone or something had used natural forces to create a very unnatural labyrinth. You have entered the lair of the minotaur.
+- short: You're at the bottom of a circular stairwell. # 2
+  long: You are now at the foot of a long winding stairway that leads up into the darkness. The room reeks of some odor you can't identify. The furnishings of this room, such as they are, are completely out of order. Rags and bits of straw lie strewn about the room with an occasional bone or piece of wood.
   lair: True
   dark: True
   mobs:
-    - 15
-    - 16
+    - 19
+    - 20
   num: 1
-  loot:
-    - keys: [0]
   floor: []
   spawn_timer: 0
-- short: You are in a filthy cavern.  # 4
-  long: You are now in a fairly large, but somewhat filthy cavern which smells of urine and excrement. Tattered rags, broken bones, as well as ruined weapons litter the floor. You get a great sense of foreboding as you realize the carnage that must have taken place here.
+- short: You are in a smelly cave. # 3
+  long: The cave in which you now stand reminds you of a stable that's not been cleaned in years. It is filthy and smells quite foul. Something about this room seems familiar, but you can't put your finger on it. Several bloodstains and other signs of mayhem put you ill at ease.
   lair: True
   dark: True
   mobs:
@@ -32,54 +26,50 @@
   num: 1
   floor: []
   spawn_timer: 0
-- short: You are in a huge cavern. # 5
-  long: The ceiling of this cavern is shrouded in darkness above your head. The whole room is roughly circular with the exit to the south. Though the walls and floor give away the fact that many battles have been fought here, and several of them recently, you see no sign of the slain or the equipment they may have carried.
+- short: You are in a cave. # 4
+  long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
+  floor: []
+  trap: 1
+  armed: true
+  dark: True
+- short: You are in a large cave.  # 5
+  long: This cave smells strongly of animals. It has the look and feel of the den of some wild beast. The rotting carcass of some animal far too mutilated and charred to identify says something of the occupant of this cavern.
   lair: True
   dark: True
   mobs:
-    - 13
+    - 21
+  num: 1
+  floor: []
+  spawn_timer: 0
+- short: You are in a dead end cave. # 6
+  long: A horrific scene lies before you in the form of a pile of mangled bones and skulls of various creatures, human and otherwise. An enormous palet of furs and skins lies on one side of the room, and by the size of it, it's likely the sleeping place of a giant. You start to think better of having ventured this deep into the ground.
+  dark: True
+  mobs:
     - 14
   num: 1
   loot:
-    - keys: [1]
+    - keys: [3]
   floor: []
   spawn_timer: 0
-- short: You are in an enormous cavern. # 6
-  long: You gape in awe at the piles of skulls in the center of this huge stone room. The walls of this room are draped with the furs and skins of many different types of animals, among which you recognize the furs of several cave bears, formidable opponents themselves.
-  lair: True
-  dark: True
-  mobs:
-    - 13
-    - 14
-  num: 2
-  loot:
-    - keys: [2]
+- short: You are in a cave. # 7
+  long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
-  spawn_timer: 0
-- short: You are at the top of a circular stairwell. # 7
-  long: You stand in a circular shaft with a stairwell that descends around the outer wall into the darkness below. The air in this chamber is somewhat cooler then the room you just left. From far below comes a faint shuffling sound that is barely audible and of which you can make nothing.
+  trap: 2
   dark: True
-  floor: []
 - short: You are in a cave. # 8
   long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
-  door: 1
-  key: 1
+  door: 3
   dark: True
-- short: You are in a cave. # 9
-  long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
+- short: You are in an enormous cavern. # 7
+  long: The ceiling of this enormous cavern is shrouded in darkness high above your head. A huge tapestry covers the northern wall from the floor to some forty feet above your head.
+  lair: True
+  dark: True
+  mobs:
+    - 23
+  num: 2
   floor: []
-  door: 0
-  key: 0
-  dark: True
-- short: You are in a cave. # 10
-  long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
+  spawn_timer: 0
+- short: You're at the top of a stairwell. # 10
+  long: You stand in a circular shaft with a stairwell that decends around the outer wall into the darkness below. The air in this chamber is somewhat cooler than that outside.
   floor: []
-  trap: 0
-  dark: True
-- short: You are in a cave. # 11
-  long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
-  floor: []
-  door: 2
-  key: 2
-  dark: True

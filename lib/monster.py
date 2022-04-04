@@ -17,6 +17,18 @@ class Monster():
             except yaml.YAMLError as exc:
                 print(exc)
 
+        with open("conf/natural_weapons.yaml", "rb") as stream:
+            try:
+                self.natural_weapons = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+
+        with open("conf/natural_armors.yaml", "rb") as stream:
+            try:
+                self.natural_armors = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+
         self.challenge = (
             25, 50, 100, 150, 200, 450, 700, 1100, 1800, 2300, 2900, 3900, 5000,
             5900, 7200, 8400, 10000, 11500, 13500, 18000, 20000, 22000, 25000,
@@ -26,3 +38,11 @@ class Monster():
 
         self.populate = time.time()
         self.spawn_timer = time.time()
+
+    def natural_weapon(self, weapon):
+        """ get natty weapon """
+        return self.natural_weapons[weapon].copy()
+
+    def natural_armor(self, armor):
+        """ get natty weapon """
+        return self.natural_armors[armor].copy()

@@ -336,6 +336,10 @@ class Game():
         """determine ac"""
         weapon_of_choice = []
         wtype = self._monsters[uid]["weapon"]
+
+        if 'natural' in wtype[0]:
+            return self._monster.natural_weapon(wtype[1])
+
         if not wtype:
             return self._weapons[0]
 
@@ -354,6 +358,10 @@ class Game():
 
         if not atype:
             return self._armors[0]
+
+        if 'natural' in atype[0]:
+            return self._monster.natural_armor(atype[1])
+
         for armor in self._armors:
             if atype in armor["size"]:
                 armor_of_choice.append(armor)
@@ -544,6 +552,11 @@ class Game():
                 if item["effect"] == "light":
                     has_light.append(item)
 
+        print(self._players[uid]["equipped"]["weapon"].keys())
+        if "effect" in self._players[uid]["equipped"]["weapon"].keys():
+            if self._players[uid]["equipped"]["weapon"] == "light":
+                has_light.append(self._players[uid]["equipped"]["weapon"])
+
         for pid, player in self._players.items():
             # if they're in the same room as the player
             if player["room"] == self._players[uid]["room"] and \
@@ -556,6 +569,14 @@ class Game():
                         if "effect" in item.keys():
                             if item["effect"] == "light":
                                 has_light.append(item)
+
+                    print(self._players[uid]["equipped"]["weapon"].keys())
+                    if "effect" in \
+                            self._players[uid]["equipped"]["weapon"].keys():
+                        if self._players[uid]["equipped"]["weapon"] == "light":
+                            has_light.append(
+                                self._players[uid]["equipped"]["weapon"]
+                            )
 
         if cur_room["dark"] and not has_light:
             self._mud.send_message(uid, "It's too dark to see.")
@@ -583,6 +604,11 @@ class Game():
             if "effect" in item.keys():
                 if item["effect"] == "light":
                     has_light.append(item)
+
+        print(self._players[uid]["equipped"]["weapon"].keys())
+        if "effect" in self._players[uid]["equipped"]["weapon"].keys():
+            if self._players[uid]["equipped"]["weapon"]["effect"] == "light":
+                has_light.append(self._players[uid]["equipped"]["weapon"])
 
         players_here = []
         monsters_here = []
@@ -1034,7 +1060,7 @@ class Game():
             # TBD only check for doors and traps on *next room* not cur_room
 
             if 'door' in next_room.keys():
-                keychain = self._get_item_handle("key", cur_player["inventory"])
+                keychain = self._get_keychain(cur_player["inventory"])
                 print("keychain", keychain)
                 key_num = next_room["door"]
                 key = self._key.keys[key_num]
@@ -1042,7 +1068,7 @@ class Game():
                 print("key", key)
                 print("door", door)
                 if keychain and door["locked"]:
-                    if key["type"] == keychain["type"]:
+                    if key["type"] in [x["type"] for x in keychain]:
                         door["locked"] = False
                         self._mud.send_message(
                             uid,
@@ -1100,7 +1126,7 @@ class Game():
         """
         self._process_attack(uid, params)
 
-    def _get_loot(self, player, loots):
+    def _get_loot(self, loots):
         """
         try to kill some stuff why not
         """
@@ -1111,7 +1137,7 @@ class Game():
                 for num in loot_type['keys']:
                     loot.append(self._key.keys[num])
 
-        player["inventory"] += loot
+        return loot
 
     def _process_attack(self, uid, target, spell=None):
         """
@@ -1141,6 +1167,8 @@ class Game():
                     monster["current_hp"] -= damage
 
                 if monster["current_hp"] < 1:
+
+                    # notify player and remove mob from list
                     self._mud.send_message(
                         uid,
                         (
@@ -1148,6 +1176,7 @@ class Game():
                             "lifeless!".format(monster["name"])
                         )
                     )
+                    del self._monsters[mid]
 
                     # set the clock to respawn monsters if this is a lair
                     if "spawn_timer" in cur_room.keys():
@@ -1156,9 +1185,20 @@ class Game():
                     # check for loot
                     if "loot" in cur_room.keys():
                         print(cur_room["loot"])
-                        self._get_loot(self._players[uid], cur_room['loot'])
-                        print(self._players[uid])
+                        loot = self._get_loot(cur_room['loot']).copy()
+                        print(loot)
+                        self._players[uid]["inventory"] += loot
+                        self._mud.send_message(
+                            uid,
+                            (
+                                "While searching the room, you discovered a {}."
+                                .format(
+                                    loot[0]['type']
+                                )
+                            )
+                        )
 
+                    # check for coins
                     self._players[uid]["coins"] += monster["coins"]
                     self._mud.send_message(
                         uid,
@@ -1171,7 +1211,10 @@ class Game():
                         )
                     )
 
-                    if monster["equipped"]["weapon"]:
+                    # check for non-natural weapons
+                    if monster["equipped"]["weapon"] \
+                            and monster["equipped"]["weapon"]["etype"] \
+                            not in 'natural':
                         if len(cur_room["floor"]) < 10:
                             cur_room["floor"].append(
                                 monster["equipped"]["weapon"]
@@ -1183,7 +1226,11 @@ class Game():
                                     f"on the floor."
                                 )
                             )
-                    if monster["equipped"]["armor"]:
+
+                    # check for non-natural armor
+                    if monster["equipped"]["armor"] \
+                            and monster["equipped"]["armor"]["etype"] \
+                            not in 'natural':
                         if len(cur_room["floor"]) < 10:
                             cur_room["floor"].append(
                                 monster["equipped"]["armor"]
@@ -1195,7 +1242,6 @@ class Game():
                                     f"on the floor."
                                 )
                             )
-                    del self._monsters[mid]
             else:
                 self._mud.send_message(
                     uid, (
@@ -1527,7 +1573,10 @@ class Game():
                                 monster["name"], player["name"]))
                         self._monsters[mid]["coins"] += player["coins"]
 
-                        if player["equipped"]["weapon"]:
+                        # check for non-natural weapons
+                        if player["equipped"]["weapon"] \
+                                and player["equipped"]["weapon"]["etype"] \
+                                not in 'natural':
                             if len(cur_room["floor"]) < 10:
                                 cur_room["floor"].append(
                                     player["equipped"]["weapon"]
@@ -1537,7 +1586,10 @@ class Game():
                                         f"{player['equipped']['weapon']['type']} "
                                         f"on the floor."
                                     )
-                        if player["equipped"]["armor"]:
+                        # check for non-natural armor
+                        if player["equipped"]["armor"] \
+                                and player["equipped"]["armor"]["etype"] \
+                                not in 'natural':
                             if len(cur_room["floor"]) < 10:
                                 cur_room["floor"].append(
                                     player["equipped"]["armor"]
@@ -1698,6 +1750,17 @@ class Game():
                 return item
 
         return None
+
+    @staticmethod
+    def _get_keychain(items):
+        """ return item handle """
+
+        keychain = []
+        for item in items:
+            if "key" in item["etype"]:
+                keychain.append(item)
+
+        return keychain
 
     @staticmethod
     def _get_spell_handle(name, spells):
@@ -1939,9 +2002,9 @@ class Game():
 
             # 'say' command
             elif command == "say":
-
+                pass
                 # go through every player in the game
-                self._process_say_command(uid, params)
+                # self._process_say_command(uid, params)
 
             # 'look' command
             elif command in ["look", "l"]:

@@ -1,0 +1,37 @@
+---
+- type: claws # 0
+  damage:
+  - 1
+  - 4
+  modifier: strength
+  etype: natural
+- type: huge claws # 1
+  damage:
+  - 1
+  - 8
+  modifier: strength
+  etype: natural
+- type: wicked claws # 2
+  damage:
+  - 2
+  - 6
+  modifier: strength
+  etype: natural
+- type: wicked beak # 3
+  damage:
+  - 2
+  - 6
+  modifier: strength
+  etype: natural
+- type: huge club # 4
+  damage:
+  - 3
+  - 6
+  modifier: strength
+  etype: natural
+- type: dragon claws # 4
+  damage:
+  - 4
+  - 6
+  modifier: strength
+  etype: natural

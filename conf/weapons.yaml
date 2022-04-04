@@ -1,12 +1,13 @@
 ---
 - type: club
   damage:
-  - 1
+  - 100
   - 4
   value: 10
   equip: true
   etype: one-hand
   dtype: bludgeoning
+  effect: light
   inv: true
   weight: 2
   size: light

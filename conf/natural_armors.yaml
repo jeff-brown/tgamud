@@ -1,0 +1,25 @@
+---
+- type: skin # 0
+  ac: 10
+  etype: natural
+  size: light
+- type: thick skin # 1
+  ac: 11
+  etype: natural
+  size: light
+- type: hide # 2
+  ac: 11
+  etype: natural
+  size: light
+- type: thick hide # 3
+  ac: 12
+  etype: natural
+  size: light
+- type: stone hide # 4
+  ac: 13
+  etype: natural
+  size: light
+- type: dragon hide # 4
+  ac: 14
+  etype: natural
+  size: light
