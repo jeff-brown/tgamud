@@ -1015,7 +1015,7 @@ class Game():
 
     def _process_go_command(self, uid, command, params):
         """ move around """
-        if 'fatigued' in list(self._players[uid]["conditions"]["type"]):
+        if 'fatigued' in self._condition.get_status(self._players[uid]):
             # if time.time() - self._players[uid]["fatigue"] < self._tick:
             self._mud.send_message(
                 uid, (
@@ -1161,7 +1161,7 @@ class Game():
 
         if monsters_here:
             mid, monster = random.choice(list(monsters_here.items()))
-            if time.time() - self._players[uid]["fatigue"] > self._tick:
+            if 'fatigued' not in self._condition.get_status(self._players[uid]):
                 damage = 0
                 if spell is not None:
                     damage = self._process_spell_damage(
@@ -1267,7 +1267,8 @@ class Game():
         xp_incr = int(self._cr[target["cr"]] / target["max_hp"])
         damage = self._roll_dice(spell["effect"])
 
-        player["fatigue"] = time.time()
+        player["conditions"].append(self._condition.set_condition("fatigued"))
+        # player["fatigue"] = time.time()
         player["xp"] += xp_incr * damage
         self._mud.send_message(
             uid, spell["description"].format(target["name"], damage))
@@ -1297,7 +1298,9 @@ class Game():
 
             damage = dice + self._get_modifier(player["strength"])
 
-            player["fatigue"] = time.time()
+            # player["fatigue"] = time.time()
+            player["conditions"].append(
+                self._condition.set_condition("fatigued"))
             player["xp"] += xp_incr * damage
 
             self._mud.send_message(
@@ -1313,7 +1316,9 @@ class Game():
                     "the {}.".format(target["name"])
                 )
             )
-            self._players[uid]["fatigue"] = time.time()
+            self._players[uid]["conditions"].append(
+                self._condition.set_condition("fatigued"))
+            # self._players[uid]["fatigue"] = time.time()
 
     def _process_spell_heal(self, uid, spell, target):
         """

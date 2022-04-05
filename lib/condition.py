@@ -60,8 +60,9 @@ class Condition():
         condition = self.get_condition_handle(name).copy()
         condition["start"] = time.time()
 
-    @staticmethod
-    def initialize_conditions(player):
+        return condition
+
+    def initialize_conditions(self, player):
         """
             start a new player with fatigue and make sure they are not
             hungry or thirsty
@@ -70,9 +71,9 @@ class Condition():
         if player["class"] is None:
             return
 
-        player["conditions"].append("fatigued")
-        player["conditions"].append("hungry")
-        player["conditions"].append("thirsty")
+        player["conditions"].append(self.set_condition("fatigued"))
+        player["conditions"].append(self.set_condition("hungry"))
+        player["conditions"].append(self.set_condition("thirsty"))
 
     def check_condition(self, player):
         """ check what condition your condition is in"""
