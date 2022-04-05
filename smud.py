@@ -108,6 +108,7 @@ from lib.dungeon import Dungeon
 from lib.dice import Dice
 from lib.key import Key
 from lib.door import Door
+from lib.condition import Condition
 
 # import the MUD server class
 from server.mud import Mud
@@ -140,6 +141,8 @@ class Game():
         self._dungeon = Dungeon()
 
         self._dice = Dice()
+
+        self._condition = Condition()
 
         self._grid = self._dungeon.grid  # town
 
@@ -727,7 +730,10 @@ class Game():
         self._players[uid]["proficiency"] = (
             self._proficiency[self._players[uid]["level"]]
         )
-        self._players[uid]["status"] = "Healthy"
+        self._players[uid]["conditions"] = []
+        self._condition.initialize_conditions(self._players[uid])
+        self._players[uid]["status"] = (
+            self._condition.get_status(self._players[uid]))
         self._players[uid]["equipped"] = {
             "weapon": self._weapons[0],
             "armor": self._armors[0]
@@ -981,7 +987,7 @@ class Game():
         self._mud.send_message(uid, "Hit Points:   {} / {}".format(
             self._players[uid]["current_hp"], self._players[uid]["max_hp"]))
         self._mud.send_message(uid, "Status:       {}".format(
-            self._players[uid]["status"]))
+            self._condition.get_status(self._players[uid])))
         self._mud.send_message(uid, "Armor Class:  {}".format(
             self._players[uid]["armor_class"]))
         self._mud.send_message(uid, "")
@@ -1005,11 +1011,12 @@ class Game():
         self._mud.send_message(uid, "Hit Points:   {} / {}".format(
             self._players[uid]["current_hp"], self._players[uid]["max_hp"]))
         self._mud.send_message(uid, "Status:       {}".format(
-            self._players[uid]["status"]))
+            self._condition.get_status(self._players[uid]["status"])))
 
     def _process_go_command(self, uid, command, params):
         """ move around """
-        if time.time() - self._players[uid]["fatigue"] < self._tick:
+        if 'fatigued' in list(self._players[uid]["conditions"]["type"]):
+            # if time.time() - self._players[uid]["fatigue"] < self._tick:
             self._mud.send_message(
                 uid, (
                     "Sorry, you'll have to rest a while before you can move."
@@ -2188,7 +2195,7 @@ class Game():
                 continue
 
             # monsters attack first and ask questions later
-            self._check_status(pid)
+            self._condition.check_condition(player)
 
             # monsters wander if no one is around and run if they are injured
             self._regenerate(pid)
