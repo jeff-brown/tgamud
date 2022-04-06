@@ -2,6 +2,8 @@
 import time
 import yaml
 
+from lib.dice import Dice
+
 
 class Condition():
     """
@@ -11,6 +13,8 @@ class Condition():
     def __init__(self):
         """ read in the config files """
         self.conditions = []
+
+        self._dice = Dice()
 
         with open("conf/conditions.yaml", "rb") as stream:
             try:
@@ -29,19 +33,17 @@ class Condition():
 
         statuses = list(set(statuses))
 
-        print(statuses)
-
         if not statuses:
             status = "Healthy"
 
         elif len(statuses) == 1:
-            status = statuses[0]
+            status = statuses[0].capitalize()
 
         elif len(statuses) == 2:
-            status = f"{statuses[0]} and {statuses[1]}"
+            status = f"{statuses[0]} and {statuses[1]}".capitalize()
 
         else:
-            status = f"{', '.join(statuses[:-1])} and {statuses[-1]}"
+            status = f"{', '.join(statuses[:-1])} and {statuses[-1]}".capitalize()
 
         return status
 
@@ -88,10 +90,22 @@ class Condition():
                 if time.time() - condition["start"] > condition["duration"]:
                     condition["condition"] = condition["type"]
                     conditions.append(condition)
+                    if 'damage' in condition.keys():
+                        if time.time() - condition["update"] > 6:
+                            print("damaging repeating condition")
+                            player["current_hp"] -= self._dice.roll(
+                                condition["damage"])
+                            condition["update"] = time.time()
                 else:
                     conditions.append(condition)
             else:
                 if time.time() - condition["start"] < condition["duration"]:
+                    if 'damage' in condition.keys():
+                        if time.time() - condition["update"] > 6:
+                            print("damaging condition")
+                            player["current_hp"] -= self._dice.roll(
+                                condition["damage"])
+                            condition["update"] = time.time()
                     conditions.append(condition)
 
         player["conditions"] = conditions

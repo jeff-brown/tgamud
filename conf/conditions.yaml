@@ -9,19 +9,31 @@
   etype: condition
   condition: healthy
   duration: 30
+  damage:
+    - 1
+    - 1
   start: 0
+  update: 0
   repeating: true
 - type: thirsty
   etype: condition
   condition: healthy
   duration: 15
+  damage:
+    - 1
+    - 2
   start: 0
+  update: 0
   repeating: true
 - type: poisoned
   etype: condition
   condition: poisoned
   duration: 300
+  damage:
+    - 1
+    - 4
   start: 0
+  update: 0
   repeating: false
 - type: paralyzed
   etype: condition

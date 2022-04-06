@@ -1891,6 +1891,9 @@ class Game():
                     )
                     return False
                 if self._players[uid]["coins"] > merch["value"]:
+                    print(merch)
+                    if 'effect' in merch.keys():
+                        pass
                     if merch["inv"]:
                         self._players[uid]["inventory"].append(merch)
                     self._players[uid]["coins"] -= merch["value"]
