@@ -1,6 +1,7 @@
 ---
 - type: healing
   etype: temple
+  dtype: service
   value: 1
   weight: 1
   effect: hurt
@@ -8,27 +9,33 @@
   inv: false
 - type: curing
   etype: temple
+  dtype: service
   value: 1
   weight: 1
   effect: poison
   equip: false
   inv: false
 - type: drink
+  message: The drink quenches your thirst.
   etype: tavern
+  dtype: service
   value: 1
   weight: 1
-  effect: thirst
+  effect: thirsty
   equip: false
   inv: false
 - type: meal
+  message: The meal fills you up.
   etype: tavern
+  dtype: service
   value: 1
   weight: 1
-  effect: hunger
+  effect: hungry
   equip: false
   inv: false
 - type: training
   etype: guild
+  dtype: service
   value: 1
   weight: 1
   effect: level

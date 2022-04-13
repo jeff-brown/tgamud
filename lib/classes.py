@@ -91,7 +91,7 @@ class Classes():
         self.abilities = ("strength", "constitution", "dexterity", "wisdom",
                           "charisma", "intelligence")
 
-    def _get_modifier(self, value):
+    def get_modifier(self, value):
         """get modifier"""
         for scores, modifer in self.mod.items():
             if value in scores:
@@ -102,7 +102,7 @@ class Classes():
         """determind max hp"""
         return player["max_hp"] \
             + self._dice.roll([1, player["hit_dice"][1]]) \
-            + self._get_modifier(player["constitution"])
+            + self.get_modifier(player["constitution"])
 
     def _ability_score_increase(self, player):
         """ randomly increase ability scores based on level """

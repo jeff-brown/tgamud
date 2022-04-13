@@ -1,15 +1,17 @@
 ---
 - type: ration
+  message: The {} fills you up.
   etype: food
   value: 1
   weight: 1
-  condition: hunger
+  condition: hungry
   equip: false
   inv: true
 - type: waterskin
-  etype: food
+  message: The {} quenches your thirst.
+  etype: beverage
   value: 1
   weight: 1
-  condition: thirst
+  condition: thirsty
   equip: false
   inv: true

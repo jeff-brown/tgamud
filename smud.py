@@ -109,6 +109,7 @@ from lib.dice import Dice
 from lib.key import Key
 from lib.door import Door
 from lib.condition import Condition
+from lib.trap import Trap
 
 # import the MUD server class
 from server.mud import Mud
@@ -121,6 +122,8 @@ class Game():
 
     def __init__(self, mud):
         # start the server
+
+        self._trap = Trap()
 
         self._monster = Monster()
 
@@ -202,7 +205,11 @@ class Game():
         # check fatigue
         inventory = []
         for item in items:
-            inventory.append(item["type"])
+            print(item.keys())
+            if 'quantity' in item.keys():
+                inventory.append(f"{item['type']} ({item['quantity']})")
+            else:
+                inventory.append(item["type"])
 
         if not inventory:
             return "You aren't carrying anything."
@@ -464,6 +471,21 @@ class Game():
             uid, "Sorry, but no such item is here.")
         return False
 
+    def _process_eat_command(self, uid, params):
+        """get stuff"""
+        player = self._players[uid]
+
+        message = self._condition.eat(player, params)
+        print(message)
+        self._mud.send_message(uid, message)
+
+    def _process_drink_command(self, uid, params):
+        """get stuff"""
+        player = self._players[uid]
+
+        message = self._condition.drink(player, params)
+        self._mud.send_message(uid, message)
+
     def _process_look_at_command(self, uid, params):
         """look at stuff"""
 
@@ -557,7 +579,7 @@ class Game():
 
         print(self._players[uid]["equipped"]["weapon"].keys())
         if "effect" in self._players[uid]["equipped"]["weapon"].keys():
-            if self._players[uid]["equipped"]["weapon"] == "light":
+            if self._players[uid]["equipped"]["weapon"]["effect"] == "light":
                 has_light.append(self._players[uid]["equipped"]["weapon"])
 
         for pid, player in self._players.items():
@@ -573,14 +595,16 @@ class Game():
                             if item["effect"] == "light":
                                 has_light.append(item)
 
-                    print(self._players[uid]["equipped"]["weapon"].keys())
+                    print(self._players[uid]["equipped"]["weapon"])
                     if "effect" in \
                             self._players[uid]["equipped"]["weapon"].keys():
-                        if self._players[uid]["equipped"]["weapon"] == "light":
+                        if self._players[uid]["equipped"]["weapon"]["effect"] \
+                                == "light":
                             has_light.append(
                                 self._players[uid]["equipped"]["weapon"]
                             )
 
+        print(has_light)
         if cur_room["dark"] and not has_light:
             self._mud.send_message(uid, "It's too dark to see.")
             return
@@ -908,26 +932,6 @@ class Game():
         else:
             self._players[uid]["status"] = "Healthy"
 
-    def _get_inventory(self, items):
-        """
-        output current level and experience
-        """
-        # check fatigue
-        inventory = []
-        for item in items:
-            inventory.append(item["type"])
-
-        if not inventory:
-            return "You aren't carrying anything."
-
-        if len(inventory) == 1:
-            return f"You are carrying a {inventory[0]}."
-
-        if len(inventory) == 2:
-            return f"You are carrying a {inventory[0]} and a {inventory[1]}."
-
-        return f"You are carrying {', '.join(inventory[:-1])} and a {inventory[-1]}."
-
     def _regenerate(self, uid):
         """
         output current level and experience
@@ -1011,11 +1015,11 @@ class Game():
         self._mud.send_message(uid, "Hit Points:   {} / {}".format(
             self._players[uid]["current_hp"], self._players[uid]["max_hp"]))
         self._mud.send_message(uid, "Status:       {}".format(
-            self._condition.get_status(self._players[uid]["status"])))
+            self._condition.get_status(self._players[uid])))
 
     def _process_go_command(self, uid, command, params):
         """ move around """
-        if 'fatigued' in self._condition.get_status(self._players[uid]):
+        if 'fatigued' in self._condition.get_status(self._players[uid]).lower():
             # if time.time() - self._players[uid]["fatigue"] < self._tick:
             self._mud.send_message(
                 uid, (
@@ -1090,6 +1094,18 @@ class Game():
                         uid, f"The {door['type']} blocks your passage.")
                     return
 
+            if 'trap' in next_room.keys():
+                detected, message = self._trap.detect_trap(
+                    cur_player, next_room["trap"])
+                if detected:
+                    self._mud.send_message(uid, message)
+
+            if 'trap' in cur_room.keys():
+                message = self._trap.avoid_trap(
+                    cur_player, cur_room["trap"])
+
+                self._mud.send_message(uid, message)
+
             # move player to next room
             self._players[uid]["room"] = next_player_room
 
@@ -1161,7 +1177,8 @@ class Game():
 
         if monsters_here:
             mid, monster = random.choice(list(monsters_here.items()))
-            if 'fatigued' not in self._condition.get_status(self._players[uid]):
+            if 'fatigued' not in \
+                    self._condition.get_status(self._players[uid]).lower():
                 damage = 0
                 if spell is not None:
                     damage = self._process_spell_damage(
@@ -1879,7 +1896,7 @@ class Game():
         if "items" in cur_room.keys():
             for item in cur_room["items"]:
                 if params in item["type"]:
-                    merch = item
+                    merch = item.copy()
                     break
 
             if merch:
@@ -1892,8 +1909,6 @@ class Game():
                     return False
                 if self._players[uid]["coins"] > merch["value"]:
                     print(merch)
-                    if 'effect' in merch.keys():
-                        pass
                     if merch["inv"]:
                         self._players[uid]["inventory"].append(merch)
                     self._players[uid]["coins"] -= merch["value"]
@@ -1903,6 +1918,15 @@ class Game():
                             f"{self._format_coins(merch['value'])}."
                         )
                     )
+                    if 'effect' in merch.keys() and 'dtype' in merch.keys():
+                        if 'service' in merch['dtype'] and merch["effect"] in \
+                                self._condition.get_status(
+                                    self._players[uid]).lower():
+                            print(merch["effect"])
+                            print(self._condition.get_status(self._players[uid]))
+                            if self._condition.remove_condition(
+                                    self._players[uid], merch["effect"]):
+                                self._mud.send_message(uid, merch["message"])
                 else:
                     self._mud.send_message(
                         uid, f"You can't afford {merch['type']}.")
@@ -2035,6 +2059,16 @@ class Game():
 
                 # look around to see who and what is around
                 self._process_look_command(uid)
+
+            elif command in ["eat"]:
+
+                # look around to see who and what is around
+                self._process_eat_command(uid, params)
+
+            elif command in ["drink"]:
+
+                # look around to see who and what is around
+                self._process_drink_command(uid, params)
 
             # 'go' command
             elif command in ["go", "east", "west", "north", "south", "up", "down"]:

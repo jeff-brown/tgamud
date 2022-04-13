@@ -1,8 +1,36 @@
 ---
 - type: spike trap # 0
   etype: trap
+  dc: 10
+  detect: You skillfully detect the spiked trap!
+  not_detect: You fail to detect the spiked trap!
+  avoid: You skillfully avoid the spiked trap!
+  not_avoid: You fail to avoid the spiked trap and take {} damage.
   damage:
     - 1
     - 10
   effect: physical
+  armed: true
+  detected: 0
+  not_disable: A spiked trap catches your foot and pain shoots up your leg!
+  disable: You skillfully disable the spiked trap!
+- type: pit trap # 0
+  dc: 10
+  etype: trap
+  damage:
+    - 1
+    - 10
+  armed: true
+  effect: physical
+  detected: 0
+  description: A spiked trap catches your foot and pain shoots up your leg!
+- type: poison dart trap # 0
+  dc: 10
+  etype: trap
+  damage:
+    - 1
+    - 10
+  effect: poisoned
+  armed: true
+  detected: 0
   description: A spiked trap catches your foot and pain shoots up your leg!

@@ -3,6 +3,7 @@ import time
 import yaml
 
 from lib.dice import Dice
+from lib.gear import Gear
 
 
 class Condition():
@@ -15,6 +16,8 @@ class Condition():
         self.conditions = []
 
         self._dice = Dice()
+
+        self._gear = Gear()
 
         with open("conf/conditions.yaml", "rb") as stream:
             try:
@@ -64,6 +67,19 @@ class Condition():
 
         return condition
 
+    def remove_condition(self, player, name):
+        """ add a condition to the list """
+        for index, condition in enumerate(player["conditions"]):
+            if condition["condition"] == name:
+                if condition["repeating"]:
+                    del player['conditions'][index]
+                    player["conditions"].append(self.set_condition(name))
+                else:
+                    del player['conditions'][index]
+                return True
+
+        return False
+
     def initialize_conditions(self, player):
         """
             start a new player with fatigue and make sure they are not
@@ -110,3 +126,67 @@ class Condition():
 
         player["conditions"] = conditions
         player["status"] = self.get_status(player)
+
+    def eat(self, player, meal):
+        """ eat a thing and see what happens """
+        foods = [x for x in self._gear.gears if x['dtype'] == 'food']
+        items = [x for x in player["inventory"] if x['dtype'] == 'food']
+        conditions = self.get_status(player).lower()
+        message = None
+
+        print(foods)
+        print([x['type'] for x in foods])
+        print(items)
+        print([x['type'] for x in items])
+        print(meal)
+
+        print(bool([x['type'] for x in foods if meal not in x['type']]))
+        if [x['type'] for x in foods if meal not in x['type']]:
+            return f"You can't eat {meal}!"
+
+        print(bool([x['type'] for x in items if meal in x['type']]))
+        if [x['type'] for x in items if meal not in x['type']] or not items:
+            return f"You don't seem to have {meal}!"
+
+        for item in items:
+            if meal in item["type"]:
+                print("found", meal)
+                if item["effect"] in conditions:
+                    print("found", item["effect"])
+                    self.remove_condition(player, item["effect"])
+                    message = item["message"].format(item["type"])
+                else:
+                    message = f"The {item['type']} seems to have no effect!"
+                self._gear.remove_item(player, item['type'])
+            else:
+                message = f"You do not seem to have {meal}"
+
+        return message
+
+    def drink(self, player, bev):
+        """ drink a thing and see what happens """
+        beverages = [x for x in self._gear.gears if x['dtype'] == 'beverage']
+        items = [x for x in player["inventory"] if x['dtype'] == 'beverage']
+        conditions = self.get_status(player).lower()
+        message = None
+
+        if [x['type'] for x in beverages if bev not in x['type']]:
+            return f"You can't drink {bev}!"
+
+        if [x['type'] for x in items if bev not in x['type']]:
+            return f"You don't seem to have {bev}!"
+
+        for item in items:
+            if bev in item["type"]:
+                print("found", bev)
+                if item["effect"] in conditions:
+                    print("found", item["effect"])
+                    self.remove_condition(player, item["effect"])
+                    message = item["message"].format(item["type"])
+                else:
+                    message = f"The {item['type']} seems to have no effect!"
+                self._gear.remove_item(player, item['type'])
+            else:
+                message = f"You do not seem to have {bev}"
+
+        return message

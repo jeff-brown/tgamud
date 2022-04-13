@@ -1,6 +1,7 @@
 ---
 - type: iron key # 0
   etype: key
+  dtype: null
   value: 1
   weight: 1
   effect: open
@@ -8,6 +9,7 @@
   inv: true
 - type: brass key # 1
   etype: key
+  dtype: null
   value: 1
   weight: 1
   effect: open
@@ -15,6 +17,7 @@
   inv: true
 - type: bronze key # 2
   etype: key
+  dtype: null
   value: 1
   weight: 1
   effect: open
@@ -22,6 +25,7 @@
   inv: true
 - type: silver key # 3
   etype: key
+  dtype: null
   value: 1
   weight: 1
   effect: open

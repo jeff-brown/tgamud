@@ -1,6 +1,7 @@
 ---
 - type: rope
   etype: gear
+  dtype: gear
   value: 1
   weight: 1
   effect: climb
@@ -8,13 +9,23 @@
   inv: true
 - type: lockpick
   etype: gear
+  dtype: gear
   value: 1
   weight: 1
   effect: open
   equip: false
   inv: true
+- type: theives tools
+  etype: gear
+  dtype: gear
+  value: 1
+  weight: 1
+  effect: disarm
+  equip: false
+  inv: true
 - type: torch
   etype: gear
+  dtype: gear
   value: 1
   weight: 1
   effect: light
@@ -23,6 +34,7 @@
   inv: true
 - type: lantern
   etype: gear
+  dtype: gear
   value: 1
   weight: 1
   effect: light
@@ -31,6 +43,7 @@
   inv: true
 - type: spellbook
   etype: magic
+  dtype: magic
   value: 100
   weight: 1
   equip: false
@@ -39,6 +52,7 @@
   slots: []
 - type: glowstone
   etype: magic
+  dtype: magic
   value: 1000
   weight: 1
   effect: light
@@ -47,6 +61,7 @@
   inv: true
 - type: hearthstonne
   etype: magic
+  dtype: magic
   value: 10000
   weight: 1
   effect: return
@@ -54,8 +69,29 @@
   inv: true
 - type: soulstone
   etype: magic
+  dtype: magic
   value: 100000
   weight: 1
   effect: resurrection
+  equip: false
+  inv: true
+- type: ration
+  message: The {} fills you up.
+  quantity: 1
+  etype: gear
+  dtype: food
+  value: 100
+  weight: 1
+  effect: hungry
+  equip: false
+  inv: true
+- type: waterskin
+  quantity: 3
+  message: The {} quenches your thirst.
+  etype: gear
+  dtype: beverage
+  value: 300
+  weight: 1
+  effect: thirsty
   equip: false
   inv: true
