@@ -21,6 +21,13 @@ class Classes():
 
         self._dice = Dice()
 
+        self._extra_attacks = {
+            (0,  1,  2,  3,  4): 0,
+            (5,  6,  7,  8,  8, 9, 10): 1,
+            (11, 12, 13, 14, 15, 15, 17, 18): 2,
+            (19, 20): 3
+        }
+
         self.exp = [  # exp, lvl, pro
             (-1, 0, 0),
             (0, 1, 2),
@@ -98,8 +105,33 @@ class Classes():
                 return modifer
         return value
 
+    def _get_extra_attacks(self, player_class, level):
+        """ some classes get bonus attacks """
+        extra_attacks = 0
+        player_class_type = self.classes[player_class]["type"]
+
+        if player_class_type in ["barbarian", "monk", "paladin", "ranger"]:
+            if level > 4:
+                extra_attacks = 1
+        elif player_class_type in ["fighter"]:
+            for levels, attacks in self._extra_attacks.items():
+                if level in levels:
+                    extra_attacks = attacks
+
+        print("player_class", player_class_type)
+        print("extra attacks", extra_attacks)
+
+        return extra_attacks
+
+    def set_attacks(self, player):
+        """ figure out num attacks per round """
+        player["attacks"] = (
+                self.get_modifier(player["dexterity"])
+                + self._get_extra_attacks(player["class"], player["level"])
+        )
+
     def _max_hp(self, player):
-        """determind max hp"""
+        """determine max hp"""
         return player["max_hp"] \
             + self._dice.roll([1, player["hit_dice"][1]]) \
             + self.get_modifier(player["constitution"])
@@ -149,3 +181,46 @@ class Classes():
 
             # increment max_hp
             player["max_hp"] = self._max_hp(player)
+
+            # increment max attacks
+            self.set_attacks(player)
+
+    @staticmethod
+    def process_death(player):
+        """ process death """
+        message = None
+        if player["current_hp"] < 1:
+            message = (
+                "As the final blow strikes your body you "
+                "fall unconscious.\n"
+                "You awaken after an unknown amount of "
+                "time..."
+            )
+            player["room"] = [1, 4, 2]
+            player["current_hp"] = 1
+
+            return message
+
+    def process_hit(self, player, damage):
+        """ process hit """
+        player["current_hp"] -= damage
+        message = None
+        if player["current_hp"] < 1:
+            message = self.process_death(player)
+        return message
+
+    def process_damage(self, player, damage):
+        """ process damage """
+        message = None
+        if player["current_hp"] < 1:
+            message = self.process_death(player)
+        return message
+
+    def process_rest(self, player):
+        """ process rest """
+        message = None
+        if player["current_hp"] < player["max_hp"]:
+            message = self.process_heal(player, 1)
+        return message
+
+

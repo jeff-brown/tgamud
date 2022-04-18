@@ -72,7 +72,7 @@ class Room():
 
         # temple
         self._t1[9]["items"] = [
-            x for x in _service.services if x['etype'] == ' temple']
+            x for x in _service.services if x['etype'] == 'temple']
 
         # tavern
         self._t1[11]["items"] = [
@@ -105,3 +105,22 @@ class Room():
 
     def process_door(self, player):
         """ can you open this door do you have the key """
+
+    @staticmethod
+    def get_exit_text(exits):
+        """ get the exit text """
+        message = None
+
+        if not exits:
+            message = "There are no visible exits."
+
+        elif len(exits) == 1:
+            message = f"The only visible exit is to the {exits[0]}."
+
+        elif len(exits) == 2:
+            message = f"There are visible exits to the {exits[0]} and {exits[1]}."
+
+        else:
+            message = f"There are visible exits to the {', '.join(exits[:-1])} and {exits[-1]}."
+
+        return message

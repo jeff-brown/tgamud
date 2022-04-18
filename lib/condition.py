@@ -165,6 +165,9 @@ class Condition():
 
     def drink(self, player, bev):
         """ drink a thing and see what happens """
+        if not player["inventory"]:
+            return "You're not carrying anything."
+
         beverages = [x for x in self._gear.gears if x['dtype'] == 'beverage']
         items = [x for x in player["inventory"] if x['dtype'] == 'beverage']
         conditions = self.get_status(player).lower()
@@ -188,5 +191,34 @@ class Condition():
                 self._gear.remove_item(player, item['type'])
             else:
                 message = f"You do not seem to have {bev}"
+
+        return message
+
+    @staticmethod
+    def _process_heal(player, heal):
+        """ process heal """
+        player["current_hp"] += heal
+        if player["current_hp"] > player["max_hp"]:
+            player["current_hp"] = player["max_hp"]
+        return None
+
+    @staticmethod
+    def heal_cost(player, cost):
+        """ process heal """
+        heal = player["max_hp"] - player["current_hp"]
+        if heal > 0:
+            return (player["max_hp"] - player["current_hp"]) * cost * player["level"]
+        else:
+            return 0
+
+    def buy_heal(self, player):
+        """ process heal """
+        message = None
+        heal = player["max_hp"] - player["current_hp"]
+        if heal > 0:
+            self._process_heal(player, heal)
+            message = f"The priests healed your for {heal} hp."
+        else:
+            message = "You don't need healing!"
 
         return message

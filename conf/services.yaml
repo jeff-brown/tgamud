@@ -4,7 +4,7 @@
   dtype: service
   value: 1
   weight: 1
-  effect: hurt
+  effect: heal
   equip: false
   inv: false
 - type: curing

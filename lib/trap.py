@@ -7,9 +7,9 @@ from lib.classes import Classes
 from lib.dice import Dice
 
 
-class Trap():
+class Trap:
     """
-    This class contains all of the functions to allow the game to operate
+    This class contains all the functions to allow the game to operate
     """
 
     def __init__(self):
@@ -60,4 +60,5 @@ class Trap():
         return message
 
     def disable_trap(self, player, num):
-        """ rogues can disable traps with theives tools """
+        """ rogues can disable traps with thieves tools """
+

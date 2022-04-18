@@ -2,14 +2,17 @@
   long: You can't be here.
   floor: []
   dark: True
+  stairs: False
 - short: You are in a cave. # 1
   long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
   dark: True
+  stairs: False
 - short: You are inside the dungeon entrance. # 2
   long: You are standing inside the entrance to the dungeon. This rounded stone and earth room bears the marks of digging tools and a number of assorted claw and hoof marks in the walls and floor. The only obvious exits is back up the stone stairway you just descended.
   floor: []
   dark: False
+  stairs: False
 - short: You are in a large cavern. # 3
   long: You stand in a large cavern cluttered with stalagmites and stalactites that divide the room into many smaller chambers and passages and limit vision in any direction to a few feet. The maze-like form of this cavern is somewhat unnerving, as if someone or something had used natural forces to create a very unnatural labyrinth. You have entered the lair of the minotaur.
   lair: True
@@ -22,6 +25,7 @@
     - keys: [0]
   floor: []
   spawn_timer: 0
+  stairs: False
 - short: You are in a filthy cavern.  # 4
   long: You are now in a fairly large, but somewhat filthy cavern which smells of urine and excrement. Tattered rags, broken bones, as well as ruined weapons litter the floor. You get a great sense of foreboding as you realize the carnage that must have taken place here.
   lair: True
@@ -32,6 +36,7 @@
   num: 1
   floor: []
   spawn_timer: 0
+  stairs: False
 - short: You are in a huge cavern. # 5
   long: The ceiling of this cavern is shrouded in darkness above your head. The whole room is roughly circular with the exit to the south. Though the walls and floor give away the fact that many battles have been fought here, and several of them recently, you see no sign of the slain or the equipment they may have carried.
   lair: True
@@ -44,6 +49,7 @@
     - keys: [1]
   floor: []
   spawn_timer: 0
+  stairs: False
 - short: You are in an enormous cavern. # 6
   long: You gape in awe at the piles of skulls in the center of this huge stone room. The walls of this room are draped with the furs and skins of many different types of animals, among which you recognize the furs of several cave bears, formidable opponents themselves.
   lair: True
@@ -56,30 +62,36 @@
     - keys: [2]
   floor: []
   spawn_timer: 0
+  stairs: False
 - short: You are at the top of a circular stairwell. # 7
   long: You stand in a circular shaft with a stairwell that descends around the outer wall into the darkness below. The air in this chamber is somewhat cooler then the room you just left. From far below comes a faint shuffling sound that is barely audible and of which you can make nothing.
   dark: True
   floor: []
+  stairs: True
 - short: You are in a cave. # 8
   long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
   door: 1
   key: 1
   dark: True
+  stairs: False
 - short: You are in a cave. # 9
   long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
   door: 0
   key: 0
   dark: True
+  stairs: False
 - short: You are in a cave. # 10
   long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
   trap: 0
   dark: True
+  stairs: False
 - short: You are in a cave. # 11
   long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
   door: 2
   key: 2
   dark: True
+  stairs: False

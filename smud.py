@@ -1,4 +1,4 @@
-#!/Library/Frameworks/Python.framework/Versions/3.7/bin/python3
+#!/usr/bin/python3
 
 """A simple Multi-User Dungeon (MUD) game. Players can talk to each
 other, examine their surroundings and move between rooms.
@@ -400,14 +400,15 @@ class Game():
             exits.append("north")
         if self._grid[z_coord][x_coord + 1][y_coord] > 0:
             exits.append("south")
-        if self._grid[z_coord][x_coord][y_coord - 1] > 0:
-            exits.append("west")
         if self._grid[z_coord][x_coord][y_coord + 1] > 0:
             exits.append("east")
-        if self._grid[z_coord + 1][x_coord][y_coord] > 0:
-            exits.append("down")
-        if self._grid[z_coord - 1][x_coord][y_coord] > 0:
-            exits.append("up")
+        if self._grid[z_coord][x_coord][y_coord - 1] > 0:
+            exits.append("west")
+        if self._rooms[z_coord][room]["stairs"]:
+            if self._grid[z_coord + 1][x_coord][y_coord] > 0:
+                exits.append("down")
+            if self._grid[z_coord - 1][x_coord][y_coord] > 0:
+                exits.append("up")
 
         return room, exits
 
@@ -569,6 +570,7 @@ class Game():
         """
         has_light = []
         room, exits = self._movement(self._players[uid]["room"])
+        exit_text = self._room.get_exit_text(exits)
         cur_room = self._rooms[self._players[uid]["room"][0]][room]
         cur_player = self._players[uid]
 
@@ -609,8 +611,7 @@ class Game():
             self._mud.send_message(uid, "It's too dark to see.")
             return
 
-        exit_list = ", ".join(exits)
-        self._mud.send_message(uid, cur_room["long"] + exit_list)
+        self._mud.send_message(uid, f"{cur_room['long']} {exit_text}")
 
     def _process_look_command(self, uid, loc=None):
         """
@@ -640,6 +641,7 @@ class Game():
         players_here = []
         monsters_here = []
         items_here = []
+
         # go through every player in the game
         for pid, player in self._players.items():
             # if they're in the same room as the player
@@ -736,7 +738,7 @@ class Game():
         self._players[uid]["room"] = [1, 4, 2]
         self._players[uid]["fatigue"] = time.time()
         self._players[uid]["hit_dice"] = self._classes[command]["hit_dice"]
-        self._players[uid]["level"] = 20
+        self._players[uid]["level"] = 1
         self._players[uid]["strength"] = self._get_stat(uid, "strength")
         self._players[uid]["dexterity"] = self._get_stat(uid, "dexterity")
         self._players[uid]["constitution"] = self._get_stat(uid, "constitution")
@@ -751,6 +753,8 @@ class Game():
         self._players[uid]["max_enc"] = self._max_enc(uid)
         self._players[uid]["current_enc"] = 0
         self._players[uid]["xp"] = 1000000
+        self._class.set_attacks(self._players[uid])
+        self._players[uid]["current_attacks"] = self._players[uid]["attacks"]
         self._players[uid]["proficiency"] = (
             self._proficiency[self._players[uid]["level"]]
         )
@@ -1014,6 +1018,8 @@ class Game():
             self._players[uid]["current_mp"], self._players[uid]["max_mp"]))
         self._mud.send_message(uid, "Hit Points:   {} / {}".format(
             self._players[uid]["current_hp"], self._players[uid]["max_hp"]))
+        self._mud.send_message(uid, "Attacks:      {} / {}".format(
+            self._players[uid]["current_attacks"], self._players[uid]["attacks"]))
         self._mud.send_message(uid, "Status:       {}".format(
             self._condition.get_status(self._players[uid])))
 
@@ -1192,6 +1198,11 @@ class Game():
 
                 if monster["current_hp"] < 1:
 
+                    # when a player kills a mob, make them tired and reset their attacks
+                    self._players[uid]["conditions"].append(
+                        self._condition.set_condition("fatigued"))
+                    self._players[uid]["current_attacks"] = self._players[uid]["attacks"]
+
                     # notify player and remove mob from list
                     self._mud.send_message(
                         uid,
@@ -1316,8 +1327,12 @@ class Game():
             damage = dice + self._get_modifier(player["strength"])
 
             # player["fatigue"] = time.time()
-            player["conditions"].append(
-                self._condition.set_condition("fatigued"))
+            if player["current_attacks"] == 1:
+                player["conditions"].append(
+                    self._condition.set_condition("fatigued"))
+                player["current_attacks"] = player["attacks"]
+            else:
+                player["current_attacks"] -= 1
             player["xp"] += xp_incr * damage
 
             self._mud.send_message(
@@ -1333,8 +1348,12 @@ class Game():
                     "the {}.".format(target["name"])
                 )
             )
-            self._players[uid]["conditions"].append(
-                self._condition.set_condition("fatigued"))
+            if player["current_attacks"] == 1:
+                player["conditions"].append(
+                    self._condition.set_condition("fatigued"))
+                player["current_attacks"] = player["attacks"]
+            else:
+                player["current_attacks"] -= 1
             # self._players[uid]["fatigue"] = time.time()
 
     def _process_spell_heal(self, uid, spell, target):
@@ -1907,6 +1926,17 @@ class Game():
                         )
                     )
                     return False
+                if 'effect' in merch.keys() and 'dtype' in merch.keys():
+                    if 'heal' in merch['effect']:
+                        merch["value"] = self._condition.heal_cost(self._players[uid], merch["value"])
+
+                        if not merch["value"]:
+                            self._mud.send_message(
+                                uid, (
+                                    "Sorry, you don't need {}.".format(merch["type"])
+                                )
+                            )
+                            return False
                 if self._players[uid]["coins"] > merch["value"]:
                     print(merch)
                     if merch["inv"]:
@@ -1919,7 +1949,10 @@ class Game():
                         )
                     )
                     if 'effect' in merch.keys() and 'dtype' in merch.keys():
-                        if 'service' in merch['dtype'] and merch["effect"] in \
+                        if 'heal' in merch['effect']:
+                            message = self._condition.buy_heal(self._players[uid])
+                            self._mud.send_message(uid, message)
+                        elif 'service' in merch['dtype'] and merch["effect"] in \
                                 self._condition.get_status(
                                     self._players[uid]).lower():
                             print(merch["effect"])

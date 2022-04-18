@@ -2,10 +2,12 @@
   long: You can't be here.
   floor: []
   dark: True
+  stairs: False
 - short: You are in a cave. # 1
   long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
   dark: True
+  stairs: False
 - short: You're at the bottom of a circular stairwell. # 2
   long: You are now at the foot of a long winding stairway that leads up into the darkness. The room reeks of some odor you can't identify. The furnishings of this room, such as they are, are completely out of order. Rags and bits of straw lie strewn about the room with an occasional bone or piece of wood.
   lair: True
@@ -16,6 +18,7 @@
   num: 1
   floor: []
   spawn_timer: 0
+  stairs: True
 - short: You are in a smelly cave. # 3
   long: The cave in which you now stand reminds you of a stable that's not been cleaned in years. It is filthy and smells quite foul. Something about this room seems familiar, but you can't put your finger on it. Several bloodstains and other signs of mayhem put you ill at ease.
   lair: True
@@ -26,12 +29,14 @@
   num: 1
   floor: []
   spawn_timer: 0
+  stairs: False
 - short: You are in a cave. # 4
   long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
   trap: 1
   armed: true
   dark: True
+  stairs: False
 - short: You are in a large cave.  # 5
   long: This cave smells strongly of animals. It has the look and feel of the den of some wild beast. The rotting carcass of some animal far too mutilated and charred to identify says something of the occupant of this cavern.
   lair: True
@@ -41,6 +46,7 @@
   num: 1
   floor: []
   spawn_timer: 0
+  stairs: False
 - short: You are in a dead end cave. # 6
   long: A horrific scene lies before you in the form of a pile of mangled bones and skulls of various creatures, human and otherwise. An enormous palet of furs and skins lies on one side of the room, and by the size of it, it's likely the sleeping place of a giant. You start to think better of having ventured this deep into the ground.
   dark: True
@@ -51,16 +57,19 @@
     - keys: [3]
   floor: []
   spawn_timer: 0
+  stairs: False
 - short: You are in a cave. # 7
   long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
   trap: 2
   dark: True
+  stairs: False
 - short: You are in a cave. # 8
   long: You are in a damp, poorly lit cave. Glowing lichens and fungi provide an eerie greenish light.
   floor: []
   door: 3
   dark: True
+  stairs: False
 - short: You are in an enormous cavern. # 7
   long: The ceiling of this enormous cavern is shrouded in darkness high above your head. A huge tapestry covers the northern wall from the floor to some forty feet above your head.
   lair: True
@@ -70,6 +79,8 @@
   num: 2
   floor: []
   spawn_timer: 0
+  stairs: False
 - short: You're at the top of a stairwell. # 10
   long: You stand in a circular shaft with a stairwell that decends around the outer wall into the darkness below. The air in this chamber is somewhat cooler than that outside.
   floor: []
+  stairs: False

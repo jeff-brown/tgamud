@@ -125,7 +125,7 @@
     - 16
     - 19
   attacks: 1
-- type: figther
+- type: fighter
   description: A master of martial combat, skilled with a variety of weapons and armor.
   hit_dice:
     - 1
